@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}The Study - Researcher Tycoon{% endblock %}
+{% block content %}
+<section class="study-intro">
+  <div class="si-inner">
+    <p class="si-eyebrow">Study Overview</p>
+    <h1 class="si-h1">Control Under Pressure</h1>
+    <p class="si-sub">The influence of aversive motivation on adaptive cognitive control</p>
+
+    <div class="si-grid">
+      <div class="si-text">
+        <h3>Paradigm</h3>
+        <p>
+          Participants completed a <strong>prime-probe task</strong> responding to direction words
+          (up, down, left, right). Each trial showed a prime stimulus followed by a probe stimulus.
+          The probe could either match the prime (<strong>congruent</strong>) or conflict with it
+          (<strong>incongruent</strong>), creating four trial-type combinations (cC, cI, iC, iI).
+        </p>
+        <p>
+          Feedback type (punishment vs. no punishment) and feedback contingency (which trial type
+          received feedback) were manipulated across conditions within subjects. In some conditions
+          incorrect responses triggered monetary loss. In others no punishment was applied. A random
+          punishment condition applied loss independent of performance.
+        </p>
+
+        <h3>Hypothesis</h3>
+        <p>
+          We expect that reaction time will be modulated by the congruence of the current and
+          previous trials: the <strong>congruency sequence effect (CSE)</strong>. The congruency
+          effect should be smaller after incongruent primes than after congruent primes, reflecting
+          conflict adaptation.
+        </p>
+
+        <h3>Your Four Decisions</h3>
+        <ul class="si-steps">
+          <li><span>1</span>Outlier method: SD filter, accuracy filter, or no filter</li>
+          <li><span>2</span>Threshold: how strict the exclusion is</li>
+          <li><span>3</span>RT transformation: log or raw milliseconds</li>
+          <li><span>4</span>Model structure: random intercept, intercept+slope, or full</li>
+        </ul>
+      </div>
+
+      <div class="si-aside">
+        <div class="si-box">
+          <div class="si-box-title">Single Trial Structure</div>
+          <div class="trial-sequence">
+            <div class="ts-step">
+              <div class="ts-label">Prime</div>
+              <div class="ts-stim">Direction word<br><span class="ts-eg">e.g. LEFT</span></div>
+            </div>
+            <div class="ts-arrow">&#8595;</div>
+            <div class="ts-step">
+              <div class="ts-label">Probe</div>
+              <div class="ts-stim">Direction word<br><span class="ts-eg">e.g. LEFT (congruent)<br>or RIGHT (incongruent)</span></div>
+            </div>
+            <div class="ts-arrow">&#8595;</div>
+            <div class="ts-step">
+              <div class="ts-label">Response</div>
+              <div class="ts-stim">Participant responds<br><span class="ts-eg">RT and accuracy recorded</span></div>
+            </div>
+          </div>
+          <div class="pp-note">The CSE is measured across consecutive trials: congruency of the current probe is compared across trials that followed a congruent vs. incongruent prime.</div>
+        </div>
+
+        <div class="si-box">
+          <div class="si-box-title">Sample Descriptives</div>
+          <div class="stat-rows">
+            <div class="stat-row"><span>Participants</span><span>173</span></div>
+            <div class="stat-row"><span>Trials (total raw)</span><span>207,600</span></div>
+            <div class="stat-row"><span>Trials per participant</span><span>1,200</span></div>
+            <div class="stat-row"><span>Overall accuracy</span><span>83.7%</span></div>
+            <div class="stat-row"><span>Mean RT congruent</span><span>482 ms</span></div>
+            <div class="stat-row"><span>Mean RT incongruent</span><span>559 ms</span></div>
+            <div class="stat-row"><span>Congruency effect</span><span>+77 ms</span></div>
+            <div class="stat-row"><span>CE after congruent prime</span><span>+81.5 ms</span></div>
+            <div class="stat-row"><span>CE after incongruent prime</span><span>+72.8 ms</span></div>
+            <div class="stat-row"><span>CSE (raw, unfiltered)</span><span>+8.7 ms</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <a href="{{ url_for('game') }}" class="btn-primary">Begin analysis &#8594;</a>
+  </div>
+</section>
+{% endblock %}

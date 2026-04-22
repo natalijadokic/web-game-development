@@ -1,0 +1,364 @@
+{% extends "base.html" %}
+{% block title %}Results - Researcher Tycoon{% endblock %}
+
+{% block content %}
+<section class="end-wrap">
+
+  <div class="end-section">
+    <h2>Descriptive Statistics</h2>
+    <div class="desc-grid">
+      <div class="desc-card"><div class="desc-val">173</div><div class="desc-label">participants</div></div>
+      <div class="desc-card"><div class="desc-val">207,600</div><div class="desc-label">total raw trials</div></div>
+      <div class="desc-card"><div class="desc-val">83.7%</div><div class="desc-label">overall accuracy</div></div>
+      <div class="desc-card"><div class="desc-val">520 ms</div><div class="desc-label">mean RT (all trials)</div></div>
+      <div class="desc-card"><div class="desc-val">482 ms</div><div class="desc-label">mean RT congruent</div></div>
+      <div class="desc-card"><div class="desc-val">559 ms</div><div class="desc-label">mean RT incongruent</div></div>
+      <div class="desc-card"><div class="desc-val">+77 ms</div><div class="desc-label">congruency effect</div></div>
+      <div class="desc-card"><div class="desc-val">+81.5 ms</div><div class="desc-label">CE after congruent prime</div></div>
+      <div class="desc-card"><div class="desc-val">+72.8 ms</div><div class="desc-label">CE after incongruent prime</div></div>
+      <div class="desc-card"><div class="desc-val">+8.7 ms</div><div class="desc-label">CSE (raw, unfiltered)</div></div>
+    </div>
+  </div>
+
+  <div class="end-section">
+    <h2>Results Comparison</h2>
+    <div class="comparison-table">
+      <div class="cmp-head">
+        <span></span>
+        <span>Your path</span>
+        <span>Original path</span>
+      </div>
+      <div class="cmp-row">
+        <span class="cmp-label">Outlier method</span>
+        <span class="cmp-player">{{ result.outlier_label if result else '—' }}</span>
+        <span class="cmp-orig">Accuracy filter</span>
+      </div>
+      <div class="cmp-row">
+        <span class="cmp-label">Threshold</span>
+        <span class="cmp-player">{{ result.threshold if result and result.threshold != 'None' else '—' }}</span>
+        <span class="cmp-orig">70%</span>
+      </div>
+      <div class="cmp-row">
+        <span class="cmp-label">RT transform</span>
+        <span class="cmp-player">{{ result.rt_transform | upper if result else '—' }}</span>
+        <span class="cmp-orig">Log</span>
+      </div>
+      <div class="cmp-row">
+        <span class="cmp-label">Model</span>
+        <span class="cmp-player">{{ result.model_label if result else '—' }}</span>
+        <span class="cmp-orig">Intercept + slope</span>
+      </div>
+      <div class="cmp-row cmp-highlight">
+        <span class="cmp-label">CSE coefficient</span>
+        <span class="cmp-player">{{ result.coef if result else '—' }}</span>
+        <span class="cmp-orig">-0.0185</span>
+      </div>
+      <div class="cmp-row cmp-highlight">
+        <span class="cmp-label">p-value</span>
+        <span class="cmp-player">{{ result.p_fmt if result else '—' }}</span>
+        <span class="cmp-orig">p &lt; .001</span>
+      </div>
+      <div class="cmp-row">
+        <span class="cmp-label">n (trials)</span>
+        <span class="cmp-player">{{ result.n if result else '—' }}</span>
+        <span class="cmp-orig">182,466</span>
+      </div>
+      <div class="cmp-row">
+        <span class="cmp-label">R2 marginal</span>
+        <span class="cmp-player">{{ result.r2m if result else '—' }}</span>
+        <span class="cmp-orig">0.221</span>
+      </div>
+      <div class="cmp-row">
+        <span class="cmp-label">R2 conditional</span>
+        <span class="cmp-player">{{ result.r2c if result else '—' }}</span>
+        <span class="cmp-orig">0.354</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="end-section">
+    <h2>Decision Tree</h2>
+    <p class="section-hint">Blue = original study path &nbsp;|&nbsp; Green = your path &nbsp;|&nbsp; Hover nodes for details &nbsp;<button class="btn-expand" id="expand-btn">View full screen</button></p>
+    <div class="tree-container" id="tree-container">
+      <svg id="tree-svg" viewBox="0 0 900 420" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div id="tree-tip" class="tree-tip"></div>
+    </div>
+  </div>
+
+  <div id="tree-modal" class="tree-modal">
+    <div class="tree-modal-inner">
+      <div class="tree-modal-bar">
+        <span>Decision Tree</span>
+        <button class="btn-close-modal" id="close-modal">Close</button>
+      </div>
+      <div class="tree-modal-body" id="tree-modal-body">
+        <svg id="tree-svg-modal" viewBox="0 0 900 420" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div id="tree-tip-modal" class="tree-tip"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="end-section analytical-var">
+    <p>The difference between these results shows an important feature of data analysis. Even when researchers work with the same dataset, different decisions about data cleaning, variable selection, and statistical modeling can lead to different conclusions. This phenomenon is known as analytical variability.</p>
+    <p>Analytical variability can be understood as both a limitation and a strength of empirical research. On one hand, analytical flexibility may reduce the reproducibility of findings, as different analytical choices can lead to different conclusions even when based on the same data. On the other hand, analytical variability also reflects the complexity of data analysis and allows researchers to examine data from multiple perspectives. This flexibility can contribute to a better understanding of the phenomena when applied transparently.</p>
+    <p>For this reason, transparency in the analysis process is essential. Clearly reporting analytical decisions and, where possible, preregistering analysis plans can help reduce uncertainty and improve the interpretability of research findings.</p>
+  </div>
+
+  <div class="end-actions">
+    <a href="{{ url_for('reset') }}" class="btn-secondary">Play again</a>
+    <a href="{{ url_for('welcome') }}" class="btn-primary">Back to start</a>
+  </div>
+
+</section>
+
+<script>
+var RESULT = {{ result | tojson if result else 'null' }};
+
+var playerOutlier   = RESULT ? RESULT.outlier_method : null;
+var playerThreshold = RESULT ? RESULT.threshold : null;
+var playerTransform = RESULT ? RESULT.rt_transform : null;
+var playerModel     = RESULT ? RESULT.model : null;
+
+var col = [70, 210, 370, 530, 720];
+
+var baseNodes = [
+  {id:'root',     x:col[0],y:210,label:'Start',          type:'root',     tip:'Beginning of the analysis pipeline'},
+  {id:'sd',       x:col[1],y:80, label:'Z-score\nfilter',type:'decision', tip:'Remove trials beyond N SDs from participant mean RT\n(correct trials only)'},
+  {id:'accuracy', x:col[1],y:210,label:'Accuracy\nfilter',type:'decision',tip:'Remove participants below accuracy threshold\n(all their trials excluded)'},
+  {id:'nofilter', x:col[1],y:340,label:'No filter',      type:'decision', tip:'No exclusion applied\nn = 192,713'},
+  {id:'sd2',      x:col[2],y:40, label:'2 SD',           type:'decision', tip:'Threshold: 2 SDs, stricter\nn = 148,433'},
+  {id:'sd3',      x:col[2],y:120,label:'3 SD',           type:'decision', tip:'Threshold: 3 SDs, more lenient\nn = 154,173'},
+  {id:'acc06',    x:col[2],y:180,label:'60%',            type:'decision', tip:'Min accuracy: 60%\nn = 185,628'},
+  {id:'acc07',    x:col[2],y:230,label:'70%',            type:'decision', tip:'Min accuracy: 70% (original study)\nn = 182,466'},
+  {id:'acc08',    x:col[2],y:280,label:'80%',            type:'decision', tip:'Min accuracy: 80%\nn = 167,193'},
+  {id:'nf',       x:col[2],y:340,label:'None',           type:'decision', tip:'No threshold\nn = 192,713'},
+  {id:'log_sd2',  x:col[3],y:40, label:'log',            type:'decision', tip:'Log-transform RT'},
+  {id:'raw_sd2',  x:col[3],y:80, label:'raw',            type:'decision', tip:'Raw RT in ms'},
+  {id:'log_sd3',  x:col[3],y:120,label:'log',            type:'decision', tip:'Log-transform RT'},
+  {id:'raw_sd3',  x:col[3],y:160,label:'raw',            type:'decision', tip:'Raw RT in ms'},
+  {id:'log_acc06',x:col[3],y:200,label:'log',            type:'decision', tip:'Log-transform RT'},
+  {id:'raw_acc06',x:col[3],y:228,label:'raw',            type:'decision', tip:'Raw RT in ms'},
+  {id:'log_acc07',x:col[3],y:252,label:'log',            type:'decision', tip:'Log-transform RT (original study)'},
+  {id:'raw_acc07',x:col[3],y:276,label:'raw',            type:'decision', tip:'Raw RT in ms'},
+  {id:'log_acc08',x:col[3],y:298,label:'log',            type:'decision', tip:'Log-transform RT'},
+  {id:'raw_acc08',x:col[3],y:318,label:'raw',            type:'decision', tip:'Raw RT in ms'},
+  {id:'log_nf',   x:col[3],y:343,label:'log',            type:'decision', tip:'Log-transform RT'},
+  {id:'raw_nf',   x:col[3],y:365,label:'raw',            type:'decision', tip:'Raw RT in ms'},
+];
+
+var resultDefs = [
+  {key:['sd','2','log','lmm-intercept'],         node:'r_sd2_log_int',   parent:'log_sd2',   tip:'Intercept only\ncoef=-0.0376, p<.001\nR2m=0.327, R2c=0.542\nn=148,433'},
+  {key:['sd','2','log','lmm-intercept-slope'],   node:'r_sd2_log_slope', parent:'log_sd2',   tip:'Intercept+slope\ncoef=-0.0356, p<.001\nR2m=0.337, R2c=0.557\nn=148,433'},
+  {key:['sd','2','log','lmm-full'],              node:'r_sd2_log_full',  parent:'log_sd2',   tip:'Full model\ncoef=-0.0364, p<.001\nR2m=0.343, R2c=0.557\nn=148,433'},
+  {key:['sd','2','raw','lmm-intercept'],         node:'r_sd2_raw_int',   parent:'raw_sd2',   tip:'Intercept only\ncoef=-18.67ms, p<.001\nR2m=0.328, R2c=0.537\nn=148,433'},
+  {key:['sd','2','raw','lmm-intercept-slope'],   node:'r_sd2_raw_slope', parent:'raw_sd2',   tip:'Intercept+slope\ncoef=-17.63ms, p<.001\nR2m=0.327, R2c=0.567\nn=148,433'},
+  {key:['sd','2','raw','lmm-full'],              node:'r_sd2_raw_full',  parent:'raw_sd2',   tip:'Full model\ncoef=-18.19ms, p<.001\nR2m=0.333, R2c=0.566\nn=148,433'},
+  {key:['sd','3','log','lmm-intercept'],         node:'r_sd3_log_int',   parent:'log_sd3',   tip:'Intercept only\ncoef=-0.0353, p<.001\nR2m=0.294, R2c=0.486\nn=154,173'},
+  {key:['sd','3','log','lmm-intercept-slope'],   node:'r_sd3_log_slope', parent:'log_sd3',   tip:'Intercept+slope\ncoef=-0.0334, p<.001\nR2m=0.303, R2c=0.501\nn=154,173'},
+  {key:['sd','3','log','lmm-full'],              node:'r_sd3_log_full',  parent:'log_sd3',   tip:'Full model\ncoef=-0.0342, p<.001\nR2m=0.308, R2c=0.501\nn=154,173'},
+  {key:['sd','3','raw','lmm-intercept'],         node:'r_sd3_raw_int',   parent:'raw_sd3',   tip:'Intercept only\ncoef=-17.49ms, p<.001\nR2m=0.287, R2c=0.473\nn=154,173'},
+  {key:['sd','3','raw','lmm-intercept-slope'],   node:'r_sd3_raw_slope', parent:'raw_sd3',   tip:'Intercept+slope\ncoef=-16.50ms, p<.001\nR2m=0.288, R2c=0.502\nn=154,173'},
+  {key:['sd','3','raw','lmm-full'],              node:'r_sd3_raw_full',  parent:'raw_sd3',   tip:'Full model\ncoef=-17.03ms, p<.001\nR2m=0.293, R2c=0.500\nn=154,173'},
+  {key:['accuracy','0.6','log','lmm-intercept'],       node:'r_a6_log_int',   parent:'log_acc06', tip:'Intercept only\ncoef=-0.0183, p<.001\nR2m=0.215, R2c=0.349\nn=185,628'},
+  {key:['accuracy','0.6','log','lmm-intercept-slope'], node:'r_a6_log_slope', parent:'log_acc06', tip:'Intercept+slope\ncoef=-0.0183, p<.001\nR2m=0.220, R2c=0.354\nn=185,628'},
+  {key:['accuracy','0.6','log','lmm-full'],            node:'r_a6_log_full',  parent:'log_acc06', tip:'Full model\ncoef=-0.0183, p<.001\nR2m=0.222, R2c=0.353\nn=185,628'},
+  {key:['accuracy','0.6','raw','lmm-intercept'],       node:'r_a6_raw_int',   parent:'raw_acc06', tip:'Intercept only\ncoef=-9.33ms, p<.001\nR2m=0.213, R2c=0.349\nn=185,628'},
+  {key:['accuracy','0.6','raw','lmm-intercept-slope'], node:'r_a6_raw_slope', parent:'raw_acc06', tip:'Intercept+slope\ncoef=-9.33ms, p<.001\nR2m=0.215, R2c=0.366\nn=185,628'},
+  {key:['accuracy','0.6','raw','lmm-full'],            node:'r_a6_raw_full',  parent:'raw_acc06', tip:'Full model\ncoef=-9.36ms, p<.001\nR2m=0.217, R2c=0.364\nn=185,628'},
+  {key:['accuracy','0.7','log','lmm-intercept'],       node:'r_a7_log_int',   parent:'log_acc07', tip:'Intercept only\ncoef=-0.0185, p<.001\nR2m=0.216, R2c=0.349\nn=182,466'},
+  {key:['accuracy','0.7','log','lmm-intercept-slope'], node:'r_a7_log_slope', parent:'log_acc07', tip:'Intercept+slope (original path)\ncoef=-0.0185, p<.001\nR2m=0.221, R2c=0.354\nn=182,466'},
+  {key:['accuracy','0.7','log','lmm-full'],            node:'r_a7_log_full',  parent:'log_acc07', tip:'Full model\ncoef=-0.0185, p<.001\nR2m=0.223, R2c=0.353\nn=182,466'},
+  {key:['accuracy','0.7','raw','lmm-intercept'],       node:'r_a7_raw_int',   parent:'raw_acc07', tip:'Intercept only\ncoef=-9.47ms, p<.001\nR2m=0.214, R2c=0.347\nn=182,466'},
+  {key:['accuracy','0.7','raw','lmm-intercept-slope'], node:'r_a7_raw_slope', parent:'raw_acc07', tip:'Intercept+slope\ncoef=-9.47ms, p<.001\nR2m=0.216, R2c=0.364\nn=182,466'},
+  {key:['accuracy','0.7','raw','lmm-full'],            node:'r_a7_raw_full',  parent:'raw_acc07', tip:'Full model\ncoef=-9.52ms, p<.001\nR2m=0.218, R2c=0.363\nn=182,466'},
+  {key:['accuracy','0.8','log','lmm-intercept'],       node:'r_a8_log_int',   parent:'log_acc08', tip:'Intercept only\ncoef=-0.0195, p<.001\nR2m=0.222, R2c=0.355\nn=167,193'},
+  {key:['accuracy','0.8','log','lmm-intercept-slope'], node:'r_a8_log_slope', parent:'log_acc08', tip:'Intercept+slope\ncoef=-0.0195, p<.001\nR2m=0.228, R2c=0.360\nn=167,193'},
+  {key:['accuracy','0.8','log','lmm-full'],            node:'r_a8_log_full',  parent:'log_acc08', tip:'Full model\ncoef=-0.0195, p<.001\nR2m=0.231, R2c=0.359\nn=167,193'},
+  {key:['accuracy','0.8','raw','lmm-intercept'],       node:'r_a8_raw_int',   parent:'raw_acc08', tip:'Intercept only\ncoef=-10.01ms, p<.001\nR2m=0.218, R2c=0.351\nn=167,193'},
+  {key:['accuracy','0.8','raw','lmm-intercept-slope'], node:'r_a8_raw_slope', parent:'raw_acc08', tip:'Intercept+slope\ncoef=-10.01ms, p<.001\nR2m=0.220, R2c=0.369\nn=167,193'},
+  {key:['accuracy','0.8','raw','lmm-full'],            node:'r_a8_raw_full',  parent:'raw_acc08', tip:'Full model\ncoef=-10.03ms, p<.001\nR2m=0.222, R2c=0.367\nn=167,193'},
+  {key:['no-filter','None','log','lmm-intercept'],       node:'r_nf_log_int',   parent:'log_nf',    tip:'Intercept only\ncoef=-0.0181, p<.001\nR2m=0.220, R2c=0.403\nn=192,713'},
+  {key:['no-filter','None','log','lmm-intercept-slope'], node:'r_nf_log_slope', parent:'log_nf',    tip:'Intercept+slope\ncoef=-0.0182, p<.001\nR2m=0.220, R2c=0.421\nn=192,713'},
+  {key:['no-filter','None','log','lmm-full'],            node:'r_nf_log_full',  parent:'log_nf',    tip:'Full model\ncoef=-0.0183, p<.001\nR2m=0.222, R2c=0.422\nn=192,713'},
+  {key:['no-filter','None','raw','lmm-intercept'],       node:'r_nf_raw_int',   parent:'raw_nf',    tip:'Intercept only\ncoef=-9.13ms, p<.001\nR2m=0.218, R2c=0.383\nn=192,713'},
+  {key:['no-filter','None','raw','lmm-intercept-slope'], node:'r_nf_raw_slope', parent:'raw_nf',    tip:'Intercept+slope\ncoef=-9.18ms, p<.001\nR2m=0.217, R2c=0.409\nn=192,713'},
+  {key:['no-filter','None','raw','lmm-full'],            node:'r_nf_raw_full',  parent:'raw_nf',    tip:'Full model\ncoef=-9.24ms, p<.001\nR2m=0.219, R2c=0.408\nn=192,713'},
+];
+
+var baseEdges = [
+  {from:'root',to:'sd'},{from:'root',to:'accuracy'},{from:'root',to:'nofilter'},
+  {from:'sd',to:'sd2'},{from:'sd',to:'sd3'},
+  {from:'accuracy',to:'acc06'},{from:'accuracy',to:'acc07'},{from:'accuracy',to:'acc08'},
+  {from:'nofilter',to:'nf'},
+  {from:'sd2',to:'log_sd2'},{from:'sd2',to:'raw_sd2'},
+  {from:'sd3',to:'log_sd3'},{from:'sd3',to:'raw_sd3'},
+  {from:'acc06',to:'log_acc06'},{from:'acc06',to:'raw_acc06'},
+  {from:'acc07',to:'log_acc07'},{from:'acc07',to:'raw_acc07'},
+  {from:'acc08',to:'log_acc08'},{from:'acc08',to:'raw_acc08'},
+  {from:'nf',to:'log_nf'},{from:'nf',to:'raw_nf'},
+];
+resultDefs.forEach(function(d){baseEdges.push({from:d.parent,to:d.node});});
+
+var outlierMap  = {'sd':'sd','accuracy':'accuracy','no-filter':'nofilter'};
+var threshMap   = {'2':'sd2','3':'sd3','0.6':'acc06','0.7':'acc07','0.8':'acc08','None':'nf'};
+var transformMap = {
+  sd2:{log:'log_sd2',raw:'raw_sd2'}, sd3:{log:'log_sd3',raw:'raw_sd3'},
+  acc06:{log:'log_acc06',raw:'raw_acc06'}, acc07:{log:'log_acc07',raw:'raw_acc07'},
+  acc08:{log:'log_acc08',raw:'raw_acc08'}, nf:{log:'log_nf',raw:'raw_nf'}
+};
+
+var playerResId = null, origResId = null;
+resultDefs.forEach(function(d){
+  if(playerOutlier && d.key[0]===playerOutlier && d.key[1]===playerThreshold && d.key[2]===playerTransform && d.key[3]===playerModel) playerResId = d.node;
+  if(d.key[0]==='accuracy' && d.key[1]==='0.7' && d.key[2]==='log' && d.key[3]==='lmm-intercept-slope') origResId = d.node;
+});
+
+var origPath = ['root','accuracy','acc07','log_acc07'];
+if(origResId) origPath.push(origResId);
+
+var playerPath = [];
+if(playerOutlier){
+  var o = outlierMap[playerOutlier];
+  var t = threshMap[playerThreshold];
+  var rt = t ? (transformMap[t]||{})[playerTransform] : null;
+  playerPath = ['root',o,t,rt,playerResId].filter(Boolean);
+}
+
+function onPath(pth,f,to){
+  for(var i=0;i<pth.length-1;i++) if(pth[i]===f && pth[i+1]===to) return true;
+  return false;
+}
+
+function buildResultNodes(nodes){
+  var parentGroups = {};
+  resultDefs.forEach(function(d){
+    if(!parentGroups[d.parent]) parentGroups[d.parent]=[];
+    parentGroups[d.parent].push(d);
+  });
+  var resultNodes = [];
+  Object.keys(parentGroups).forEach(function(pid){
+    var grp = parentGroups[pid];
+    var pn = nodes.find(function(n){return n.id===pid;});
+    if(!pn) return;
+    grp.forEach(function(d,i){
+      resultNodes.push({id:d.node, x:col[4], y:pn.y+(i-(grp.length-1)/2)*12, type:'result', tip:d.tip});
+    });
+  });
+  return resultNodes;
+}
+
+function buildTree(svgId, tipId, containerId){
+  var svg = document.getElementById(svgId);
+  var tip = document.getElementById(tipId);
+  var container = document.getElementById(containerId);
+  if(!svg || !container) return;
+
+  while(svg.firstChild) svg.removeChild(svg.firstChild);
+
+  var NS = 'http://www.w3.org/2000/svg';
+  var allNodes = baseNodes.concat(buildResultNodes(baseNodes));
+  var nodeMap = {};
+  allNodes.forEach(function(n){nodeMap[n.id]=n;});
+
+  function mk(tag,attrs){
+    var el=document.createElementNS(NS,tag);
+    Object.keys(attrs).forEach(function(k){el.setAttribute(k,attrs[k]);});
+    return el;
+  }
+
+  baseEdges.forEach(function(e){
+    var f=nodeMap[e.from], t=nodeMap[e.to];
+    if(!f||!t) return;
+    var isP=onPath(playerPath,e.from,e.to), isO=onPath(origPath,e.from,e.to);
+    var cx1=f.x+(t.x-f.x)*.45, cy1=f.y, cx2=f.x+(t.x-f.x)*.55, cy2=t.y;
+    svg.appendChild(mk('path',{
+      d:'M'+f.x+','+f.y+' C'+cx1+','+cy1+' '+cx2+','+cy2+' '+t.x+','+t.y,
+      fill:'none',
+      stroke:isO?'#2563eb':isP?'#16a34a':'#d1d5db',
+      'stroke-width':(isO||isP)?'2.5':'1',
+      'stroke-dasharray':(isO||isP)?'none':'4 3',
+      opacity:(isO||isP)?'1':'0.45'
+    }));
+  });
+
+  allNodes.forEach(function(n){
+    var isRes=n.type==='result', isRoot=n.type==='root';
+    var r=isRes?5:isRoot?12:8;
+    var g=mk('g',{cursor:'pointer'});
+    var isP=playerPath.indexOf(n.id)!==-1, isO=origPath.indexOf(n.id)!==-1;
+    var isBoth=isP&&isO;
+    var fill,stroke;
+    if(isRes){fill=isBoth?'#1d4ed8':isO?'#2563eb':isP?'#16a34a':'#e5e7eb';stroke=fill;}
+    else if(isBoth){fill='#1d4ed8';stroke='#1d4ed8';}
+    else if(isO){fill='#2563eb';stroke='#1d4ed8';}
+    else if(isP){fill='#16a34a';stroke='#15803d';}
+    else if(isRoot){fill='#374151';stroke='#1f2937';}
+    else{fill='#9ca3af';stroke='#6b7280';}
+    if(isP||isO){
+      g.appendChild(mk('circle',{cx:n.x,cy:n.y,r:r+5,fill:isBoth?'#dbeafe':isO?'#dbeafe':'#dcfce7',opacity:'0.5'}));
+    }
+    g.appendChild(mk('circle',{cx:n.x,cy:n.y,r:r,fill:fill,stroke:stroke,'stroke-width':'1.5'}));
+    if(!isRes && n.label){
+      n.label.split('\n').forEach(function(line,i,arr){
+        var off=arr.length===1?0:(i-(arr.length-1)/2)*9;
+        var lbl=mk('text',{x:n.x,y:n.y+off+3,'text-anchor':'middle','font-size':'7','font-family':'Figtree,sans-serif','font-weight':'600',fill:'#fff','pointer-events':'none'});
+        lbl.textContent=line;
+        g.appendChild(lbl);
+      });
+    }
+    var tipText = n.tip||n.label||n.id;
+    g.addEventListener('mouseenter', function(ev){ showTip(tipText, ev, tip, container); });
+    g.addEventListener('mousemove',  function(ev){ moveTip(ev, tip, container); });
+    g.addEventListener('mouseleave', function(){ tip.style.display='none'; });
+    svg.appendChild(g);
+  });
+
+  var legend=[{c:'#2563eb',l:"Original study's path"},{c:'#16a34a',l:"Your path"},{c:'#9ca3af',l:"Other paths"}];
+  legend.forEach(function(item,i){
+    var g=mk('g',{});
+    g.appendChild(mk('circle',{cx:20,cy:15+i*16,r:5,fill:item.c}));
+    var lt=mk('text',{x:30,y:20+i*16,'font-size':'9','font-family':'Figtree,sans-serif',fill:'#374151'});
+    lt.textContent=item.l;
+    g.appendChild(lt);
+    svg.appendChild(g);
+  });
+}
+
+function showTip(text, e, tip, container){
+  tip.innerHTML = text.replace(/\n/g,'<br>');
+  tip.style.display = 'block';
+  moveTip(e, tip, container);
+}
+
+function moveTip(e, tip, container){
+  var rect = container.getBoundingClientRect();
+  var x = e.clientX - rect.left + 14;
+  var y = e.clientY - rect.top  - 10;
+  if(x + 215 > rect.width) x = rect.width - 220;
+  if(y < 0) y = 4;
+  tip.style.left = x + 'px';
+  tip.style.top  = y + 'px';
+}
+
+buildTree('tree-svg', 'tree-tip', 'tree-container');
+
+document.getElementById('expand-btn').addEventListener('click', function(){
+  var modal = document.getElementById('tree-modal');
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  buildTree('tree-svg-modal', 'tree-tip-modal', 'tree-modal-body');
+});
+
+document.getElementById('close-modal').addEventListener('click', function(){
+  document.getElementById('tree-modal').style.display = 'none';
+  document.body.style.overflow = '';
+});
+
+document.getElementById('tree-modal').addEventListener('click', function(e){
+  if(e.target === this){
+    this.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+});
+</script>
+{% endblock %}
