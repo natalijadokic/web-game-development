@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Researcher Tycoon{% endblock %}
+{% block content %}
+<section class="welcome">
+  <div class="welcome-inner">
+    <div class="welcome-lab">Metascience Lab</div>
+    <h1 class="welcome-h1">Researcher Tycoon</h1>
+
+    <div class="welcome-text-block">
+      <p>Welcome to the Metascience lab's Researcher Tycoon game!</p>
+      <p>In this game, you will take on the role of a researcher and work your way through the data analysis of a real scientific study. During the game, you will work through the analysis step by step, choosing between different statistical approaches. Your choices will form a decision tree, where each branch represents a different analysis path. The aim of the game is to demonstrate how different analytical approaches can influence research results. At the end, you can view your decision tree and compare it with the study's original analysis path. If multiple players are playing, your decisions and results can be displayed together, allowing you to see how each person arrived at their conclusions.</p>
+      <p>In the following game, you will work through a part of the data analysis of a study examining the effect of aversive motivation (monetary loss) on cognitive conflict tasks. Participants completed a prime-probe task in which they had to respond to direction words (up, down, left, right) as quickly and accurately as possible. In each trial, a prime stimulus was presented first, followed by a target stimulus. The target could either match the prime (congruent) or conflict with it (incongruent). The experiment employed a within-subject design in which both the type of feedback (punishment vs. no punishment) and the contingency of evaluative feedback (whether feedback was shown after congruent or incongruent trials) were manipulated across conditions. In some conditions, incorrect responses resulted in monetary loss, while in others, no punishment was applied. In a separate condition, punishment was applied randomly, independent of both performance and trial types. The study measured participants' reaction time and accuracy across trials to examine how task difficulty, feedback, and punishment influence performance.</p>
+      <p>In the game, the analysis focuses on the following hypothesis: We expect that reaction time will be modulated by the congruence of the current and previous trials &#8594; congruency sequence effect.</p>
+    </div>
+
+    <a href="{{ url_for('study') }}" class="btn-primary">Start &#8594;</a>
+  </div>
+</section>
+{% endblock %}

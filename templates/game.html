@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}{% if node.is_result %}Results{% else %}{{ node.title }}{% endif %} - Researcher Tycoon{% endblock %}
+
+{% block content %}
+
+{% if not node.is_result %}
+<div class="progress-bar">
+  <div class="progress-inner">
+    {% for i in range(1, node.total_steps + 1) %}
+    <div class="ps {% if i < node.step %}done{% elif i == node.step %}active{% endif %}">
+      <div class="ps-dot">{{ i }}</div>
+      <div class="ps-lbl">
+        {% if i == 1 %}Outlier{% elif i == 2 %}Threshold{% elif i == 3 %}Transform{% else %}Model{% endif %}
+      </div>
+    </div>
+    {% if not loop.last %}<div class="ps-line {% if i < node.step %}done{% endif %}"></div>{% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+<section class="decision-wrap">
+  {% if path %}
+  <div class="path-recap">
+    <span class="pr-label">So far:</span>
+    {% for p in path %}
+    <span class="pr-chip"><span class="pr-n">{{ p.step }}</span>{{ p.choice }}</span>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="decision-card">
+    <p class="dc-step">{{ node.title }}</p>
+    <h2 class="dc-q">{{ node.question }}</h2>
+    <p class="dc-desc">{{ node.description }}</p>
+    <form action="{{ url_for('choose') }}" method="POST">
+      <input type="hidden" name="node_id" value="{{ node.id }}">
+      <div class="opts">
+        {% for opt in node.options %}
+        <label class="opt" for="o-{{ opt.value }}">
+          <input type="radio" id="o-{{ opt.value }}" name="choice" value="{{ opt.value }}" required>
+          <div class="opt-inner">
+            <div class="opt-circle"></div>
+            <div>
+              <div class="opt-lbl">{{ opt.label }}</div>
+              <div class="opt-hint">{{ opt.hint }}</div>
+            </div>
+          </div>
+        </label>
+        {% endfor %}
+      </div>
+      <button type="submit" class="btn-primary btn-full">Confirm &#8594;</button>
+    </form>
+  </div>
+</section>
+
+{% else %}
+
+{% set _ = session_path %}
+<script>window.location.href = "{{ url_for('end') }}";</script>
+
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.querySelectorAll('.opt').forEach(function(label) {
+  var inp = label.querySelector('input');
+  if (inp) inp.addEventListener('change', function() {
+    document.querySelectorAll('.opt').forEach(function(l){ l.classList.remove('selected'); });
+    label.classList.add('selected');
+  });
+});
+</script>
+{% endblock %}
