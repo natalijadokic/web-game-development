@@ -1,0 +1,1059 @@
+---
+title: "Schweinsberg_appraches_h1"
+date: "2026-09-08"
+---
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+Checks
+```{r}
+library(ggplot2)
+library(tidyverse)
+
+my_data <- read_csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+
+my_data = my_data |> 
+  filter(UniqueFemaleContributors >= 1)
+my_data |> 
+  ggplot()+
+  aes(x = UniqueFema)
+
+summary(my_data)
+
+
+```
+
+-Analyst 1
+```{r}
+library(effectsize)
+library(readr)
+library(tidyverse)
+my_data <- read_csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+df <- dplyr::select(my_data, ThreadId:UniqueFemaleParticipation, Id_num, Female, Order)
+# --------------------------------
+d <- df %>% filter(Female_Contributions==UniqueFemaleContributors) %>% 
+  group_by(ThreadId) %>%
+  arrange(Order) %>%
+  mutate(females_in_discussion=cumsum(Female), next_female =lead(Female)) %>%
+  ungroup()
+# --------------------------------
+ggplot(data=d, aes(x=females_in_discussion, y=next_female))+
+  geom_smooth()
+# --------------------------------
+#logistic regression model
+model <- glm (next_female ~ females_in_discussion, data = d, family = binomial)
+summary(model)
+# --------------------------------
+# Split d into 0-5 or 6- females in discussion based on the plot
+d5 <- filter(d, females_in_discussion < 6)
+d6 <- filter(d, females_in_discussion > 5)
+# --------------------------------
+model5 <- glm (next_female ~ females_in_discussion, data = d5, family = binomial)
+summary(model5)
+model6 <- glm (next_female ~ females_in_discussion, data = d6, family = binomial)
+summary(model6)
+# --------------------------------
+# --------------------------------
+library(MASS)
+#odds ratio and confidence interval for the overall model
+exp(confint.default(model))
+exp(coef(model)) ##Reviewer 2 COMMENT: effect size as reported by analyst found here
+# --------------------------------
+#odds ratio and confidence interval for the "up to 5 females model"
+exp(confint.default(model5))
+exp(coef(model5))
+# --------------------------------
+#odds ratio and confidence interval for the "6 or more females model"
+exp(confint.default(model6))
+exp(coef(model6))
+# --------------------------------
+# --------------------------------
+
+
+
+```
+
+
+-Analyst 2
+```{r}
+#added libraries used:
+library(dplyr)
+library(effsize)
+# --------------------------------
+# Data from my_data, effectively a convience sample of "communication" or a cenus of the site, depending perspective
+my_data <- read.csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv", stringsAsFactors = FALSE)
+# --------------------------------
+h1_data <- my_data %>%
+  filter(Type == 2, #communications of type conversation
+     	!is.na(Female), #gender is identified
+     	Female == 1 #gender is Female
+  ) %>%
+  arrange(Year, ThreadId, Id_num, Order) %>%
+  group_by(Year, ThreadId, Id_num) %>% #for each person in thread in year in order
+  mutate(first_post = c(1, rep(0,n()-1)))  %>% # mark 1st post 1, others 0
+  ungroup() %>%
+  arrange(Year, ThreadId, Order) %>%
+  group_by(Year, ThreadId) %>% #for each thread in each year in order
+  mutate(n_females = lag(cumsum(first_post)), #the cumlative sum at the entry above the
+    	n_females = ifelse(is.na(n_females), 0, n_females) #current one is the number
+ ) %>%   #of females at post time, so shifted down to current
+ ungroup() %>%
+  group_by(Year, ThreadId, n_females) %>% #for each sequence of the same number of females
+  summarise(n_posts= n()) %>% #calculate the amount of activity
+  ungroup() %>%
+  filter(n_females > 0) #posts with no females can only have one post from a female before
+# they become posts with one female, so discarding them as there is no variation.
+# with a range of numeric values and numeric outcomes, I'm doinga linear regression
+h1_result <- lm(n_posts ~ n_females, data=h1_data)
+# --------------------------------
+### reporting
+# summary(h1_result)
+```
+
+
+-Analyst 4
+```{r}
+my_data <- read.csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+
+#corelation
+#figuring out how a womenś tendency to participate acitively in the conversation 
+#corelates negatively with the numbers of females/males in the discussion
+
+cor(my_data$FemaleParticipation, my_data$UniqueContributors, use = "all.obs", method = "spearman")
+cor(my_data$FemaleParticipation, my_data$UniqueContributors, use = "all.obs", method = "pearson")
+cor(my_data$FemaleParticipation, my_data$UniqueContributors, use = "all.obs", method = "kendall")
+
+
+cor(my_data$FemaleParticipation, my_data$FemaleContributions, use = "all.obs", method = "spearman")
+cor(my_data$FemaleParticipation, my_data$FemaleContributions, use = "all.obs", method = "pearson")
+cor(my_data$FemaleParticipation, my_data$FemaleContributions, use = "all.obs", method = "kendall")
+
+cor.test(my_data$FemaleParticipation, my_data$FemaleContributions) #default Pearson's product-moment correlation
+cor.test(my_data$FemaleParticipation, my_data$FemaleContributions, method = "kendall")
+cor.test(my_data$FemaleContributions, my_data$FemaleContributions, method = "spearman")
+
+cor(my_data$FemaleParticipation, my_data$Male_Contributions, use = "all.obs", method = "spearman")
+cor(my_data$Male_Contributions, my_data$FemaleContributions, use = "all.obs", method = "spearman")
+cor(my_data$FemaleContributions, my_data$FemaleParticipation, use = "all.obs", method = "spearman")
+
+cor(my_data$FemaleContributions, my_data$Male_Contributions, use = "all.obs", method = "spearman")
+cor(my_data$FemaleContributions, my_data$Male_Contributions, use = "all.obs", method = "pearson")
+cor(my_data$FemaleContributions, my_data$Male_Contributions, use = "all.obs", method = "kendall")
+
+cor(my_data$Male_Contributions, my_data$FemaleContributions, use = "all.obs", method = "kendall")
+
+cor(my_data$FemaleParticipation, my_data$FemaleContributions, use = "all.obs", method = "kendall")
+
+
+
+TotalContributions <- my_data$Male_Contributions + my_data$FemaleContributions
+FemaleContributors <- TotalContributions * my_data$FemaleParticipation
+my_data$UniqueFemaleContributors
+my_data$UniqueMaleContributors
+FemaleContributors <- my_data$UniqueFemaleContributors/my_data$FemaleContributions #Wrong, since we have that already below
+FemaleContributors <- my_data$UniqueFemaleContributors #This is the correct one
+
+#Covariance
+cov(my_data$Year, my_data$FemaleContributions, use = "all.obs", method = "pearson")
+cov(my_data$ThreadId, my_data$FemaleContributions, use = "all.obs", method = "pearson")
+cov(my_data$DebateSize, my_data$FemaleContributions, use = "all.obs", method = "pearson")
+cov(my_data$UniqueFemaleContributors, my_data$FemaleContributions, use = "all.obs", method = "pearson")
+cov(my_data$UniqueMaleContributors, my_data$FemaleContributions, use = "all.obs", method = "pearson")
+cov(my_data$UniqueFemaleParticipation, my_data$FemaleContributions, use = "all.obs", method = "pearson")
+cov(my_data$FemaleParticipation, my_data$FemaleContributions, use = "all.obs", method = "pearson")
+cov(my_data$Male_Contributions, my_data$FemaleContributions, use = "all.obs", method = "pearson")
+cov(my_data$Year, my_data$Male_Contributions, use = "all.obs", method = "pearson")
+
+#Correlation
+cor(my_data$ThreadsThisYear, my_data$FemaleContributions, use = "all.obs", method = "pearson")
+cor(my_data$ThreadId, my_data$FemaleContributions, use = "all.obs", method = "pearson")
+cor(my_data$DebateSize, my_data$FemaleContributions, use = "all.obs", method = "pearson")
+cor(my_data$UniqueFemaleContributors, my_data$FemaleContributions, use = "all.obs", method = "pearson") #Reviewer 2 COMMENT: I think this is the one reported by analyst in results
+cor(my_data$UniqueMaleContributors, my_data$FemaleContributions, use = "all.obs", method = "pearson")
+cor(my_data$UniqueFemaleParticipation, my_data$FemaleContributions, use = "all.obs", method = "pearson")
+
+```
+
+
+-Analyst 5
+```{r}
+#load necessary packages
+library(dplyr)
+library(ggplot2)
+# --------------------------------
+#read in data set
+my_data <- read.csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+# --------------------------------
+# remove NA values
+my_data <- my_data[complete.cases(my_data), ]
+# --------------------------------
+# the number of times a woman speaks in a specific conversation = "FemaleContributions"
+# number of females in discussion = "Female" (1 = Female, 0 = Male)
+# percentage of comments made by a woman = "FemaleParticipation" 
+# --------------------------------
+# Let's select columns only  related to the first hypothesis
+female <- c("Female_Contributions", "Female", "FemaleParticipation")
+my_data.1hyp <- my_data[, female]
+# --------------------------------
+#remove all NA rows
+my_data.1 <- my_data.1hyp[complete.cases(my_data.1hyp), ]
+# --------------------------------
+# Let's remove all outliers from data 
+# Through calculation from summary(my_data.1$FemaleParticipation)
+# and summary(my_data.1$FemaleContributions), I got outlier values.
+my_data.1 <- my_data.1 %>% 
+  filter(FemaleParticipation < 0.20, Female_Contributions <= 22.5)
+# --------------------------------
+#plot FemaleContributions as a function of FemaleParticipation
+(p <- ggplot(my_data.1, aes(y = Female_Contributions, x = FemaleParticipation)) + 
+  geom_point() +
+  geom_smooth(method = "lm", se = F) +
+  xlab("Female Participation") +
+  ylab("Female Contribution"))
+# --------------------------------
+# --------------------------------
+# summary
+my_data.1_fit <- lm(Female_Contributions ~ FemaleParticipation, my_data.1) 
+# --------------------------------
+# get the correlation between Female Contributions and Female Participation
+my_data.1 %>%
+  summarize(r = cor(Female_Contributions, FemaleParticipation,
+                    use = "pairwise.complete.obs"))
+# --------------------------------
+# Get residuals
+my_data.1 <- my_data.1 %>%
+  add_residuals(my_data.1_fit)
+# --------------------------------
+# Plot residuals in scatterplot
+ggplot(my_data.1, aes(Female_Participation, resid)) +
+  geom_ref_line(h = 0) +
+  geom_point()
+```
+
+
+-Analyst 6
+```{r}
+#Test hypothesis 1: "A woman’s tendency to participate actively in the conversation correlates positively with the number of females in the discussion".
+# --------------------------------
+#Consider making this into a function?
+library(tidyverse)
+my_data <-read_csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+
+my_data = read_csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.2_anonymized.csv")
+
+my_data = read_csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1_anonymized OLD dataset.csv")
+# --------------------------------
+counts <- my_data %>% group_by(Title) %>% summarise(count = n())
+# --------------------------------
+#Decisions: 
+#1. Include all types of conversations (but consider analyzing them separately too.)
+#2. Dependent variable: incidences of women speaking/total contributions
+#3. Independent variable: percentage of contributors that are female.
+# --------------------------------
+#First, just test dependence of Fpart on UFPar - don't control for anything else.
+fit_dat <- my_data %>% select(Title, UniqueFemaleParticipation, FemaleParticipation) 
+fit <- lm(FemaleParticipation ~ UniqueFemaleParticipation, data = my_data)
+summary(fit)
+# --------------------------------
+#So, a greater percentage of contributions come from women when a greater percentage of contributors are female; 
+#for every 1% increase in % of contributors that are female, there is a 0.48% increase in fraction of comments coming from women. 
+#This suggests that women contribute fewer comments per person than men, but doesn't really answer our question.
+# --------------------------------
+#One thing to try: for each individual woman in the dataset, calculate an average number of comments per discussion that she's in.
+#Then, for those women, calculate how that summary statistic relates to number of women in a conversation.
+women <- my_data %>% filter(Female == 1) %>% 
+  select(Title, Name, Id, PreviousContributions, PreviousThreads, ContributionsThisYear, ThreadsThisYear) %>%
+  group_by(Title, Id) %>% 
+  summarise(comments_now = n(),
+            PreviousContributions = mean(PreviousContributions),
+            PreviousThreads = mean(PreviousThreads),
+            cont_this_year = mean(ContributionsThisYear),
+            threads_this_year = mean(ThreadsThisYear)) 
+women <- women %>%
+  mutate(total_previous_contributions = PreviousContributions + cont_this_year,
+         total_previous_threads = PreviousThreads + threads_this_year)
+# --------------------------------
+#For each woman, get the number of contributions relative to her mean previous contributions.
+women <- women %>% 
+  mutate(cont_per_thread = total_previous_contributions/total_previous_threads) %>%
+  mutate(comments_now_percent_change = (comments_now - cont_per_thread)*100/cont_per_thread)
+# --------------------------------
+#Now, for each conversation, get the number and percent of females. 
+number_of_women <- my_data %>% 
+  group_by(Title) %>%
+  slice(1) %>%
+  dplyr::select(Title, UniqueFemaleContributors, UniqueFemaleParticipation)
+# --------------------------------
+#Join data for regression.
+reg_dat <- left_join(women, number_of_women, by = "Title")
+# --------------------------------
+#Run regression. 
+#First, a regression strictly against the hypothesis: that it depends on number of women. 
+fit <- lm(comments_now_percent_change ~ UniqueFemaleContributors, data = reg_dat)
+summary(fit)
+#Results of regression suggest that the number of unique female contributors in a conversation negatively affects tendency to participate. 
+#R2 is small (1.2%) and effect size suggests that for every extra woman active in a conversation, an individual woman is likely to comment 0.58% less than she has historically (p = 0.01)
+#Make diagnostic plots:
+plot(fit)
+# --------------------------------
+#Number 325 is an outlier in almost every way: look at that individual, and remove from regression.
+View(reg_dat[325,])
+#that individual participated very actively in one discussion after previously "lurking" 8 times. 
+#Redo regression without her.
+fit2 <- lm(comments_now_percent_change ~ UniqueFemaleContributors, data = reg_dat[-325,])
+summary(fit2)
+#Removing that outlier reduced the effect size (to -0.38), increased R2 to 1.9%, and decreased the p-value.
+#diagnostic plots:
+plot(fit2)
+#Diagnostic plots are still imperfect, but better. Would also be good to try square-root/log transformations of predictors. 
+# --------------------------------
+#Log transformation:
+fit3 <- lm(comments_now_percent_change ~ log(UniqueFemaleContributors),
+           data = reg_dat[-325,])
+summary(fit3)
+plot(fit3)
+#That improved R2; doesn't seem to have improved diagnostic plots enough to be worth the loss in interpetability 
+#(e.g., effect size units are now much more difficult to interpret).
+# --------------------------------
+#Square root transformation:
+fit4 <- lm(comments_now_percent_change ~ sqrt(UniqueFemaleContributors),
+           data = reg_dat[-325,])
+summary(fit4)
+plot(fit4)
+# --------------------------------
+#Take a look at histogram of predictors just for reference:
+ggplot(reg_dat, aes(x = UniqueFemaleContributors)) + geom_freqpoly(bins = 8)
+# --------------------------------
+#And plot percent change in comments against unique female contributors.
+ggplot(reg_dat[-325,], aes(x = UniqueFemaleContributors, 
+                           y = comments_now_percent_change)) +
+  geom_smooth(method = "loess") +
+  geom_point(alpha = 0.5)
+# --------------------------------
+#This makes for a marginally significant but still negative trend. 
+#These diagnostic plots look better, but I don't really believe in just removing those values. 
+# --------------------------------
+```
+
+-Analyst 7
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+# --------------------------------
+my_data <- read.csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+# --------------------------------
+### Hypothesis no 1 ###
+# --------------------------------
+# Model the gender of a commenter based on
+# female participation in the conversation 
+# so far, eg. in all previous comments.
+# --------------------------------
+
+my_data = my_data |> 
+  mutate()
+my_data |> 
+  ggplot() +
+  aes(x = UniqueFemaleContributors) + 
+  geom_density()
+
+
+
+?cumsum
+run <- my_data %>%
+  filter(Type == 2 & DebateSize > 1) %>%
+  select(ThreadId, Order, Id_num, Female, Male, Discipline) %>%
+  arrange(ThreadId, Order) %>%
+  group_by(ThreadId) %>% 
+  mutate(running_female_count = cumsum(Female) - Female,
+         running_female_participation = 
+           (cumsum(Female) - Female) / (row_number() - 1)) %>%
+  ungroup()
+# --------------------------------
+# --------------------------------
+ggplot(run, aes(x = running_female_count, y = Female)) +
+  geom_jitter(alpha = 0.5) +
+  geom_smooth(method = "glm", 
+              method.args = list(family = "binomial")) +
+  facet_grid(Discipline ~ .) +
+  theme_minimal()
+###reviewer 2 COMMENT: The coefficients of this model is reported in CDA2 effect sizes sheet
+m1 <- glm(Female ~ running_female_count * Discipline,
+          data = run, family = "binomial")
+summary(m1)
+# --------------------------------
+ggplot(run, aes(x = running_female_participation, y = Female)) +
+  geom_jitter(alpha = 0.5) +
+  geom_smooth(method = "glm", 
+              method.args = list(family = "binomial")) +
+  facet_grid(Discipline ~ .) +
+  theme_minimal()
+# --------------------------------
+m2 <- glm(Female ~ running_female_participation * Discipline,
+          data = run, family = "binomial")
+summary(m2)
+# --------------------------------
+```
+
+
+-Analyst 9
+```{r}
+# --------------------------------
+# Loading, setting up
+# --------------------------------
+
+library(tidyverse)
+in
+
+
+my_data <- read_csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+
+my_data %>% 
+  count(Year) %>% 
+  ggplot(aes(x = Year, y = n)) +
+  geom_col() # just getting a sense of the number of posts by year
+
+length(unique(my_data$Link)) # this seems to suggest 523 unique conversations
+length(unique(my_data$Title)) # 522 titles - is one title redundant?
+length(unique(my_data$ThreadId)) # 522 thread IDs - so maybe there's a problem with a link, will use this
+
+# female participants per thread 
+# this makes it look like there aren't as many female participants as male
+
+my_data %>%
+  filter(!is.na(Female)) %>%
+  mutate(Female = as.factor(Female)) %>%
+  count(Year, Female, Link) %>%
+  group_by(Year, Female) %>%
+  summarize(mean_n = mean(n)) %>%
+  ggplot(aes(x = Year, y = mean_n, group = Female, fill = Female)) +
+  geom_col(position = "dodge")
+
+# Proportion of female respondants by year
+
+my_data %>%
+  filter(!is.na(Female)) %>%
+  group_by(Year, Link) %>%
+  summarize(n_Female = sum(Female),
+            prop_Female = sum(Female) / n()) %>%
+  summarize(m_prop_Female = mean(prop_Female)) %>%
+  ggplot(aes(x = Year, y = m_prop_Female)) +
+  geom_point() +
+  geom_line() +
+  geom_smooth(se = F)
+
+# --------------------------------
+# Analysis for RQ #1
+# --------------------------------
+
+to_model <- my_data %>% 
+  group_by(ThreadId) %>% 
+  select(Female, Order, WC, cogmech, ThreadId) %>%
+  mutate(Female_mp = cummean(Female),
+         Female_n = cumsum(Female),
+         engagement = WC * cogmech,
+         n = n()) %>% 
+  mutate(the_row = row_number()) %>% 
+  filter(Female == 1)
+
+to_model$engagement_l <- ifelse(to_model$engagement > 0, log(to_model$engagement), 0)
+
+to_model$engagement_s <- scale(to_model$engagement, center = T)
+
+to_model$WC_s <- scale(to_model$WC)
+
+to_model %>% 
+  select(WC_s, Female_mp, Female_n, n, engagement_l, engagement_s) %>% 
+  correlate() %>% 
+  shave() %>% 
+  fashion() 
+
+m1 <- lm(WC ~ I(Female_mp * 100), data = to_model)
+summary(m1)
+confint(m1) ##Reviewer 2 COMMENT: model used by analyst to report results for hypothesis 1
+
+m2 <- lm(WC_s ~ Female_n, data = to_model)
+summary(m2)
+coef(m2) / 1
+
+m3 <- lm(WC_s ~ Female_n + n, data = to_model)
+summary(m3)
+
+m1a <- lm(engagement_s ~ Female_mp + n, data = to_model)
+summary(m1a)
+
+m2a <- lm(engagement_s ~ Female_n, data = to_model)
+summary(m2a)
+
+m3a <- lm(engagement_s ~ Female_n + n, data = to_model)
+summary(m3a)
+coef(m3a) / 1
+
+m4a <- lm(engagement_s ~ Female_n*n, data = to_model)
+summary(m4a)
+coef(m4a) / 1
+
+# --------------------------------
+# Analysis for RQ 2
+# --------------------------------
+
+my_data$engagement <- my_data$cogmech * my_data$WC
+
+my_data$engagement_s <- scale(my_data$engagement)
+
+table(is.na(my_data$Workplace_SR_Bin))
+
+my_data$phd_ranking <- ifelse(my_data$HavePhD == 1,
+                         ifelse(!is.na(my_data$Workplace_SR_Bin),
+                                my_data$Workplace_SR_Bin, "has_phd_but_not_ranked"), "does_not_have_phd")
+
+my_data$phd_ranking <- factor(my_data$phd_ranking)
+
+my_data$phd_ranking_f <- forcats::fct_relevel(my_data$phd_ranking,
+                                         "does_not_have_phd", "has_phd_but_not_ranked",
+                                         "7", "6", "5", "4", "3", "2", "1")
+
+my_data$phd_ranking_rc <- as.numeric(my_data$phd_ranking_f)
+
+df_to_join <- my_data %>% 
+  select(Id, phd_ranking_rc) %>% 
+  group_by(Id) %>% 
+  summarize(mean_phd_ranking_rc = mean(phd_ranking_rc))
+
+df_ss <- my_data %>% 
+  group_by(Id) %>% 
+  summarize(mean_WC = mean(WC, na.rm = T),
+            total_WC = sum(WC, na.rm = T),
+            mean_engagement = mean(engagement, na.rm = T), 
+            total_engagement = sum(engagement, na.rm = T)) %>% 
+  left_join(df_to_join)
+
+m3 <- lm(mean_WC ~ mean_phd_ranking_rc, data = df_ss)
+summary(m3) ##Reviewer 2 COMMENT: I think this is the model used by the analyst to report results
+
+m4 <- lm(total_WC ~ mean_phd_ranking_rc, data = df_ss)
+summary(m4)
+
+m5 <- lm(mean_engagement ~ mean_phd_ranking_rc, data = df_ss)
+summary(m5)
+
+m6 <- lm(total_engagement ~ mean_phd_ranking_rc, data = df_ss)
+summary(m6)
+```
+
+
+-Analyst 11
+```{r}
+
+library('readr')
+library('lme4')
+library('dplyr')
+library(tidyverse)
+# For each female participant, need to find out if 
+# active in conversation or not.
+# This is probably the crucial step that will change the 
+# analysis results. As I have no prior experience about how
+# to determine active participation, I will naively use the 
+# number of contributions as a proxy.
+
+# Load in data
+my_data = read_csv('C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv')
+
+# First, retrieve number of contributions to each conversation for
+# female participants
+particip.data = filter(my_data, Female==1) %>%
+  group_by(ThreadId, Id) %>%
+  summarize(ContributionsbyAuthor=unique(ContributionsbyAuthor),
+            UniqueFemaleContributors=unique(UniqueFemaleContributors))
+
+# Fit a random effects model with poisson link function to model
+# the (count-data) outcome given the dependent variable
+glmer.model = glmer(ContributionsbyAuthor ~ UniqueFemaleContributors + (1|ThreadId),
+                    data=particip.data,
+                    family=poisson)
+# Print summary
+summary(glmer.model) ##Reviewer 2 COMMENT: model used by analyst to report regression coefficient
+standardize_parameters(glmer.model, exponentiate = TRUE)
+
+
+
+```
+
+-Analyst 12
+```{r}
+# --------------------------------
+# data import -------------------------------------------------------------
+# --------------------------------
+installed.packages()
+install.packages("tidyverse")
+install.packages("tidytext")
+# --------------------------------
+library(tidyverse)
+library(magrittr)
+library(tidytext)
+library(forcats)
+# --------------------------------
+my_data <- read_csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+# --------------------------------
+glimpse(my_data)
+# --------------------------------
+# 8% female
+# mostly social scientists (22%)
+# natural scientists (13%)
+# psychology (11%)
+# humanities (7%), philosophy (5%), and Professions (6%)
+Hmisc::describe(my_data)
+# --------------------------------
+################################################################################
+# Hypothesis 1: “A woman’s tendency to participate actively in the conversation 
+# correlates positively with the number of females in the discussion.”
+###############################################################################
+# --------------------------------
+## sort of ignoring this section-- didn't really understand how the data was 
+## structured yet; better to look at the data at each level of observation
+# --------------------------------
+# comments / year ----
+my_data %>% 
+  count(Year) %>% 
+  ggplot(aes(x = Year, y = n)) +
+  geom_line() +
+  geom_text(aes(x = Year, y = n, label = n, vjust = -.5)) +
+  scale_x_continuous(breaks = seq(1996, 2014, 1))
+# --------------------------------
+qplot(data = my_data, x = FemaleParticipation, geom = "density")
+# --------------------------------
+qplot(data = my_data, x = Male_Contributions, y = FemaleContributions)
+# --------------------------------
+qplot(data = my_data, x = UniqueFemaleContributors, y = FemaleParticipation)
+# --------------------------------
+# there are 522 unique conversations, with the largest conversation containing 
+# 436 comments
+count(my_data, ThreadId, sort = T)
+# --------------------------------
+# what is the spread of comments?
+count(my_data, ThreadId, sort = T) %$% 
+  summary(n)
+# --------------------------------
+# --------------------------------
+# thread level analysis ---------------------------------------------------
+# --------------------------------
+# create a thread-level data frame (1 row/thread)
+threads <- my_data %>% 
+  select(
+    ThreadId,
+    Type,
+    DebateSize,
+    Female_Contributions,
+    Male_Contributions,
+    UniqueContributors,
+    UniqueFemaleContributors,
+    UniqueMaleContributors,
+    UniqueFemaleParticipation,
+    Live
+  ) %>% 
+  distinct
+# --------------------------------
+# *restrictions?*
+# -- limit the conversations to have at least 2 participants
+# -- ensure that there is at least one female present in each thread
+# this ensures we can at least measure a response
+threads <- threads %>% 
+  filter(
+    UniqueContributors > 1,
+    UniqueFemaleContributors >= 1
+  )
+# --------------------------------
+# participation could be modeled as a binary outcome?
+# with 1 indicating that the number of female contributions >= male contributions
+threads$parity <- with(threads, as.numeric(Female_Contributions >= Male_Contributions))
+# --------------------------------
+## ^ this could work fine, but probably is highly sensitive to live/not-live?
+## better to create two separate models?
+# --------------------------------
+# active participation (from women) would necessarily be marked by an increase in 
+# the number of female contributions
+# instead of a binary outcome, a count-based model could be used to model the
+# number of contributions-- need to examine distribution of count
+# --------------------------------
+### plot distribution of female contribution by live/not-live
+threads %>% 
+  ggplot(aes(x = FemaleContributions, fill = factor(Live))) +
+  geom_density(alpha = .65)
+# --------------------------------
+View(threads)
+# --------------------------------
+# the thread-level data is not unique-- there are conversations that have 
+# 2 observations per Thread ID. I'm assuming this reflects comments from people
+# on transcriptions. I will code the status of these threads as live and
+# deduplicate the frame; if there is any impact coming from the 'live' status,
+# I believe it's more important to note the fact that the original event was
+# a transcription rather than an essay/written work.
+# --------------------------------
+# if the thread is ever marked as live, set as 1, otherwise leave it as-is
+# then, unique the data
+threads <- threads %>% 
+  group_by(ThreadId) %>% 
+  mutate(
+    Live_ever = as.numeric(ifelse(any(Live == 1), 1, Live)),
+    live_and_not_live = as.numeric(n() > 1)
+  ) %>% 
+  select(-Live) %>% 
+  ungroup %>% 
+  distinct
+# --------------------------------
+# if Live_ever == 1, that means there's at least some aspect of the thread that
+# was transcribed.
+# live_and_not_live indicates the thread has a mix of transcribed and written 
+# content
+# --------------------------------
+threads$prop_f_contributors <- with(threads, UniqueFemaleContributors / UniqueContributors)
+threads$debsize_z <- with(threads, (DebateSize - mean(DebateSize)) / sd(DebateSize))
+# --------------------------------
+thread_fit_poisson <- glm(
+  Female_Contributions ~
+    Live_ever + 
+    debsize_z +
+    UniqueFemaleParticipation,
+  data = threads,
+  family = poisson
+)
+# --------------------------------
+library(broom)
+# --------------------------------
+# get the incident rate ratios and their confidence intervals
+irr <- thread_fit_poisson %>% 
+  tidy %>% 
+  bind_cols(confint_tidy(thread_fit_poisson)) %>% 
+  select(term, estimate, contains("conf")) %>% 
+  mutate_each(funs(exp), -term) %>% 
+  mutate_each(funs(round(., 4)), -term)
+# --------------------------------
+# print
+irr 
+# --------------------------------
+# plot the irr results, but make sure the points are on a log scale
+irr %>% 
+  ggplot(aes(x = term, y = estimate, ymin = conf.low, ymax = conf.high)) +
+  geom_pointrange() +
+  scale_y_log10() +
+  coord_flip()
+# --------------------------------
+summary(thread_fit_poisson)
+standardize_parameters(thread_fit_poisson, exponentiate = TRUE)
+# --------------------------------
+# deviance goodness of fit
+pchisq(thread_fit_poisson$deviance, df = thread_fit_poisson$df.residual, lower.tail = FALSE)
+# --------------------------------
+# deviance table
+anova(thread_fit_poisson, test = "Chisq")
+# --------------------------------
+res_thread_fit_poisson <- residuals(thread_fit_poisson, type = "deviance")
+# --------------------------------
+plot(log(predict(thread_fit_poisson)), res_thread_fit_poisson)
+abline(h = 0, lty = 2)
+# --------------------------------
+qqnorm(res_thread_fit_poisson)
+qqline(res_thread_fit_poisson)
+# --------------------------------
+mean(threads$FemaleContributions)
+sd(threads$FemaleContributions)
+# --------------------------------
+# install.packages("margins")
+# --------------------------------
+```
+
+
+-Analyst 13
+```{r}
+# --------------------------------
+
+
+
+# --------------------------------
+## Exploratory data analysis
+# --------------------------------
+library(ggplot2)
+library(readr)
+install.packages("mosaic")
+library(mosaic)
+# --------------------------------
+my_data <- read_csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+tally(~Type, data=my_data)
+annual <- my_data %>%
+  filter(Type==1)
+conversation <- my_data %>%
+  filter(Type ==2)
+# --------------------------------
+ggplot(my_data) + geom_histogram(aes(x=Female_Contributions))+facet_wrap(~Type)
+ggplot(my_data) + geom_histogram(aes(x=Male_Contributions))+facet_wrap(~Type)
+# --------------------------------
+# --------------------------------
+each_convo <- conversation %>% 
+  group_by(ThreadId) %>%
+  summarize(Male_Contribs = mean(Male_Contributions), Female_Contribs=mean(Female_Contributions), Female_Partic=mean(FemaleParticipation), UniqueContribs = mean(UniqueContributors), UniqueMales = mean(UniqueMaleContributors), UniqueFemales = mean(UniqueFemaleContributors))
+# --------------------------------
+ggplot(each_convo) + geom_point(aes(y=Female_Partic, x=UniqueFemales))
+# --------------------------------
+# --------------------------------
+m1 <- lm(Female_Partic~UniqueFemales, data=each_convo)
+summary(m1)
+standardize_parameters(m1)
+# --------------------------------
+m2 <- lm(Female_Partic~UniqueFemales+UniqueContribs, data=each_convo)
+summary(m2) 
+standardize_parameters(m2)
+# --------------------------------
+#So, yes, hypothesis 1 seems to be true. Let's try it with both the conversations and the annual questions.
+# --------------------------------
+allminusdupes <- my_data %>% group_by(ThreadId) %>%
+  summarize(Male_Contribs = mean(Male_Contributions), Female_Contribs=mean(Female_Contributions), Female_Partic=mean(FemaleParticipation), UniqueContribs = mean(UniqueContributors), UniqueMales = mean(UniqueMaleContributors), UniqueFemales = mean(UniqueFemaleContributors))
+# --------------------------------
+m3 <- lm(Female_Partic~UniqueFemales, data=allminusdupes)
+summary(m3)
+standardize_parameters(m3)
+# --------------------------------
+```
+
+
+-Analyst 14
+```{r}
+## load packages and set ggplot theme
+rm(list=ls())
+library(tidyverse)
+library(magrittr)
+install.packages("caret")
+library(caret)
+library(GGally)
+library(lme4)
+
+theme_set(
+  theme_classic() +
+    theme(panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank())
+)
+
+
+## read data
+my_data <- read_csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+
+## Test Hypothesis 1: A woman's tendency to participate actively 
+## in the conversation correlates positively with the number of 
+## females in the discussion.
+
+## subset to just keep the conversation level data
+d.conversation <- my_data %>% distinct(ThreadId, .keep_all = T) 
+
+## create training, query, and test data sets to facilitate exploration
+## to do this I need to select an outcome variable on which to split
+## here, I use the percentage of female participation in that thread
+
+set.seed(123)
+trainIndex <- createDataPartition(d.conversation$FemaleParticipation, p = .6, 
+                                  list = FALSE, 
+                                  times = 1)
+
+d.train <- d.conversation[ trainIndex,]
+d.test  <- d.conversation[-trainIndex,]
+
+## explore training data via visualization
+
+# what's the distribution of female vs male contributions
+d.train %>% 
+  select(ThreadId, Male_Contributions, Female_Contributions) %>% 
+  gather(gender, contributions, -ThreadId) %>% 
+  ggplot(., aes(x = contributions, color = gender)) +
+  geom_freqpoly(stat = 'density')
+
+# what's the distribution of female participation
+d.train %>% 
+  distinct(ThreadId, .keep_all = T) %>% 
+  ggplot(., aes(x = FemaleParticipation)) +
+  geom_histogram(bins = 60) 
+
+# what's the distribution of number of female and male contributors?
+d.train %>% 
+  distinct(ThreadId, .keep_all = T) %>% 
+  select(ThreadId, UniqueMaleContributors, UniqueFemaleContributors) %>% 
+  gather(gender, n_contributors, -ThreadId) %>% 
+  ggplot(., aes(x = n_contributors, color = gender)) +
+  geom_freqpoly() 
+  
+# now let's try to visualize the relationship between female participation and number of female contributors
+d.train %>% 
+  distinct(ThreadId, .keep_all = T) %>% 
+  filter(UniqueFemaleContributors >= 1) %>% 
+  ggplot(aes(x = UniqueFemaleContributors, y = FemaleParticipation)) +
+  geom_boxplot(mapping = aes(group = cut_width(UniqueFemaleContributors, 1)),
+               varwidth = F)
+
+# visualize the same relationship but treating both as continuous variables 
+d.train %>% 
+  filter(UniqueFemaleContributors >= 1 & UniqueContributors > 1) %>% 
+  ggplot(aes(x = UniqueFemaleContributors, y = FemaleParticipation)) +
+  geom_jitter() +
+  geom_smooth(method = "loess")
+
+# fit linear model on training data
+m1 <- d.train %>% 
+  filter(UniqueFemaleContributors >= 1 & UniqueContributors > 1) %>%
+  lm(FemaleParticipation ~ UniqueFemaleContributors, data = .)
+standardize_parameters(m1)
+summary(m1)
+
+# fit linear model to test data
+
+m1.test <- d.test %>% 
+  filter(UniqueFemaleContributors >= 1 & UniqueContributors > 1) %>%
+  lm(FemaleParticipation ~ UniqueFemaleContributors, data = .)
+standardize_parameters(m1.test)
+summary(m1.test) ##reviewer 2 COMMENT: Model used by analyst for reported results (hypothesis 1)
+
+confint(m1.test, 'UniqueFemaleContributors', level=0.95)
+
+## One more analysis where we subset the threads to only analyze
+## "conversations" and remove "annual questions" that are asynchronous
+
+d.train %>% 
+  distinct(ThreadId, .keep_all = T) %>% 
+  filter(UniqueFemaleContributors >= 1 & UniqueContributors > 1) %>% 
+  ggplot(aes(x = UniqueFemaleContributors, y = FemaleParticipation, 
+             size = UniqueContributors)) +
+  geom_jitter() +
+  geom_smooth(method = "lm", se = F) +
+  facet_wrap(~Type, scales = "free_x")
+
+# fit linear model including type of conversation to training data
+m2 <- d.train %>% 
+  filter(UniqueFemaleContributors >= 1 & UniqueContributors > 1) %>%
+  lm(FemaleParticipation ~ UniqueFemaleContributors * Type, data = .)
+ 
+summary(m2)
+
+# fit linear model including type of conversation to test data
+m2.test <- d.test %>% 
+  filter(UniqueFemaleContributors >= 1 & UniqueContributors > 1) %>%
+  lm(FemaleParticipation ~ UniqueFemaleContributors * Type, data = .)
+
+standardize_parameters(m2.test)
+summary(m2.test)
+
+```
+
+
+-Analyst 17
+```{r}
+library(data.table)
+library(ggplot2)
+
+my_data <- read.csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+data <- data.table(my_data)
+
+# Prepare data for gender hypothesis testing
+
+data_gender <- aggregate(data, by = list(data$Link), FUN = mean)
+data_gender <- data |> mutate(Group.1 = Link) |> group_by(Group.1) |> summarise(across(everything(), mean))
+
+data_gender <- data.table(data_gender)
+
+data_gender <- data_gender[!(UniqueFemaleParticipation == 0.0)]
+data_gender <- data_gender[!(UniqueFemaleParticipation == 1.0)]
+
+data_gender[, female_power:= Female_Contributions/UniqueFemaleContributors]
+
+# Plot data in order to explore distribution
+
+ggplot(data_gender, aes(x=UniqueFemaleParticipation)) + geom_histogram()
+ggplot(data_gender, aes(x=Female_Contributions)) + geom_histogram()
+ggplot(data_gender, aes(x=UniqueFemaleParticipation, y=female_power)) + geom_point()
+
+shapiro.test(data_gender$UniqueFemaleParticipation)
+shapiro.test(data_gender$female_power)
+
+# Correlation test 
+
+cor.test(data_gender$UniqueFemaleParticipation, data_gender$female_power, method = "kendall") ## COMMENT: this is the analyst reported result for Hyp1
+
+# Hypothesis is not verified :(
+
+data_gender[, female_share := Female_Contributions / (Female_Contributions + Male_Contributions)]
+cor.test(data_gender$UniqueFemaleParticipation, data_gender$female_share, method = "kendall")
+
+```
+
+- Analyst 19
+```{r}
+my_data <- read.csv(file="C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+str(my_data)
+head(my_data)
+colnames(my_data)
+length(unique(my_data$Id))
+length(unique(my_data$Title))
+dfnonzero <- subset(my_data, FemaleParticipation > 0)
+length(unique(dfnonzero$Title))
+length(unique(dfnonzero$Id))
+# Hypothesis 1: "A woman’s tendency to participate actively in the conversation correlates positively with the number of females in the discussion."
+# Use FemaleParticipation as dependent variable
+# Use UniqueFemaleContributors as the number of women in the discussion
+summary(dfnonzero$FemaleParticipation)
+summary(dfnonzero$UniqueFemaleContributors)
+hist(dfnonzero$FemaleParticipation)
+hist(dfnonzero$UniqueFemaleContributors)
+plot(dfnonzero$UniqueFemaleContributors, dfnonzero$FemaleParticipation)
+cor.test(dfnonzero$UniqueFemaleContributors, dfnonzero$FemaleParticipation)
+# cannot reject the null hypothesis, there is no strong proof of a non-zero correlation
+# very, very weakly positive correlation
+# --------------------------------
+# or individual level? ContributionsbyAuthor for Female = 1
+dfwomen <- subset(my_data, Female == 1)
+length(unique(dfwomen$Id))
+length(unique(dfwomen$Title))
+summary(dfwomen$ContributionsbyAuthor)
+# regression model
+fit <- lm(ContributionsbyAuthor ~ UniqueFemaleContributors + PreviousContributions + DebateSize, data=dfwomen)
+standardize_parameters(fit)
+summary(fit)
+# looks like the number of unique female contributors actually has a statistically significant negative impact on contributions by women?
+# create another metric
+dfwomen$percentbyauthor <- dfwomen$ContributionsbyAuthor/dfwomen$DebateSize
+fit <- lm(percentbyauthor ~ UniqueFemaleContributors + PreviousContributions, data=dfwomen)
+standardize_parameters(fit)
+summary(fit)
+# adding more variables
+fit <- lm(percentbyauthor ~ UniqueFemaleContributors + PreviousContributions + ContributionsThisYear + HavePhD + Total_Citations, data=dfwomen)
+standardize_parameters(fit)
+summary(fit)
+# it really does seem that the number of unique female contributors has a statistically significant negative impact on the percentage of the conversation occupied by an individual woman
+# THIS IS INHERENT TO THE METRIC
+# go back to ContributionsbyAuthor as the dependent variable
+fit <- lm(ContributionsbyAuthor ~ UniqueFemaleContributors + PreviousContributions + ContributionsThisYear + HavePhD + Total_Citations, data=dfwomen)
+standardize_parameters(fit)
+summary(fit)
+# looks like the number of unique female contributors has a statistically significant small negative effect on the contributions by each individual woman, but there is a more statistically significant explanatory variable, i.e. the contributions so far that year, which have a positive association with participation in that conversation, but that's problematic in itself since maybe it includes that conversation itself
+# doublechecking
+summary(dfwomen$Female)
+# retry model
+fit <- lm(ContributionsbyAuthor ~ UniqueFemaleContributors + PreviousContributions + HavePhD + Total_Citations, data=dfwomen)
+standardize_parameters(fit)
+summary(fit)
+# number of unique female contributors still has a statistically significant negative effect, previous contributions also has a statistically significant negative effect, total citations has a statistically significant positive effect
+```
+

@@ -1,0 +1,82 @@
+---
+title: "multiverse_package_gd"
+output: html_document
+date: "2026-10-06"
+---
+
+
+Loading the data, packages 
+
+```{r}
+
+library(multiverse)
+library(dplyr)
+library(tidyverse)
+library(lmerTest)
+library(ggplot2)
+library(tidyr)
+library(broom)
+library(lme4)
+
+
+
+my_data = read_csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+game = multiverse()
+
+
+particip_data_duplicates = my_data |> 
+  dplyr::select(!Order:Number.Characters)|> 
+  group_by(ThreadId, Id) %>%
+  summarize(across(Male_Contributions:ContributionsbyAuthor,  ~ paste(unique(.x), collapse = "; "))) 
+        
+ particip_data_filt = particip_data_duplicates |>
+  filter(if_any(Male_Contributions:ContributionsbyAuthor, ~ grepl(";", .x)))
+ 
+ my_data = anti_join(my_data, particip_data_filt,  by = c("ThreadId", "Id"))
+ 
+ particip_data_clean = my_data |> 
+   dplyr::select(!Order:Number.Characters)|> 
+  group_by(ThreadId, Id) %>%
+  summarize(across(Male_Contributions:ContributionsbyAuthor, unique))
+
+my_data_n = my_data |> 
+  group_by(ThreadId) |> 
+  dplyr::select(!Live) |> 
+  summarise(across(Male_Contributions:UniqueFemaleParticipation, unique))
+
+
+```
+
+
+
+Attempt on trying a data_filtering decision with the multiverse 
+
+```{multiverse default-m-1, inside = game}
+my_data_st1 = my_data |> 
+  dplyr::select(branch(level, 
+                       "participant" ~ !c(Order:Number.Characters), 
+                       "conversation" ~ !Live )) |> 
+  group_by(ThreadId, branch(level, 
+                  "participant" ~ Id, 
+                  "conversation" ~ NULL)) |> 
+  summarise(branch(level, 
+                          "participant" ~ across(Male_Contributions:ContributionsbyAuthor, unique),
+                          "conversation" ~ across(Male_Contributions:UniqueFemaleParticipation, unique)))
+
+
+parameters(game)
+
+```
+
+
+```{r}
+execute_multiverse(game, progress = TRUE)
+
+```
+
+
+Few plots, just to check whether it works
+```{multiverse default-m-2, inside = game}
+
+
+```

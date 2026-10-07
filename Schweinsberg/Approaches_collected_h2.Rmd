@@ -1,0 +1,2310 @@
+---
+title: "Schweinsberg_approaches_h2"
+date: "2026-09-08"
+---
+
+## Hypothesis 2
+
+Analytic approaches for Hypothesis 2: "Higher status participants are more verbose
+than are lower status participants." Extracted from the collected Hypothesis 1 file;
+each block continues the same analyst's script, so the library calls and data import
+sit at the top of that analyst's Hypothesis 1 block.
+
+
+-Analyst 1
+```{r}
+my_data <- read_csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+
+# OK I do the second hypothesis now.
+# "Higher status participants are more verbose than are lower status participants."
+# I operationalize Verbose as number of characters in a text. At least for now.
+# --------------------------------
+my_data <- mutate(my_data, log_num_char=log(my_data$Number.Characters))
+# --------------------------------
+d <- dplyr::select(my_data, log_num_char, Academic, Female, PhD_Institution_US_Bin:PreviousCitations)
+d <- d %>% mutate(factor_academic=as.factor(Academic), factor_female=as.factor(Female), factor_aca_hier=as.factor(AcademicHierarchyStrict))
+# --------------------------------
+reg2 <- lm(log_num_char~AcademicHierarchyStrict+Female+Academic, data=d)
+summary(reg2) ##Reviewer 2 COMMENT: The reported effect size for Hyp 2 can be found here (-0.16150) which is the reg coef for AcademicHierarchyStrict
+library(apaTables)
+apa.reg.table(reg2) ##Reviewer 2 COMMENT: cannot find the model of reported effect sizes for Hyp 2
+```
+
+-Analyst 3
+```{r}
+
+#'##Data preparation
+#'####Required R libraries
+#rm(list = ls())
+require(lme4)
+require(piecewiseSEM)
+require(influence.ME)
+
+#'####Reading in the my_data
+my_data <- read.csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+
+#'####Examining the my_data
+#View(my_data[,1:ncol(my_data)])
+#View(my_data[,100:ncol(my_data)])
+str(my_data)
+
+#'###Computing variables
+#'####Computing mean workplace rank
+my_data$WorkplaceMeanRank <- rowMeans(my_data[,c("Workplace_SR_Bin", "Workplace_US_IR_Bin")], na.rm = TRUE)
+
+#'####Computing mean number of contributions per thread, avoiding division by zero
+my_data$ContrPerThread <- my_data$PreviousContributions/(my_data$PreviousThreads + 0^my_data$PreviousThreads)
+
+#'###Rescaling variables
+#'Rescaling the Total_Citations and Word Count variables by two and three orders of magnitude, respectively. Now representing no. of citations and words in thousands and hundreds units, respectively.
+#'Rescaling Unique Female Participation by a factor of 10. Now representing 10% units.
+my_data$Total_Citations <- my_data$Total_Citations/1000
+my_data$WC <- my_data$WC/100
+my_data$UniqueFemaleParticipation <- my_data$UniqueFemaleParticipation * 10
+
+#'###Defining measurement levels
+#'####Defining variables as ordered or unordered factors
+my_data$Female <- as.factor(my_data$Female)
+my_data$Id_num <- as.factor(my_data$Id_num)
+my_data$ThreadId <- as.factor(my_data$ThreadId)
+my_data$WorkplaceMeanRank <- ordered(my_data$WorkplaceMeanRank)
+my_data$AcademicHierarchyStrict <- ordered(my_data$AcademicHierarchyStrict)
+
+#'####Some my_data checking
+with(my_data, cor(UniqueContributors, UniqueMaleContributors + UniqueFemaleContributors))
+with(my_data, cor(UniqueFemaleParticipation, UniqueFemaleContributors/UniqueContributors))
+#UniqueContribution != UniqueMaleContributors + UniqueFemaleContributors (there must be some error in my_data generation)
+
+#'###Descriptives
+dat.subj.level <- my_data[!duplicated(my_data$Id_num),]
+
+lapply(dat.subj.level[,c("Female", "Total_Citations", "WorkplaceMeanRank", 
+                         "AcademicHierarchyStrict")],
+       function(x){summary(x)})
+
+#'###Plots
+hist(my_data$WC[my_data$DebateSize > 1], xlab = "Word Count", breaks = 100)
+hist(my_data$ContributionsbyAuthor[my_data$Female==1 & my_data$DebateSize > 1], xlab = "Contributions by Author")
+table(my_data$ContributionsbyAuthor[my_data$Female==1 & my_data$DebateSize > 1])
+
+#'##Hypothesis testing
+#'###Hypothesis 1
+#'**A womanâs tendency to participate actively in the conversation correlates positively with the number of females in the discussion.**
+
+#'Random intercepts-only model for subject and thread
+H1glmm0 <- glmer(ContributionsbyAuthor ~ 1 + (1 | Id_num) + (1 | ThreadId),
+                 my_data, subset = (my_data$Female == 1 & my_data$DebateSize > 1), family="poisson", nAGQ = 1)
+
+#'Model summary for H1glmm0
+summary(H1glmm0)
+
+#'Adding covariate - fixed effect of Contributions per Thread
+H1glmm1 <- glmer(ContributionsbyAuthor ~ 1 + ContrPerThread + (1 | Id_num) + (1 | ThreadId),
+                 my_data, subset = (my_data$Female == 1 & my_data$DebateSize > 1), family="poisson", nAGQ = 1)
+
+#'Model summary, model comparison for H1glmm1
+summary(H1glmm1)
+anova(H1glmm0, H1glmm1)
+
+#'Adding the target predictor - Unique Female Participation
+H1glmm2 <- glmer(ContributionsbyAuthor ~ 1 + ContrPerThread + UniqueFemaleParticipation + (1 | Id_num) + (1 | ThreadId),
+                 my_data, subset = (my_data$Female == 1 & my_data$DebateSize > 1), family="poisson", nAGQ = 1)
+
+#'Model summary, model comparison, confidence intervals, R^2 for H1glmm2
+summary(H1glmm2)
+confint(H1glmm2)
+anova(H1glmm1, H1glmm2)
+rsquared(H1glmm2)
+
+#'Computing Bayes Factor in favor of the alternative hypothesis (BF10), represented by the addition of the Unique Female Participation.
+bf.approx <- 1/(exp((BIC(H1glmm2) - BIC(H1glmm1))/2))
+
+#'Computing posterior probability of the parameter given 1:1 prior odds for H0:Ha
+posterior <- bf.approx/(1+bf.approx)
+
+#'Adding random slope for Unique Female Participation. Effect of unique female participation on Contributions by author now allowed to vary accross subjects.
+H1glmm3 <- glmer(ContributionsbyAuthor ~ 1 + ContrPerThread + UniqueFemaleParticipation + (1 + UniqueFemaleParticipation | Id_num) + (1 | ThreadId),
+                 my_data, subset = (my_data$Female == 1 & my_data$DebateSize > 1), family="poisson", nAGQ = 1)
+
+#'Model summary, model comparison, confidence intervals, R^2 for H1glmm3
+##reviewer 2 COMMENT I think H1glmm3 is the model analyst has used for  final report of efffect sizes
+summary(H1glmm3)
+anova(H1glmm2, H1glmm3)
+confint(H1glmm3, parm = c("ContrPerThread", "UniqueFemaleParticipation"))
+rsquared(H1glmm3)
+
+#'Comparison model (having identical random effects structure)
+H1glmm3a <- glmer(ContributionsbyAuthor ~ 1 + ContrPerThread + (1 + UniqueFemaleParticipation | Id_num) + (1 | ThreadId),
+                 my_data, subset = (my_data$Female == 1 & my_data$DebateSize > 1), family="poisson", nAGQ = 0)
+anova(H1glmm3a, update(H1glmm3, nAGQ = 0))
+
+#'Computing Bayes Factor in favor of the alternative hypothesis (BF10), represented by the addition of the Unique Female Participation, given the presence of the random slope.
+bf.approx <- 1/(exp((BIC(H1glmm3) - BIC(H1glmm3a))/2))
+
+#'Computing posterior probability of the parameter given 1:1 prior odds for H0:Ha
+posterior <- bf.approx/(1+bf.approx)
+
+#Plotting residuals against fitted values
+plot(fitted(H1glmm3), residuals(H1glmm3), xlab = "Fitted Values", ylab = "Residuals")
+abline(h = 0, lty = 2)
+lines(smooth.spline(fitted(H1glmm3), residuals(H1glmm3)))
+
+#'###Hypothesis 2
+#'**Higher status participants are more verbose than are lower status participants.**
+
+#'Checking whether academics with missing Total_Citations differ in Word Count for conversations.
+my_data$del <- is.na(my_data$Total_Citations)
+t.test(WC ~ del, my_data, subset = my_data$DebateSize > 1 & my_data$Academic == 1)
+
+#'Handling missing values by listwise deletion + filtering out non-conversations (single-authored threads)
+#'Model comparison requires the exact same subset of my_data
+nrow(my_data[my_data$DebateSize > 1 & !is.na(my_data$Total_Citations) & my_data$DebateSize > 1,])
+table(with(my_data, complete.cases(AcademicHierarchyStrict, WorkplaceMeanRank, Total_Citations)))
+data.na.rm = my_data[!is.na(my_data$AcademicHierarchyStrict) & !is.na(my_data$WorkplaceMeanRank) & !is.na(my_data$Total_Citations) & my_data$DebateSize > 1,]
+
+#'Random intercepts-only model for subject and thread
+H2lmm0 <- lmer(WC ~ 1 + (1 | Id_num) + (1 | ThreadId), data.na.rm, REML = TRUE)
+
+#'Model summary for H2lmm0
+summary(H2lmm0)
+
+#'Adding Academic Hierarchy Strict as a blocking factor
+H2lmm1 <- lmer(WC ~ 1 + AcademicHierarchyStrict + (1 | Id_num) + (1 | ThreadId), data.na.rm, REML = TRUE)
+
+#'Model summary, model comparison for H2lmm1
+summary(H2lmm1)
+anova(H2lmm0, H2lmm1)
+
+#'Adding Workplace Mean Rank as another blocking factor
+H2lmm2 <- lmer(WC ~ 1 + WorkplaceMeanRank + AcademicHierarchyStrict + (1 | Id_num) + (1 | ThreadId), data.na.rm, REML = TRUE)
+
+#'Model summary, model comparison for H2lmm2
+summary(H2lmm2)
+anova(H2lmm1, H2lmm2)
+
+#'Adding the target predictor - Total Citations
+H2lmm3 <- lmer(WC ~ 1 + WorkplaceMeanRank + AcademicHierarchyStrict + Total_Citations + (1 | Id_num) + (1 | ThreadId), data.na.rm, REML = TRUE)
+
+#'Model summary, model comparison, confidence intervals, R^2 for H2lmm3
+summary(H2lmm3)
+anova(H2lmm2, H2lmm3)
+confint(H2lmm3, parm = c("(Intercept)", "Total_Citations"))
+rsquared(H2lmm3)
+
+#'Computing Bayes Factor in favor of the alternative hypothesis (BF10), represented by the addition of Total Citations.
+bf.approx <- 1/(exp((BIC(H2lmm3) - BIC(H2lmm2))/2))
+
+#'Computing posterior probability of the parameter given 1:1 prior odds for H0:Ha
+posterior <- bf.approx/(1+bf.approx)
+
+#'Adding random slope for Total Citations. Effect of Total Citations on Word Count now allowed to vary accross threads
+H2lmm4 <- lmer(WC ~ 1 + WorkplaceMeanRank + AcademicHierarchyStrict + Total_Citations + (1 | Id_num) + (1 + Total_Citations | ThreadId), data.na.rm, REML = TRUE)
+
+#'Model summary, model comparison, confidence intervals (type = Wald), R^2 for H1glmm3
+##reviewer 2 COMMENT: I think H2lmm4 is the model analyst used for reporting final effect sizes. Check variable "Total_Citations"
+summary(H2lmm4)
+anova(H2lmm3, H2lmm4)
+
+
+confint(H2lmm4, parm = c("(Intercept)", "Total_Citations"), method = "Wald")
+rsquared(H2lmm4)
+
+#'Computing Bayes Factor in favor of the alternative hypothesis (BF10), represented by the addition of the random slope for Total Citations.
+bf.approx <- 1/(exp((BIC(H2lmm4) - BIC(H2lmm3))/2))
+
+#'Computing posterior probability of the parameter given 1:1 prior odds for H0:Ha
+posterior <- bf.approx/(1+bf.approx)
+
+#'Comparison model (having identical random effects structure)
+H2lmm4a <- lmer(WC ~ 1 + WorkplaceMeanRank + AcademicHierarchyStrict  + (1 | Id_num) + (1 + Total_Citations | ThreadId), data.na.rm, REML = FALSE)
+anova(H2lmm4a, update(H2lmm4, REML = FALSE))
+
+#'Computing Bayes Factor in favor of the alternative hypothesis (BF10), represented by the addition of the fixed effect for Total Citations, given the presence of the random slope.
+bf.approx <- 1/(exp((BIC(update(H2lmm4, REML = FALSE)) - BIC(H2lmm4a))/2))
+
+#'Computing posterior probability of the parameter given 1:1 prior odds for H0:Ha
+posterior <- bf.approx/(1+bf.approx)
+
+#'Plotting residuals against fitted values
+plot(fitted(H2lmm4), residuals(H2lmm4), xlab = "Fitted Values", ylab = "Residuals")
+abline(h = 0, lty = 2)
+lines(smooth.spline(fitted(H2lmm4), residuals(H2lmm4)))
+
+#'###Outliers detection
+#'influence() uses brute iterative model estimation, it takes a few hours.
+
+#'For model H1glmm3
+#outliersH1glmm3 <- influence(update(H1glmm3, nAGQ = 0), obs = TRUE)
+#cookdH1 <- cooks.distance.estex(outliersH1glmm3, sort = TRUE)
+#sort(unique(cookdH1)[,1], decreasing = TRUE)
+#sort(dfbetas.estex(outliersH1glmm3, abs = TRUE)[,3], decreasing = TRUE)
+#table(sigtest(outliersH1glmm3)$UniqueFemaleParticipation[,3])
+
+#'For model H2lmm4
+#outliersH2lmm4 <- influence(H2lmm4, obs = TRUE)
+#cookdH2 <- cooks.distance.estex(outliersH2lmm4, sort = TRUE)
+#sort(cookdH2[,1], decreasing = TRUE)
+#sort(dfbetas.estex(outliersH2lmm4, abs = TRUE)[,16], decreasing = TRUE)
+#table(sigtest(outliersH2lmm4)$Total_Citations[,3])
+```
+
+
+-Analyst 5
+```{r}
+my_data <- read_csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+
+# Second Hypthesis: Higher status participants are more verbose than lower status participants.
+# --------------------------------
+# Assign columns names relating to status and verbose into a concenated object
+status_verbose <- c("Job_Title_S", "HavePhD", "Years_from_PhD", "PhD_Institution_SR", 
+           "PhD_Institution_SR_Bin", "Workplace_SR", "Workplace_SR_Bin", "SR_Ranking_Dif", "PhD_Institution_US_IR",
+           "PhD_Institution_US_IR_Bin", "Workplace_US_IR_Bin", "USA_I_Ranking_Dif", "PhD_Institution_US", "PhD_Institution_US_Bin",
+           "USA_Ranking_Dif", "Total_Citations", "H_Index", "i10_Index", "Citations_Year", "Citations_Cumulative",
+           "AcademicHierarchyStrict", "PreviousCitations", "ContributionsbyAuthor",
+           "ContributionsThisYear", "ThreadsThisYear", "PreviousThreads",
+           "PreviousContributions")
+# --------------------------------
+# select columns related to 2nd Hypothesis
+edge.2hyp <- my_data %>%
+  select(ContributionsThisYear, Discipline, Years_from_PhD, PhD_Institution_SR_Bin,
+         PhD_Institution_US_IR_Bin, PhD_Institution_US_Bin, ThreadsThisYear,
+         Job_Title_S, HavePhD)
+# --------------------------------
+# Plot ContributionsThisYear vs Years_from_PhD
+ggplot(edge.2hyp, aes(x = Years_from_PhD, y = ContributionsThisYear, color = PhD_Institution_SR_Bin)) +
+  geom_line() +
+  ylim(c(0, 50))
+# --------------------------------
+# Plot ContributionsThisYear vs PhD_Institution_SR_Bin
+ggplot(edge.2hyp, aes(x = PhD_Institution_US_Bin, y = ContributionsThisYear)) +
+  geom_jitter()
+# --------------------------------
+# Plot ThreadsThisYear vs Job_Title_S
+ggplot(edge.2hyp, aes(x = Job_Title_S, y = ThreadsThisYear)) +
+  geom_jitter()
+# --------------------------------
+status <- c("Job_Title", "HavePhD", "Years_from_PhD", "PhD_Institution_SR", 
+              "PhD_Institution_SR_Bin", "Workplace_SR", "Workplace_SR_Bin", "SR_Ranking_Dif", "PhD_Institution_US_IR",
+              "PhD_Institution_US_IR_Bin", "Workplace_US_IR_Bin", "USA_I_Ranking_Dif", "PhD_Institution_US", "PhD_Institution_US_Bin",
+              "USA_Ranking_Dif", "Total_Citations", "H_Index", "i10_Index", "Citations_Year", "Citations_Cumulative",
+              "AcademicHierarchyStrict")
+verbose <- c("PreviousCitations", "ContributionsbyAuthor",
+               "ContributionsThisYear", "ThreadsThisYear", "PreviousThreads",
+               "PreviousContributions")
+# --------------------------------  
+# let's get summary statistics of Threads This Year vs Job Title
+edge.2hyp.fit <- lm(ThreadsThisYear ~ Job_Title_S, data = edge.2hyp)
+summary(edge.2hyp.fit) 
+# -------------------------------- 
+# let's get correlation between Threads This Year vs PhD Ranking Bin
+edge.2hyp %>%
+  summarize(r = cor(ThreadsThisYear, PhD_Institution_SR_Bin,
+                    use = "pairwise.complete.obs"))
+# --------------------------------
+# let's get residuals
+library(modelr)
+library(dplyr)
+# --------------------------------
+edge.2hyp.fit_resid <- edge.2hyp %>%
+  add_residuals(edge.2hyp.fit)
+# --------------------------------
+# Graph frequency polygon of residuals
+ggplot(edge.2hyp.fit_resid, aes(resid)) + 
+  geom_freqpoly(binwidth = 0.5)
+# --------------------------------
+# Recreate plots using residuals 
+ggplot(edge.2hyp.fit_resid, aes(Job_Title_S, resid)) + 
+  geom_ref_line(h = 0) +
+  geom_point()
+# --------------------------------
+# Interaction between continuous and categorical variable
+mod_1 <- lm(ContributionsThisYear ~ Years_from_PhD + Discipline, data = edge.2hyp)
+pred_1 <- predict(mod_1, newdata = edge.2hyp)
+head(pred_1)
+pred_1
+```
+
+
+-Analyst 6
+```{r}
+#Hypothesis 2:
+#Higher status participants are more verbose than are lower status participants.
+# --------------------------------
+rm(list = ls())
+library(tidyverse)
+#install.packages("GGally")
+library(GGally)
+library(car)
+# --------------------------------
+#Load data.
+my_data <-read_csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+# --------------------------------
+#For each participant, calculate mean number of words per comment. --------
+#First, calculate number of words in each comment. 
+word_counts <- my_data %>% 
+  dplyr::select(Title, Id, Text) %>%
+  mutate(nwords = vapply(strsplit(Text, "\\W+"), length, integer(1)))
+# --------------------------------
+mean_wpc <- word_counts %>%
+  group_by(Id) %>%
+  summarise(mean_words = mean(nwords))
+# --------------------------------
+#Identify relevant status metrics. ----------
+#First, get all potentially relevant metrics. 
+status <- my_data %>% 
+  filter(Limited_Information == 0) %>%
+  dplyr::select(Title, Id, Role, Female, Male, Academic, Discipline,
+                HavePhD, Years_from_PhD, PhD_Institution_SR_Bin, Workplace_SR_Bin,
+                PhD_Institution_US_IR_Bin, Workplace_US_IR_Bin, Total_Citations, H_Index, i10_Index,
+                Citations_Year, Citations_Cumulative, AcademicHierarchyStrict)
+#Make a correlation matrix to identify predictors. 
+status %>%
+  dplyr::select(-Title, -Id, -Role, -Female) %>%
+  ggcorr
+# --------------------------------
+#Select a subset of predictors to reduce collinearity.
+status <- status %>%
+  dplyr::select(Title, Id, 
+                H_Index, 
+                AcademicHierarchyStrict,
+                Workplace_US_IR_Bin,
+                PhD_Institution_US_IR_Bin,
+                HavePhD)
+status %>% select(-Title, -Id) %>% ggpairs()
+#These correlations are all under ~0.6; will proceed with them. 
+# --------------------------------
+#Join status data with mean words per comment for each person. 
+reg_dat <- left_join(mean_wpc, status, by = c("Id"))
+# --------------------------------
+#Regress mean number of words per comment against status metrics for that participant.-------
+reg_dat <- reg_dat %>% select(-Title, -Id)
+# --------------------------------
+fit1 <- lm(mean_words ~ ., data = reg_dat)
+summary(fit1)
+vif(fit1)
+plot(fit1)
+alias(fit1)
+# --------------------------------
+#issues: 2119 is an outlier; aliased coefficients in model. 
+#Aliased coefficients seem to be because many status measures depend on having a Phd.
+#Solution: restrict analysis to people with PhDs (?)
+# -------------------------------- 
+#other ideas: maybe should be total words from that person per thread, rather than words per comment?
+#redo word count as words per thread:
+wpt_dat <- my_data %>%
+  group_by(ThreadId, Id) %>%
+  summarise(total_wpt = sum(WC)) %>%
+  group_by(Id) %>%
+  summarise(mean_wpt = sum(total_wpt)/n())
+# --------------------------------
+reg_dat <- left_join(wpt_dat, status, by = "Id") %>%
+  group_by(Id) %>%
+  slice(1)
+reg_dat <- reg_dat %>% ungroup() %>% select(-Title, -Id)
+# --------------------------------
+#I'm considering leaving out the "have PhD category" - so first let's see whether it makes a difference on its own.
+fit2 <- lm(mean_wpt ~ HavePhD, data = reg_dat)
+summary(fit2)
+# --------------------------------
+#So people with PhDs are more verbose... with an extra 567 words per thread from PhDs. 
+#Try subsetting to the group with PhDs anyway:
+phds <- reg_dat %>% filter(HavePhD == 1) %>% select(-HavePhD)
+fit3 <- lm(mean_wpt ~ ., data = phds)
+summary(fit3)
+vif(fit3)
+plot(fit3)
+# --------------------------------
+#VIF looks okay. Point 155 definitely needs to go, though!
+phds1 <- phds[-155,]
+fit4 <- lm(mean_wpt ~ ., data = phds1)
+summary(fit4)
+plot(fit4)
+sapply(phds1, function(x){sum(!is.na(x))})
+nrow(complete.cases(phds1))
+vif(fit4)
+# --------------------------------
+#H index is the only significant variable. Try just a regression against H index. 
+fit5 <- lm(mean_wpt ~ H_Index, data = phds1)
+summary(fit5)
+# --------------------------------
+#Wow, H-index by itself is not at all predictive. It's only predictive when controlling for other academic status metrics - so tempting to say that status isn't important? 
+# --------------------------------
+#What if we regress against another status metric by itself?
+fit6 <- lm(mean_wpt ~ AcademicHierarchyStrict, data = phds1)
+summary(fit6)
+confint(fit6, 'AcademicHierarchyStrict', level = 0.95)
+# --------------------------------
+#That confirms earlier results; that academic hierarchy is not a good predictor. 
+#Check other individual variables.
+fit7 <- lm(mean_wpt ~ Workplace_US_IR_Bin, data = phds1)
+summary(fit7)
+# --------------------------------
+#Same finding; check PhD institution:
+fit8 <- lm(mean_wpt ~ PhD_Institution_US_IR_Bin, data = phds1)
+summary(fit8)
+# --------------------------------
+#That also confirms that finding. 
+#So, overall, a PhD does affect verbosity, but status doesn't seem to.
+# --------------------------------
+#check with interaction terms:
+fit9 <- lm(mean_wpt ~ PhD_Institution_US_IR_Bin*H_Index,
+           PhD_Institution_US_IR_Bin*AcademicHierarchyStrict,
+           PhD_Institution_US_IR_Bin*Workplace_US_IR_Bin,
+           AcademicHierarchyStrict*Workplace_US_IR_Bin,
+           AcademicHierarchyStrict*H_Index,
+           Workplace_US_IR_Bin*H_Index, data = phds1)
+# --------------------------------
+#one last idea: what if we just keep academics? this could include grad students. 
+academics <- reg_dat %>%
+  left_join(my_data) %>%
+  filter(Academic == 1)
+academics <- academics[,c("Id", "mean_wpt", names(status))]
+academics <- academics %>%
+  group_by(Id) %>%
+  slice(1) %>%
+  select(-Id)
+# --------------------------------
+academics <- academics %>% select(-Title)
+# --------------------------------
+fit9 <- lm(mean_wpt ~ ., data = academics)
+summary(fit9)
+vif(fit9)
+alias(fit9)
+#This makes for the same problem as when all were included; aliasing included.
+```
+
+
+
+-Analyst 7
+```{r}
+my_data <- read.csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+
+### Hypothesis no 2 ###
+# --------------------------------
+# Model number of characters in contributions
+# based on a couple of metrics for academic
+# status
+# --------------------------------
+my_data <- my_data %>%
+  mutate(log_cit = log10(Citations_Cumulative),
+         log_char = log10(Number.Characters)) 
+# --------------------------------
+my_data %>%
+  select(AcademicHierarchyStrict, Citations_Cumulative, 
+         Number.Characters, log_cit, log_char) %>%
+cor(use = "pairwise.complete.obs")
+# --------------------------------
+ggplot(my_data, aes(x = AcademicHierarchyStrict, y = Number.Characters)) +
+  geom_jitter(alpha = 0.5) + 
+  scale_y_log10() +
+  geom_smooth(method = "lm") +
+  facet_grid(Discipline ~ .) +
+  theme_minimal()
+# --------------------------------
+ggplot(my_data, aes(x = Citations_Cumulative, y = Number.Characters)) +
+  geom_jitter(alpha = 0.5) + 
+  scale_x_log10() +
+  scale_y_log10() +
+  geom_smooth() +
+  facet_grid(Discipline ~ .) +
+  theme_minimal()
+# --------------------------------
+# --------------------------------
+# --------------------------------
+m3 <- lm(Number.Characters ~ AcademicHierarchyStrict*Discipline + 
+           Citations_Cumulative*Discipline, data = my_data)
+summary(m3)
+# --------------------------------
+###Reviewer 2 COMMENT: Analyst email (14/8/2018) says this is the correct model as below:
+# --------------------------------
+m4 <- lm(log_char ~ AcademicHierarchyStrict*Discipline + 
+           log_cit*Discipline, data = my_data)
+summary(m4)
+# --------------------------------
+```
+
+
+-Analyst 9 
+```{r}
+ # --------------------------------
+# Loading, setting up
+# --------------------------------
+
+library(tidyverse)
+
+my_data <- read_csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+
+my_data %>% 
+  count(Year) %>% 
+  ggplot(aes(x = Year, y = n)) +
+  geom_col() # just getting a sense of the number of posts by year
+
+length(unique(my_data$Link)) # this seems to suggest 523 unique conversations
+length(unique(my_data$Title)) # 522 titles - is one title redundant?
+length(unique(my_data$ThreadId)) # 522 thread IDs - so maybe there's a problem with a link, will use this
+
+# female participants per thread 
+# this makes it look like there aren't as many female participants as male
+
+my_data %>%
+  filter(!is.na(Female)) %>%
+  mutate(Female = as.factor(Female)) %>%
+  count(Year, Female, Link) %>%
+  group_by(Year, Female) %>%
+  summarize(mean_n = mean(n)) %>%
+  ggplot(aes(x = Year, y = mean_n, group = Female, fill = Female)) +
+  geom_col(position = "dodge")
+
+# Proportion of female respondants by year
+
+my_data %>%
+  filter(!is.na(Female)) %>%
+  group_by(Year, Link) %>%
+  summarize(n_Female = sum(Female),
+            prop_Female = sum(Female) / n()) %>%
+  summarize(m_prop_Female = mean(prop_Female)) %>%
+  ggplot(aes(x = Year, y = m_prop_Female)) +
+  geom_point() +
+  geom_line() +
+  geom_smooth(se = F)
+
+# --------------------------------
+# Analysis for RQ #1
+# --------------------------------
+
+to_model <- my_data %>% 
+  group_by(ThreadId) %>% 
+  select(Female, Order, WC, cogmech, ThreadId) %>%
+  mutate(Female_mp = cummean(Female),
+         Female_n = cumsum(Female),
+         engagement = WC * cogmech,
+         n = n()) %>% 
+  mutate(the_row = row_number()) %>% 
+  filter(Female == 1)
+
+to_model$engagement_l <- ifelse(to_model$engagement > 0, log(to_model$engagement), 0)
+
+to_model$engagement_s <- scale(to_model$engagement, center = T)
+
+to_model$WC_s <- scale(to_model$WC)
+
+to_model %>% 
+  select(WC_s, Female_mp, Female_n, n, engagement_l, engagement_s) %>% 
+  correlate() %>% 
+  shave() %>% 
+  fashion() 
+
+m1 <- lm(WC ~ I(Female_mp * 100), data = to_model)
+summary(m1)
+confint(m1) ##reviewer 2 COMMENT: model used by analyst to report results for hypothesis 1
+
+m2 <- lm(WC_s ~ Female_n, data = to_model)
+summary(m2)
+coef(m2) / 1
+
+m3 <- lm(WC_s ~ Female_n + n, data = to_model)
+summary(m3)
+
+m1a <- lm(engagement_s ~ Female_mp + n, data = to_model)
+summary(m1a)
+
+m2a <- lm(engagement_s ~ Female_n, data = to_model)
+summary(m2a)
+
+m3a <- lm(engagement_s ~ Female_n + n, data = to_model)
+summary(m3a)
+coef(m3a) / 1
+
+m4a <- lm(engagement_s ~ Female_n*n, data = to_model)
+summary(m4a)
+coef(m4a) / 1
+
+# --------------------------------
+# Analysis for RQ 2
+# --------------------------------
+
+my_data$engagement <- my_data$cogmech * my_data$WC
+
+my_data$engagement_s <- scale(my_data$engagement)
+
+table(is.na(my_data$Workplace_SR_Bin))
+
+my_data$phd_ranking <- ifelse(my_data$HavePhD == 1,
+                         ifelse(!is.na(my_data$Workplace_SR_Bin),
+                                my_data$Workplace_SR_Bin, "has_phd_but_not_ranked"), "does_not_have_phd")
+
+my_data$phd_ranking <- factor(my_data$phd_ranking)
+
+my_data$phd_ranking_f <- forcats::fct_relevel(my_data$phd_ranking,
+                                         "does_not_have_phd", "has_phd_but_not_ranked",
+                                         "7", "6", "5", "4", "3", "2", "1")
+
+my_data$phd_ranking_rc <- as.numeric(my_data$phd_ranking_f)
+
+df_to_join <- my_data %>% 
+  select(Id, phd_ranking_rc) %>% 
+  group_by(Id) %>% 
+  summarize(mean_phd_ranking_rc = mean(phd_ranking_rc))
+
+df_ss <- my_data %>% 
+  group_by(Id) %>% 
+  summarize(mean_WC = mean(WC, na.rm = T),
+            total_WC = sum(WC, na.rm = T),
+            mean_engagement = mean(engagement, na.rm = T), 
+            total_engagement = sum(engagement, na.rm = T)) %>% 
+  left_join(df_to_join)
+
+m3 <- lm(mean_WC ~ mean_phd_ranking_rc, data = df_ss)
+summary(m3) ##reviewer 2 COMMENT: I think this is the model used by the analyst to report results
+
+m4 <- lm(total_WC ~ mean_phd_ranking_rc, data = df_ss)
+summary(m4)
+
+m5 <- lm(mean_engagement ~ mean_phd_ranking_rc, data = df_ss)
+summary(m5)
+
+m6 <- lm(total_engagement ~ mean_phd_ranking_rc, data = df_ss)
+summary(m6)
+```
+
+
+-Analyst 10
+```{r}
+my_data <- read_csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+
+# Hyp. 2: “Higher status participants are more verbose than are lower status participants.”
+# Status is tricky to operationalize. Let's define it by a linear combination of various
+# variable obtained by factor analysis
+# --------------------------------
+# Building up the 'status' variable
+z. <- function(X){
+  (X - mean(X, na.rm=T))/sd(X, na.rm=T)
+}
+ind <- my_data$Id
+# --------------------------------
+phd <- my_data$HavePhD
+phd[is.na(phd)] <- 0 # Assumes no info equals no PhD
+phd <- tapply(phd, ind, mean)
+# --------------------------------
+academic <- as.numeric(my_data$Academic)
+academic[is.na(academic)] <- 0 # Assumes no info equals not academic
+academic <- tapply(academic, ind, mean)
+# --------------------------------
+phdBin <- my_data$PhD_Institution_US_IR_Bin
+phdBin[is.na(phdBin)] <- 0
+phdBin <- tapply(phdBin, ind, mean)
+phdBin <- z.(phdBin)
+# --------------------------------
+workBin <- my_data$Workplace_US_IR_Bin
+workBin[is.na(workBin)] <- 0
+workBin <- tapply(workBin, ind, mean)
+workBin <- z.(workBin)
+# --------------------------------
+threadPart <- tapply(my_data$ThreadId, my_data$Id_num, function(x) length(unique(x))) # How many threads in total?
+threadPart <- z.(threadPart)
+# --------------------------------
+# Citation indexes correlates highly with total citations
+citation <- my_data$Total_Citations
+citation[is.na(citation)] <- 0 # Assumes no info equals no citations
+citation <- tapply(citation, ind, mean)
+citation <- z.(citation)
+# --------------------------------
+acadHier <- my_data$AcademicHierarchyStrict
+acadHier[is.na(acadHier)] <-0 # Again
+acadHier <- tapply(acadHier, ind, mean)
+acadHier <- z.(acadHier)
+# --------------------------------
+statusVar <- data.frame(phd, academic, phdBin, workBin, threadPart, citation, acadHier)
+# --------------------------------
+library(psych)
+# --------------------------------
+scree(na.exclude(statusVar)) # Seems like one factor is OK, even though it might not be theretically justifiable.
+# 'loadings' weights come from factor analysis
+loadings <- as.numeric(factanal(statusVar, factors=1)$loadings)
+status <- apply(statusVar, 1, function(x) sum(x * loadings)/length(loadings))
+status <- status[as.numeric(factor(my_data$Id))]
+hist(status) # Seems to be bimodal, should we divide it?
+# --------------------------------
+hyp2df <- data.frame(Id=my_data$Id, ThreadId=my_data$ThreadId,
+                     Role=my_data$Role, Female=my_data$Female,
+                     WC=my_data$WC, Type=my_data$Type, status)
+library(lme4)
+# Use standardized status for easier interpratation
+# Use 'factor' for easier to read summary
+M1 <- (lmer(log(WC)~factor(Role) + factor(Female) + factor(Type) + z.(status) + (1|ThreadId) + (1|Id), data=hyp2df))
+# --------------------------------
+#Should we use a polynomial effect on status?
+M2 <- (lmer(log(WC)~factor(Role) + factor(Female) + factor(Type) + poly(status, 2, raw=T) + (1|ThreadId) + (1|Id), data=hyp2df))
+anova(M1, M2)
+# Maybe we should, but we will ignore it for now.
+# --------------------------------
+# Residuals are not that great, but are reasonably centered at zero with some bad behavior in the extremes
+plot(M1)
+# But no significant correlation with the status variable
+plot( status[!(is.na(my_data$Female))],predict(M1))
+summary(M1) 
+# For each standard-deviation in status, the word count increases around 13%.
+```
+
+
+-Analyst 11 
+```{r}
+library('readr')
+library('lme4')
+library('dplyr')
+
+# Need to define verbosity: we use WPS
+# Need to define status: 
+# for non-academics; not a lot of information, but can use job titles.
+# for academics: more information; use job hierarchy, citations, h-index
+# also include: years from PhD, sex
+
+# Load in data
+my_data = read_csv('C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv')
+
+# Filter out people with many contributions (Edge staff)
+reduced.data = group_by(my_data, Id) %>% 
+  summarize(Contribs=n()) %>%
+  filter(Contribs < 100)
+            
+status.table = inner_join(reduced.data, my_data)  %>%
+  select(WPS, Id, Live, Female, Academic, Job_Title_S, Years_from_PhD, 
+         Total_Citations, H_Index, AcademicHierarchyStrict) %>%
+  mutate(Log.Citations=log(Total_Citations))
+?inner_join
+# Scale continuous variables
+status.table$WPS = scale(status.table$WPS)
+status.table$Years_from_PhD = scale(status.table$Years_from_PhD)
+status.table$Log.Citations = scale(status.table$Log.Citations)
+status.table$H_Index = scale(status.table$H_Index)
+
+?scale
+# Need to treat academics and non-academics differently.
+status.academic = filter(status.table, Academic==1) %>% 
+  select(-Job_Title_S, -Academic)
+status.nonacademic = filter(status.table, Academic==0) %>% 
+  select(WPS, Id, Live, Female, Job_Title_S, Years_from_PhD) %>%
+  filter(!grepl('Professor|Tenure|Academic', Job_Title_S))
+
+# Analysis for academics
+
+# Fit a random effects model with Gaussian link function
+acad.model = lmer(WPS ~ Female + Years_from_PhD + Log.Citations + H_Index + AcademicHierarchyStrict + (1|Live),
+                    data=status.academic)
+
+summary(acad.model) ##reviewer 2 COMMENT: I think this is the model used by analyst in final report of effect size
+
+##reviewer 2 COMMENT: Following lines of code is mine - to get the p value/significance of effect size
+library(lmerTest)
+summary(acad.model)
+###end of reviewer 2 COMMENTS
+
+# Analysis for non-academics
+
+# Fit a random effects model with Gaussian link function
+nonacad.model = lmer(WPS ~ Female + Years_from_PhD + Job_Title_S + (1|Live),
+                    data=status.nonacademic)
+
+summary(nonacad.model)
+
+```
+
+
+
+
+-Analyst 12
+```{r}
+library(effectsize)
+
+my_data <- read_csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+
+###############################################################################
+# Hypothesis 2: “Higher status participants are more verbose than are lower 
+# status participants.”
+###############################################################################
+# --------------------------------
+count(my_data, TwoAuthors)
+# --------------------------------
+# % discipline by sex
+my_data %>% 
+  select(Id_num, Academic, Male, Discipline) %>% 
+  distinct %>%
+  count(Male, Discipline) %>% 
+  mutate(pct = n / sum(n))
+# --------------------------------
+# create a person level data frame
+# but, ensure that no two-author pieces are slipping in
+# these are really rare, and they seem substantively different from posts by
+# individuals
+persons <- my_data %>% 
+  filter(
+    TwoAuthors != 1,
+    !is.na(Male)
+  ) %>% 
+  select(
+    ThreadId,
+    Id_num,
+    Academic,
+    Male,
+    Discipline,
+    PreviousCitations,
+    H_Index,
+    AcademicHierarchyStrict,
+    Workplace_US_Bin,
+    Text
+  ) %>% 
+  distinct
+# --------------------------------
+persons %>% 
+  select(Id_num, Academic, Male, Discipline, H_Index) %>% 
+  distinct %>% 
+  ggplot(aes(x = H_Index, fill = factor(Male))) +
+  geom_density(alpha = .7) +
+  facet_wrap(~Discipline)
+# --------------------------------
+# majority are missing
+sum(is.na(persons$H_Index))
+# --------------------------------
+persons %>% 
+  select(Id_num, AcademicHierarchyStrict, Workplace_US_Bin) %>% 
+  distinct %>% 
+  count(AcademicHierarchyStrict, Workplace_US_Bin)
+# --------------------------------
+persons %>% 
+  select(Id_num, AcademicHierarchyStrict, Workplace_US_Bin) %>% 
+  distinct %>% 
+  count(AcademicHierarchyStrict)
+# --------------------------------
+# this gets us an observation for each word-- super large data frame
+p_words <- persons %>% 
+  group_by(Id_num, ThreadId) %>% 
+  mutate(comment_num = row_number()) %>% 
+  ungroup %>% 
+  unnest_tokens(word, Text)
+# --------------------------------
+num_words <- count(p_words, Id_num, ThreadId, comment_num)
+# --------------------------------
+qplot(data = num_words, x = n, geom = "density") + scale_x_log10()
+# --------------------------------
+mean(num_words$n)
+sd(num_words$n)
+median(num_words$n)
+# --------------------------------
+num_words %>%
+  filter(n <= 5000) %>%
+  qplot(data = ., x = n, geom = "density")
+# --------------------------------
+num_words %>%
+  filter(n >= 5000) %>%
+  qplot(data = ., x = n, geom = "histogram")
+# --------------------------------
+num_words_analytic <- num_words %>%
+  group_by(Id_num) %>%
+  summarize(
+    med_words  = median(n),
+    mean_words = mean(n),
+    sd_words   = sd(n)
+  ) %>%
+  left_join(
+    my_data %>%
+      select(
+        Id_num,
+        Academic,
+        Male,
+        Discipline,
+        AcademicHierarchyStrict,
+        Discipline,
+        USA_Ranking_Dif,
+        Total_Citations
+      ) %>%
+      distinct %>%
+      mutate(
+        disc = ifelse(is.na(Discipline), "missing", Discipline),
+        disc = factor(disc) %>% relevel(ref = "Social Sciences")
+      ),
+    by = c("Id_num")
+  )
+
+levels(num_words_analytic$Discipline)
+# --------------------------------
+qplot(data = num_words_analytic, x = mean_words, geom = "density")
+# --------------------------------
+qplot(data = num_words_analytic, x = Total_Citations, y = mean_words) +
+  scale_x_log10()
+# --------------------------------
+num_words_analytic <- left_join(
+  num_words_analytic,
+  my_data %>%
+    select(Id_num, H_Index, i10_Index) %>%
+    distinct,
+  by = "Id_num"
+)
+# --------------------------------
+num_words_analytic %>%
+  filter(mean_words <= 5000) %>%
+  ggplot(aes(x = H_Index, y = mean_words, color = AcademicHierarchyStrict)) +
+  geom_point()
+# --------------------------------
+
+num_words_analytic %>%
+  filter(mean_words <= 5000) %>%
+  ggplot(aes(x = H_Index, y = mean_words)) +
+  geom_point() +
+  facet_wrap(~factor(AcademicHierarchyStrict))
+# --------------------------------
+num_words_analytic %>%
+  filter(mean_words <= 1000) %>%
+  ggplot(aes(x = H_Index, y = med_words, color = factor(AcademicHierarchyStrict))) +
+  geom_point()
+# --------------------------------
+count(num_words_analytic, Academic)
+# --------------------------------
+num_words_analytic %>%
+  filter(mean_words <= 5000) %>%
+  ggplot(aes(x = USA_Ranking_Dif, y = mean_words)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+# --------------------------------
+Hmisc::describe(num_words_analytic)
+# --------------------------------
+num_words_analytic$AcademicHierarchyStrict <- factor(
+  num_words_analytic$AcademicHierarchyStrict,
+  levels = c(5, 1:4, 6),
+  labels = c("Professor", "Graduate Student", "Postdoc", "Asst. Prof",
+             "Assoc. Prof", "Chaired Prof")
+)
+# --------------------------------
+num_words_analytic$Male <- factor(
+  num_words_analytic$Male,
+  levels = 0:1,
+  labels = c("Female", "Male")
+)
+# --------------------------------
+# this drops the people who aren't in the hierarchy or are missing a value for Male
+num_words_mod <- lm(
+  mean_words ~
+    disc +
+    Male +
+    AcademicHierarchyStrict,
+  data = num_words_analytic %>%
+    filter(mean_words <= 3000)
+)
+
+eta_squared(num_words_mod, partial = TRUE)
+# --------------------------------
+summary(num_words_mod)
+# --------------------------------
+plot(num_words_mod)
+# --------------------------------
+# this reduces the sample size to only those who have scores, but the same model
+# accounting for H-Index
+num_words_mod2 <- lm(
+  mean_words ~
+    disc +
+    Male +
+    H_Index,
+  data = num_words_analytic %>% 
+    filter(mean_words <= 3000))
+# --------------------------------
+# --------------------------------
+summary(num_words_mod2)
+# --------------------------------
+plot(num_words_mod2)
+# --------------------------------
+shapiro.test(num_words_mod2$residuals)
+# --------------------------------
+# this reduces the sample size to only those who have scores, but the same model
+# accounting for H-Index and hierarchy
+num_words_mod2 <- lm(
+  mean_words ~
+    disc +
+    Male +
+    H_Index +
+    AcademicHierarchyStrict,
+  data = num_words_analytic %>% 
+    filter(mean_words <= 3000))
+# --------------------------------
+# --------------------------------
+summary(num_words_mod2)
+# --------------------------------
+plot(num_words_mod2)
+# --------------------------------
+shapiro.test(num_words_mod2$residuals)
+# --------------------------------
+num_words_mod3 <- lm(
+  mean_words ~
+    disc +
+    Male +
+    USA_Ranking_Dif,
+  data = num_words_analytic %>%
+    filter(mean_words <= 3000))
+# --------------------------------
+# --------------------------------
+summary(num_words_mod3)
+# --------------------------------
+plot(num_words_mod3)
+# --------------------------------
+# --------------------------------
+num_words_analytic$Academic <- factor(
+  num_words_analytic$Academic,
+  levels = 0:1,
+  labels = c("non-academic", "academic")
+)
+# --------------------------------
+num_words_mod4 <- lm(
+  mean_words ~
+    disc +
+    Male +
+    Academic,
+  data = num_words_analytic %>%
+    filter(mean_words <= 3000))
+# --------------------------------
+# --------------------------------
+summary(num_words_mod4)
+# --------------------------------
+plot(num_words_mod4)
+# --------------------------------
+num_words_mod4b <- lm(
+  mean_words ~
+    disc +
+    Male +
+    AcademicHierarchyStrict,
+  data = num_words_analytic %>%
+    filter(mean_words <= 3000) %>%
+    mutate(
+      AcademicHierarchyStrict =
+        as.character(AcademicHierarchyStrict) %>%
+        ifelse(is.na(.), "na", .) %>% 
+        factor(levels = c(
+          "Professor", "na", "Graduate Student", "Postdoc", "Asst. Prof",
+          "Assoc. Prof", "Chaired Prof"
+        ))
+    )
+)
+# --------------------------------
+summary(num_words_mod4b) ##reviewer 2 COMMENT: Analyst submitted result found in this model
+# --------------------------------
+plot(num_words_mod4b)
+# --------------------------------
+num_words_mod4b %>% 
+  tidy %>%
+  bind_cols(confint_tidy(num_words_mod4b))
+# --------------------------------
+# --------------------------------
+# --------------------------------
+```
+
+
+-Analyst 13
+```{r}
+my_data <- read_csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+
+#Now to think about hypothesis 2. 
+# --------------------------------
+summary(factor(my_data$Job_Title_S))
+names(my_data)
+my_data %>% select(Text) 
+# --------------------------------
+ggplot(my_data) + geom_histogram(aes(x=Number.Characters, fill=Male))
+# --------------------------------
+```
+
+
+-Analyst 14
+```{r}
+rm(list=ls())
+library(tidyverse)
+library(magrittr)
+library(caret)
+install.packages("GGally")
+library(GGally)
+library(lme4)
+
+library(tidyverse)
+my_data <- read_csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+
+## Test hypothesis number 2: âHigher status participants are more 
+## verbose than are lower status participants.â
+## The relevant unit of analysis for this hypothesis is speakers not
+## conversations.
+
+# split into training and test data sets based on
+# the contributions this year variable
+?createDataPartition
+
+set.seed(456)
+trainIndex_2 <- createDataPartition(my_data$ContributionsThisYear, p = .6, 
+                                  list = FALSE, 
+                                  times = 1)
+
+d.train_2 <- my_data[ trainIndex_2,]
+d.test_2  <- my_data[-trainIndex_2,]
+
+## operationalize being "verbose" 
+
+# visualize the distribution of number of contributions
+
+d.train_2 %>% 
+  ggplot(aes(x = ContributionsThisYear), data = .) +
+  geom_histogram()
+
+d.train_2 %>% 
+  group_by(ContributionsThisYear) %>% 
+  count()
+
+# visualize the number of characters in text to see if we get better
+# range for our outcome variable
+d.train_2 |> 
+  ggplot(aes(x = Number.Characters, data = d.train_2))+
+  geom_histogram()
+
+d.train_2 %>% 
+  ggplot(aes(x = log(Number.Characters)), data = .) +
+  geom_histogram()
+
+d.train_2 |> 
+  ggplot(aes(x = Total_Citations))+
+  geom_histogram()
+## operationalize status
+
+# visualize the distribution of the total number of citations variable
+d.train_2 %>% 
+  ggplot(aes(x = log(Total_Citations))) + # log transform helps, but we lose a ton of data
+  geom_histogram()
+
+# visualize the distribution of the workplace Shanghai ranking variable
+d.train_2 %>% 
+  ggplot(aes(x = Workplace_SR_Bin)) +
+  geom_histogram()
+
+# visualize the disribution of the workplace USA news ranking
+d.train_2 %>% 
+  ggplot(aes(x = Workplace_US_Bin)) +
+  geom_histogram()
+
+# it looks like we lose the least amount of data using the Shanghai
+# ratings as a measure of status, so let's start there
+
+## Visualize the relationship between these status variables
+## and number of characters in contributions
+
+d.train_2 %>% 
+  select(Number.Characters, Workplace_US_Bin, Workplace_SR_Bin,
+         Total_Citations) %>% 
+  mutate(Number.Characters = log(Number.Characters),
+         Total_Citations = log(Total_Citations)) %>% 
+  ggpairs() +
+  theme_bw() 
+
+## Fit mixed effects model estimating relationship between
+## status variables and number of characters in a piece of text
+
+m3.lmer <- lmer(log(Number.Characters) ~ Workplace_US_Bin + Workplace_SR_Bin + log(Total_Citations) + 
+                  (1|Id) + (1|ThreadId),
+                data = d.train_2)
+
+summary(m3.lmer)
+
+# fit to test data
+
+m3.lmer.test <- lmer(log(Number.Characters) ~ Workplace_US_Bin + Workplace_SR_Bin + log(Total_Citations) + 
+                  (1|Id) + (1|ThreadId),
+                data = d.test_2)
+
+summary(m3.lmer.test) ##reviewer 2 COMMENT: model used by analyst in reported results for hypothesis 2
+
+confint(m3.lmer.test, 'Workplace_US_Bin', level=0.95)
+
+##reviewer 2 COMMENT: Following lines of code is mine - to get the p value/significance of effect size
+library(lmerTest)
+summary(m3.lmer.test)
+###end of reviewer 2 COMMENTS
+```
+
+
+-Analyst 17
+```{r}
+my_data <- read.csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+library(dplyr)
+# Prepare my_data for 2nd hypothesis âHigher status participants are more verbose than are lower status participants.â 
+
+# Options of operationalizations: Job title, H-index, Total citations
+
+# I chose: AcademicHierarchyStrict + WC
+
+data_status = my_data |> 
+  filter(!is.na(AcademicHierarchyStrict) )
+cor.test(data_status$AcademicHierarchyStrict, data_status$WC, method = "kendall") ## COMMENT: this is the analyst reported result for Hyp2
+
+# Plotting the my_data
+library(ggplot2)
+ggplot(data_status, aes(x=AcademicHierarchyStrict, y=WC)) + geom_point()
+
+# Hypothesis is not verified, tau = -0.053, p < 0.001
+
+# Checking my analysis
+
+# Correcting the mistake with operationalization
+```
+
+
+
+
+-Analyst 18
+```{r}
+rm(list = ls())
+# --------------------------------
+library(readr)
+library(dplyr)
+install.packages("psych")
+library(psych)
+library(lme4)
+library(lmerTest)
+# --------------------------------
+my_data <- read_csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+# --------------------------------
+Conversations<-filter(my_data, Type == 2, Live == 1, UniqueContributors > 1)
+Ids<-as.numeric(row.names(table(Conversations$Id_num)))
+Convs<-as.numeric(row.names(table(Conversations$ThreadId)))
+# --------------------------------
+# Academe<-filter(Conversations, Academic == 1)
+# Non_Academe<-filter(Conversations, Academic == 0)
+# --------------------------------
+# Academe_Ids<-as.numeric(row.names(table(Academe$Id_num)))
+# Academe_Convs<-as.numeric(row.names(table(Academe$ThreadId)))
+# --------------------------------
+# --------------------------------
+#Non_Academe_Ids<-as.numeric(row.names(table(Non_Academe$Id_num)))
+#Non_Academe_Convs<-as.numeric(row.names(table(Non_Academe$ThreadId)))
+# --------------------------------
+#################################################################################################
+# --------------------------------
+# --------------------------------
+Person_x_thread_Data<-as.data.frame(matrix(0,0,22))
+# --------------------------------
+for (i in 1:length(Ids)){
+  Person  <- Ids[i]
+  Convos<-filter(Conversations, Id_num ==  Person )
+  Threads<-as.numeric(row.names(table(Convos$ThreadId)))
+  for (j in 1:length(Threads)){
+    Person_x_thread_Data_temp<-as.data.frame(matrix(0,1,22))########
+    # --------------------------------
+    conv<-filter(Conversations, ThreadId ==  Threads[j] )
+    Person_x_thread_Data_temp[1,1]<-Person  # Id
+    Person_x_thread_Data_temp[1,2]<-Threads[j] #Thread Id
+    conv_Person<-filter(conv, Id_num == Person)
+    if(conv_Person$Order[1] == 1){Person_x_thread_Data_temp[1,3]<-1} #Were they the lead? 
+    # --------------------------------
+    Person_x_thread_Data_temp[1,4]<-dim(conv_Person)[1]/dim(conv)[1] #Fraction of total comments this person made
+    Person_x_thread_Data_temp[1,5]<-sum(conv_Person$Number.Characters) / sum(conv$Number.Characters) #Fraction of total characters from this person
+    Person_x_thread_Data_temp[1,6]<-conv_Person$Year[1] #Year
+    Person_x_thread_Data_temp[1,7]<-length(as.numeric(row.names(table(conv$Id_num)))) #Total number of people in the conversation
+    Person_x_thread_Data_temp[1,8]<-dim(conv)[1] #Total number of comments made
+    Person_x_thread_Data_temp[1,9]<-conv_Person$Female[1] #Female
+    Person_x_thread_Data_temp[1,10]<-conv_Person$Academic[1] #Academic
+    Person_x_thread_Data_temp[1,11]<-conv_Person$HavePhD[1] #HavePhD
+    Person_x_thread_Data_temp[1,12]<-conv_Person$PhD_Year[1] #PhD_Year 
+    Person_x_thread_Data_temp[1,13]<-conv_Person$PhD_Institution_SR_Bin [1] #PhD Inst SR 
+    Person_x_thread_Data_temp[1,14]<-conv_Person$Workplace_SR_Bin[1] #PhD Work SR 
+    Person_x_thread_Data_temp[1,15]<-conv_Person$PhD_Institution_US_IR_Bin[1] #PhD Inst US 
+    Person_x_thread_Data_temp[1,16]<-conv_Person$Workplace_US_IR_Bin[1] #PhD Work US 
+    Person_x_thread_Data_temp[1,17]<-conv_Person$Total_Citations[1] #Total_Citations 
+    Person_x_thread_Data_temp[1,18]<-conv_Person$H_Index[1] #H_Index
+    Person_x_thread_Data_temp[1,19]<-conv_Person$i10_Index[1] #i10_index
+    Person_x_thread_Data_temp[1,20]<-conv_Person$AcademicHierarchyStrict[1] #AcademicHierarchyStrict 
+    Person_x_thread_Data_temp[1,21]<-conv_Person$PreviousCitations[1] #PreviousCitations  
+    Person_x_thread_Data_temp[1,22]<-conv_Person$Limited_Information[1] #PreviousCitations 
+    # --------------------------------
+    Person_x_thread_Data<-rbind(Person_x_thread_Data,Person_x_thread_Data_temp)
+    # --------------------------------
+  }
+  # --------------------------------
+  # --------------------------------
+  # --------------------------------
+  # --------------------------------
+}
+colnames(Person_x_thread_Data)<-c("Id_num","ThreadId","Lead","FracTimesSpoke","FracCharSpoke","Year","UniqueContributors",                    
+"DebateSize","Female","Academic","HavePhD","PhD_Year","PhD_Institution_SR_Bin","Workplace_SR_Bin",
+                    "PhD_Institution_US_IR_Bin","Workplace_US_IR_Bin","Total_Citations","H_Index","i10_index","AcademicHierarchyStrict",
+"PreviousCitations","Limited_Information")
+# --------------------------------
+##########################
+##Identify people with some reasonable amount of data on them
+# --------------------------------
+Person_x_thread_Data_filtered<-filter(Person_x_thread_Data, Limited_Information==0, FracTimesSpoke < 1, !is.na(Female))
+# --------------------------------
+Person_x_thread_Data_filtered[Person_x_thread_Data_filtered == "Not Available" ]<-NA
+# --------------------------------
+Check_Dat<-!is.na(Person_x_thread_Data_filtered)
+Most_Dat<-xtabs(~PhD_Year+Academic +Total_Citations, data = Check_Dat)
+# --------------------------------
+Academics<-filter(Person_x_thread_Data_filtered, Academic == 1,  !is.na(PhD_Year),  !is.na(AcademicHierarchyStrict))
+# --------------------------------
+# --------------------------------
+plot(Academics$AcademicHierarchyStrict, Academics$PhD_Year)
+# --------------------------------
+Academics$PhD_Year<-as.numeric(Academics$PhD_Year)
+# --------------------------------
+Academics2<-apply( X =Academics[,4:22],FUN = scale, center = TRUE, scale = TRUE ,MARGIN = 2)
+Academics$PhD_Year<-Academics$PhD_Year* -1
+# --------------------------------
+Academics[,4:22]<-Academics2
+Academics$Id_num2 <- as.factor(Academics$Id_num)
+Academics$ThreadId2 <- as.factor(Academics$ThreadId)
+# --------------------------------
+# --------------------------------
+Spoke_pca<-prcomp(x =  cbind(Academics$FracCharSpoke, Academics$FracTimesSpoke), retx = TRUE, center = TRUE,
+scale. =  TRUE  )
+Academics$Spoke_pca1<-Spoke_pca$x[,1]
+# --------------------------------
+# --------------------------------
+Status_pca<-prcomp(x =  cbind(Academics$PhD_Year, Academics$AcademicHierarchyStrict), retx = TRUE, center = TRUE,
+scale. =  TRUE  )
+Academics$Status_pca1<-Status_pca$x[,1]
+# --------------------------------
+Academics_IRL<-Academics
+# --------------------------------
+mod3<-lmer(Spoke_pca1 ~ Lead +  Year  + Female  + Status_pca1 + Female*Status_pca1+ Lead*Status_pca1+ (1|Id_num2) + (1|ThreadId2) , data =  Academics   )
+summary(mod3)
+#anova(mod2, mod3) ## addition of number of women variable does not improve model fit
+# --------------------------------
+library(ggplot2)
+# --------------------------------
+ggplot(Academics, aes( x = Status_pca1, y = Spoke_pca1, color = as.factor(Lead)))+
+  geom_point(aes(color=as.factor(Lead)), alpha = 0.5, size = 5) + 
+  geom_smooth(aes(group=as.factor(Lead)), method='lm', formula=y~x, size = 3, se = FALSE)
+# --------------------------------
+# --------------------------------
+#################################################################################################
+#######################################
+#######################################
+##Comments#########
+# --------------------------------
+# --------------------------------
+Online_Conversations<-filter(my_data, Type == 2, Live == 0, UniqueContributors > 1)
+# --------------------------------
+Ids<-as.numeric(row.names(table(Online_Conversations$Id_num)))
+Convs<-as.numeric(row.names(table(Online_Conversations$ThreadId)))
+# --------------------------------
+# --------------------------------
+# --------------------------------
+# --------------------------------
+Person_x_thread_Data<-as.data.frame(matrix(0,0,22))
+# --------------------------------
+for (i in 1:length(Ids)){
+  Person  <- Ids[i]
+  Convos<-filter(Online_Conversations, Id_num ==  Person )
+  Threads<-as.numeric(row.names(table(Convos$ThreadId)))
+  for (j in 1:length(Threads)){
+    Person_x_thread_Data_temp<-as.data.frame(matrix(0,1,22))########
+    # --------------------------------
+    conv<-filter(Online_Conversations, ThreadId ==  Threads[j] )
+    Person_x_thread_Data_temp[1,1]<-Person  # Id
+    Person_x_thread_Data_temp[1,2]<-Threads[j] #Thread Id
+    conv_Person<-filter(conv, Id_num == Person)
+    if(conv_Person$Order[1] == 1){Person_x_thread_Data_temp[1,3]<-1} #Were they the lead? 
+    # --------------------------------
+    Person_x_thread_Data_temp[1,4]<-dim(conv_Person)[1]/dim(conv)[1] #Fraction of total comments this person made
+    Person_x_thread_Data_temp[1,5]<-sum(conv_Person$Number.Characters) / sum(conv$Number.Characters) #Fraction of total characters from this person
+    Person_x_thread_Data_temp[1,6]<-conv_Person$Year[1] #Year
+    Person_x_thread_Data_temp[1,7]<-length(as.numeric(row.names(table(conv$Id_num)))) #Total number of people in the conversation
+    Person_x_thread_Data_temp[1,8]<-dim(conv)[1] #Total number of comments made
+    Person_x_thread_Data_temp[1,9]<-conv_Person$Female[1] #Female
+    Person_x_thread_Data_temp[1,10]<-conv_Person$Academic[1] #Academic
+    Person_x_thread_Data_temp[1,11]<-conv_Person$HavePhD[1] #HavePhD
+    Person_x_thread_Data_temp[1,12]<-conv_Person$PhD_Year[1] #PhD_Year 
+    Person_x_thread_Data_temp[1,13]<-conv_Person$PhD_Institution_SR_Bin [1] #PhD Inst SR 
+    Person_x_thread_Data_temp[1,14]<-conv_Person$Workplace_SR_Bin[1] #PhD Work SR 
+    Person_x_thread_Data_temp[1,15]<-conv_Person$PhD_Institution_US_IR_Bin[1] #PhD Inst US 
+    Person_x_thread_Data_temp[1,16]<-conv_Person$Workplace_US_IR_Bin[1] #PhD Work US 
+    Person_x_thread_Data_temp[1,17]<-conv_Person$Total_Citations[1] #Total_Citations 
+    Person_x_thread_Data_temp[1,18]<-conv_Person$H_Index[1] #H_Index
+    Person_x_thread_Data_temp[1,19]<-conv_Person$i10_Index[1] #i10_index
+    Person_x_thread_Data_temp[1,20]<-conv_Person$AcademicHierarchyStrict[1] #AcademicHierarchyStrict 
+    Person_x_thread_Data_temp[1,21]<-conv_Person$PreviousCitations[1] #PreviousCitations  
+    Person_x_thread_Data_temp[1,22]<-conv_Person$Limited_Information[1] #PreviousCitations 
+    # --------------------------------
+    Person_x_thread_Data<-rbind(Person_x_thread_Data,Person_x_thread_Data_temp)
+    # --------------------------------
+  }
+  # --------------------------------
+  # --------------------------------
+  # --------------------------------
+  # --------------------------------
+}
+colnames(Person_x_thread_Data)<-c("Id_num","ThreadId","Lead","FracTimesSpoke","FracCharSpoke","Year","UniqueContributors",
+                              "DebateSize","Female","Academic","HavePhD","PhD_Year","PhD_Institution_SR_Bin","Workplace_SR_Bin",
+                                 "PhD_Institution_US_IR_Bin","Workplace_US_IR_Bin","Total_Citations","H_Index","i10_index","AcademicHierarchyStrict",
+"PreviousCitations","Limited_Information")
+# --------------------------------
+##########################
+##Identify people with some reasonable amount of data on them
+# --------------------------------
+Person_x_thread_Data_filtered<-filter(Person_x_thread_Data, Limited_Information==0, FracTimesSpoke < 1, !is.na(Female))
+# --------------------------------
+Person_x_thread_Data_filtered[Person_x_thread_Data_filtered == "Not Available" ]<-NA
+# --------------------------------
+Check_Dat<-!is.na(Person_x_thread_Data_filtered)
+Most_Dat<-xtabs(~PhD_Year+Academic +Total_Citations, data = Check_Dat)
+# --------------------------------
+Academics<-filter(Person_x_thread_Data_filtered, Academic == 1,  !is.na(PhD_Year),  !is.na(AcademicHierarchyStrict))
+# --------------------------------
+# --------------------------------
+plot(Academics$AcademicHierarchyStrict, Academics$PhD_Year)
+# --------------------------------
+Academics$PhD_Year<-as.numeric(Academics$PhD_Year)
+# --------------------------------
+Academics2<-apply( X =Academics[,4:22],FUN = scale, center = TRUE, scale = TRUE ,MARGIN = 2)
+Academics$PhD_Year<-Academics$PhD_Year* -1
+# --------------------------------
+Academics[,4:22]<-Academics2
+Academics$Id_num2 <- as.factor(Academics$Id_num)
+Academics$ThreadId2 <- as.factor(Academics$ThreadId)
+# --------------------------------
+# --------------------------------
+Spoke_pca<-prcomp(x =  cbind(Academics$FracCharSpoke, Academics$FracTimesSpoke), retx = TRUE, center = TRUE,
+scale. =  TRUE  )
+Academics$Spoke_pca1<-Spoke_pca$x[,1]
+# --------------------------------
+# --------------------------------
+Status_pca<-prcomp(x =  cbind(Academics$PhD_Year, Academics$AcademicHierarchyStrict), retx = TRUE, center = TRUE,
+scale. =  TRUE  )
+Academics$Status_pca1<-Status_pca$x[,1]
+# --------------------------------
+Academics_Online<-Academics
+# --------------------------------
+# --------------------------------
+mod3<-lmer(Spoke_pca1 ~ Lead +  Year  + Female  + Status_pca1 + Female*Status_pca1+ Lead*Status_pca1+ (1|Id_num2) + (1|ThreadId2) , data =  Academics   )
+summary(mod3)
+#anova(mod2, mod3) ## addition of number of women variable does not improve model fit
+# 
+# library(ggplot2)
+# 
+# ggplot(Academics, aes( x = Status_pca1, y = Spoke_pca1, color = as.factor(Lead)))+
+#   geom_point(aes(color=as.factor(Lead)), alpha = 0.5, size = 5) + 
+#   geom_smooth(aes(group=as.factor(Lead)), method='lm', formula=y~x, size = 3, se = FALSE)
+# --------------------------------
+####################
+# --------------------------------
+Academics_IRL$Loc<-1
+Academics_Online$Loc<-2
+# --------------------------------
+Academics_final<-rbind(Academics_IRL,Academics_Online)
+Academics_final$Id_num2 <- as.factor(Academics_final$Id_num)
+Academics_final$ThreadId2 <- as.factor(Academics_final$ThreadId)
+# --------------------------------
+mod3<-lmer(Spoke_pca1 ~ Status_pca1 + Lead +  Year  + Female + Loc + (Loc):(Status_pca1 + Lead +  Year  + Female )  +  (1|Id_num2) + (1|ThreadId2) ,
+data =  Academics_final   )
+summary(mod3) ##reviewer 2 COMMENT: This is the model used for effect sizes reported by
+
+library(effectsize)
+standardize_parameters(mod3)
+
+#analyst
+# --------------------------------
+# Linear mixed model fit by REML 
+# t-tests use  Satterthwaite approximations to degrees of freedom ['lmerMod']
+# Formula: Spoke_pca1 ~ Status_pca1 + Lead + Year + Female + Loc + (Loc):(Status_pca1 +  
+#                                                                           Lead + Year + Female) + (1 | Id_num2) + (1 | ThreadId2)
+# Data: Academics_final
+# 
+# REML criterion at convergence: 1323.9
+# 
+# Scaled residuals: 
+#   Min      1Q  Median      3Q     Max 
+# -4.0277 -0.3130 -0.0374  0.2480  5.2534 
+# 
+# Random effects:
+#   Groups    Name        Variance Std.Dev.
+# Id_num2   (Intercept) 0.005075 0.07124 
+# ThreadId2 (Intercept) 1.190363 1.09104 
+# Residual              0.268826 0.51848 
+# Number of obs: 580, groups:  Id_num2, 169; ThreadId2, 156
+# 
+# Fixed effects:
+#                  Estimate    Std. Error df         t value Pr(>|t|)    
+#   (Intercept)      -1.23103    0.28532 277.90000  -4.315 2.22e-05 ***
+#   Status_pca1       0.08901    0.09873 148.50000   0.902   0.3687     <<-- Answer to Hypothesis # 2 .... No
+#   Lead              2.51115    0.24089 413.60000  10.425  < 2e-16 ***  Talk first?
+#   Year             -1.64380    0.22311 407.00000  -7.368 9.76e-13 ***
+#   Female           -0.07865    0.10816 238.60000  -0.727   0.4679    
+#   Loc               0.84373    0.15903 322.00000   5.305 2.09e-07 *** Online vs IRL? Not really meaningful 
+#   Status_pca1:Loc  -0.06185    0.05507 129.50000  -1.123   0.2635    
+#   Lead:Loc         -0.28130    0.14782 427.30000  -1.903   0.0577 .  
+#   Year:Loc          0.91604    0.13534 416.20000   6.768 4.44e-11 ***
+#   Female:Loc        0.03634    0.06030 277.30000   0.603   0.5473    
+# ---
+#   Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+# 
+# Correlation of Fixed Effects:
+#   (Intr) Stts_1 Lead   Year   Female Loc    St_1:L Led:Lc Yer:Lc
+# Status_pca1  0.057                                                        
+# Lead        -0.178 -0.086                                                 
+# Year         0.230 -0.069  0.027                                          
+# Female      -0.031 -0.344  0.138  0.024                                   
+# Loc         -0.943 -0.056  0.182 -0.204  0.024                            
+# Stts_pc1:Lc -0.048 -0.972  0.081  0.054  0.292  0.049                     
+# Lead:Loc     0.150  0.076 -0.952 -0.021 -0.113 -0.168 -0.075              
+# Year:Loc    -0.112  0.023 -0.021 -0.914 -0.021  0.105 -0.002  0.013       
+# Female:Loc   0.026  0.295 -0.123 -0.037 -0.969 -0.022 -0.235  0.102  0.033
+```
+
+
+-Analyst 21
+```{r}
+# --------------------------------
+# Clear workplace
+rm(list = ls(all = T))
+# Install and load libraries
+#install.packages("tidyverse")
+install.packages("BayesFactor")
+install.packages("psych")
+#install.packages("ccaPP")
+#install.packages("BayesMed")
+#install.packages("rjags")
+#install.packages("dummies")
+#install.packages("ez")
+#install.packages("heplots")
+#install.packages("MBESS")
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(BayesFactor))
+suppressPackageStartupMessages(library(psych))
+suppressPackageStartupMessages(library(ccaPP))
+suppressPackageStartupMessages(library(BayesMed))
+suppressPackageStartupMessages(library(rjags))
+suppressPackageStartupMessages(library(dummies))
+suppressPackageStartupMessages(library(ez))
+suppressPackageStartupMessages(library(heplots))
+suppressPackageStartupMessages(library(MBESS))
+# read data
+my_data <- read.csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+# Check header of data
+# UNCOMMENT TO RUN my_data %>% head
+# Check all data
+# UNCOMMENT TO RUN my_data %>% View 
+# From the first look at it, it looks that thedata:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAbElEQVR4Xs2RQQrAMAgEfZgf7W9LAguybljJpR3wEse5JOL3ZObDb4x1loDhHbBOFU6i2Ddnw2KNiXcdAXygJlwE8OFVBHDgKrLgSInN4WMe9iXiqIVsTMjH7z/GhNTEibOxQswcYIWYOR/zAjBJfiXh3jZ6AAAAAElFTkSuQmCC
+# data are in good order and that the titles correspond
+# to the titles given by the authors in the 'Variable Description.docx'
+# --------------------------------
+# --------------------------------
+# After loading the data, we are going to investigate a bit the different variables so that we can
+# have an idea about how the data look like. This is important to do before
+# moving to the main analyses as we may have to do also a lot of cleaning
+# before the main analyses -- e.g., a lot of NAs or weird variables.
+my_data %>% dplyr::select(Year) %>% table %>% barplot(ylim = c(150, 1500), xpd = FALSE, las = 0)
+# From the barplot we see that there is variability in the number of lines per year.
+# This could be for different reasons that will be probably be explained later as we explore
+# the data set. 
+# --------------------------------
+# Now we are going to check what type of conversations we have, and how those conversations are
+# distributed per year
+my_data %>% dplyr::select(Year, Type) %>% table()
+# Apart from years 1996, and 1997 there seems to be more contributions in converstations than
+# the annual questions. This makes sense of course.
+# --------------------------------
+# Now, what could be interesting is to see how much unique are these questions
+# UNCOMMENT TO RUN my_data %>% dplyr::select(Title, Year, Type) %>% table
+# OK, that is a bit too long to read and not informative enough
+# --------------------------------
+# --------------------------------
+# OK, maybe things get a bit interesting now. We are going to run the
+# descriptive for male and female contributions
+layout(1:2)
+my_data %>% dplyr::select(Male_Contributions)   %>% table %>% barplot(main = "male")
+my_data %>% dplyr::select(Female_Contributions) %>% table %>% barplot(main = "female")
+# So, if I am understanding this right, men speak much more than women. There
+# is a problem with the y axis, but still, this is what it looks like. I will
+# also run frequenceis just to see the raw numbers
+my_data %>% dplyr::select(Male_Contributions)   %>% table()
+my_data %>% dplyr::select(Female_Contributions) %>% table()
+# ... and the sums
+attr(table(dplyr::select(my_data, Male_Contributions)), "dimnames")[[1]] %>% as.numeric() %>% sum()
+attr(table(dplyr::select(my_data, Female_Contributions)), "dimnames")[[1]] %>% as.numeric() %>% sum()
+# OK, huge differences here. Preliminary but still a first look on this variables
+# --------------------------------
+# Seeing female participation
+my_data %>% dplyr::select(FemaleParticipation) %>% table %>% barplot
+# These are way too low percentages
+# Number of authors
+my_data %>% dplyr::select(NumberofAuthorContributions) %>% table %>% barplot
+# OK good. Maybe this is a bit wrong analysis because there are many zeros (this
+# refers to the annual questions). So, once again without the zeros
+my_data %>% dplyr::select(NumberofAuthorContributions) %>% dplyr::filter(NumberofAuthorContributions > 0) %>%table() %>% barplot()
+#OK good.
+# Debate Size
+my_data %>% dplyr::select(DebateSize) %>% table() %>% barplot()
+# So, many conversations have large sizes from what I can see
+# --------------------------------
+# Descriptives of unique contributors
+my_data %>% dplyr::select(UniqueContributors)        %>% table()  %>% barplot (main = "Unique Contributors")
+my_data %>% dplyr::select(UniqueMaleContributors)    %>% table()  %>% barplot (main = "Unique Male")
+my_data %>% dplyr::select(UniqueFemaleContributors)  %>% table    %>% barplot (main = "Unique Female")
+# From here we see again that more males participate than females
+my_data %>% dplyr::select(UniqueFemaleParticipation)  %>% table() %>% barplot (main = "Unique Female Participation")
+# Super low percentages
+# --------------------------------
+# We skip some variables and we do descriptives for males and females
+# Here we do piecharts just because some people hate them
+layout(t(1:2))
+my_data %>% dplyr::select(Male)   %>% table() %>% pie (main = "Male")
+my_data %>% dplyr::select(Female) %>% table() %>% pie (main = "Female")
+# --------------------------------
+# Job titles
+my_data %>% dplyr::select(Job_Title_S) %>% table()
+# BTW, we do not have data for 254 participants. Most participants are professors (2442)
+# --------------------------------
+# Contributions this year
+my_data %>% dplyr::select(ContributionsThisYear) %>% table()
+# Most people participate 1s.
+my_data %>% dplyr::select(ThreadsThisYear) %>% table()
+# Again, once is the main number
+# --------------------------------
+# PhD Institution US IR 
+my_data %>% dplyr::select(PhD_Institution_US_IR) %>% table()
+# Most people come from the 1st university?
+# --------------------------------
+# PhD Institution US 
+my_data %>% dplyr::select(PhD_Institution_US) %>% table()
+# Again 1st is the dominant
+# --------------------------------
+# H_Index 
+my_data %>% dplyr::select(H_Index) %>% table() %>% barplot()
+# Most people are around 50 index
+# --------------------------------
+# i10_index 
+my_data %>% dplyr::select(i10_Index) %>% table() %>% barplot()
+# It is around 70
+# --------------------------------
+# Citations_Cumulative 
+my_data %>% dplyr::select(Citations_Cumulative) %>% table() %>% barplot()
+# Around 5000 publications
+# --------------------------------
+# Number_Characters
+my_data %>% dplyr::select(Number.Characters) %>% table() %>% barplot()
+my_data %>% dplyr::select(Number.Characters) %>% describe()
+# --------------------------------
+# This is the very basic hypothesis testing. This is done out
+# of curioucity at this stage as there are many other variables that you need
+# to control with.
+# First plots
+plot(density(my_data$Female_Contributions))
+# OK, this shows really skewed distributions
+plot(density(my_data$UniqueFemaleContributors))
+# Also this one
+# --------------------------------
+# Now a bit more formal test
+ks.test(my_data$Female_Contributions, "pnorm")
+ks.test(my_data$UniqueFemaleContributors, "pnorm")
+# OK, this is useful. There are ties in the data. As such
+# it would be problematic to use parametric tests. Of course
+# the KS also shows that the distributions are not normal but maybe
+# a significant result is normal given the amount of data.
+# --------------------------------
+# Since we have ties, and the assumption of normality is violated,
+# it makes most sense to run kendal's tau for the correlation. But first,
+# let's make a scatterplot with the data
+plot(x = my_data$Female_Contributions,  y = my_data$UniqueFemaleContributors)
+# OK, this is so interesting. There seems to be two separate lines.
+# This is probably due to the many zeros. Yes, the variables are problematic
+# as, as also shown in the barplots above, many women just do not participate.
+# OK, so let's remove the zeros
+dtmp <- my_data %>% dplyr::select(Female_Contributions, UniqueFemaleContributors) #%>% 
+dtmp <- dtmp[dtmp$Female_Contributions != 0 & dtmp$UniqueFemaleContributors != 0, ]
+plot(x = dtmp$Female_Contributions,  y = dtmp$UniqueFemaleContributors)
+# --------------------------------
+# --------------------------------
+#dtmp$Female_Contributions %>% table
+#cor.test
+#cor.test(my_data$Female_Contributions, my_data$UniqueFemaleContributors)
+#lm(my_data$Female_Contributions~my_data$UniqueFemaleContributors) %>% summary
+# --------------------------------
+# --------------------------------
+# --------------------------------
+# OK, here we explore two other relevant variables, namely the UniqueFemaleContributors and
+# FemaleParticipation
+plot(x = my_data$FemaleParticipation,  y = my_data$UniqueFemaleParticipation)
+plot(x = my_data$UniqueFemaleParticipation,  y = my_data$FemaleParticipation)
+# OK, here there seems to be a relationship between variables but we
+# have plenty of outliers that have an effect. I think we should do something
+# about it.
+# One option is to remove the outliers, especially the ones at 1. But
+# I am a bit against that unless absolutely necessary. A common approach
+# in dealing with outliers is to actually use robust methods. I am all
+# for Bayesian but first let's see what we can do with the frequentist's approach.
+corKendall(x = my_data$UniqueFemaleParticipation,  y = my_data$FemaleParticipation, consistent = TRUE)
+corKendall(x = my_data$UniqueFemaleParticipation,  y = my_data$FemaleParticipation, consistent = FALSE)
+# OK, both tests, show a positive correlation. Please note that we use Kendall test 
+# because we have ties in our data. 
+# --------------------------------
+# Maybe check how the results could change if we remove the very extreme outliers
+my_data$UniqueFemaleParticipation %>% describe
+my_data$FemaleParticipation       %>% describe
+#
+my_data$UniqueFemaleParticipation [which(my_data$UniqueFemaleParticipation > mean(my_data$UniqueFemaleParticipation) + 3*sd(my_data$UniqueFemaleParticipation))]
+# --------------------------------
+my_data$FemaleParticipation [which(my_data$FemaleParticipation > mean(my_data$FemaleParticipation) + 3*sd(my_data$FemaleParticipation))]
+# --------------------------------
+my_data$UniqueFemaleParticipation [which(my_data$UniqueFemaleParticipation < mean(my_data$UniqueFemaleParticipation) - 3*sd(my_data$UniqueFemaleParticipation))]
+# --------------------------------
+my_data$FemaleParticipation [which(my_data$FemaleParticipation < mean(my_data$FemaleParticipation) - 3*sd(my_data$FemaleParticipation))]
+# --------------------------------
+# OK, we have to remove a lot of values (for the positive limit actually). We do that for exploratory reasons.
+# --------------------------------
+d1 <- my_data[-which(my_data$UniqueFemaleParticipation > (mean(my_data$UniqueFemaleParticipation) + (3*sd(my_data$UniqueFemaleParticipation)))), ]
+d1 <- d1[-which(d1$FemaleParticipation > (mean(d1$FemaleParticipation) + (3*sd(d1$FemaleParticipation)))), ]
+# Plot the data
+plot(x = d1$UniqueFemaleParticipation,  y = d1$FemaleParticipation)
+# OK, the data look a bit better now. Now, let's run again the robust Kendall
+corKendall(x = d1$UniqueFemaleParticipation,  y = d1$FemaleParticipation, consistent = TRUE)
+corKendall(x = d1$UniqueFemaleParticipation,  y = d1$FemaleParticipation, consistent = FALSE)
+# Again, we see a positive correlation.
+# --------------------------------
+# Now we are going to run a Bayesian Hypothesis Testing test. Please note we 001: use the original variables,
+# without removing outliers. We used the Savage Dickey approach because the non-Savage Dickey approach
+# had a problem with integarting with infinity.
+# UNCOMMENT bcor <- jzs_corSD(V1 = my_data$UniqueFemaleParticipation, V2 = my_data$FemaleParticipation, alternative = "greater")
+# --------------------------------
+# OK, so even the jzs_corSD did not work all of the times. When it worked it showed stong
+# We will investigate if we get more 
+# reliable results if we actually remove outliers
+# --------------------------------
+# OK, let's see what we can do with the code provided here:
+# http://www.sumsar.net/blog/2013/08/robust-bayesian-estimation-of-correlation/
+robust_model_string <- 
+  model {
+    for(i in 1:n) {
+      # We've replaced dmnorm with and dmt ...
+      x[i,1:2] ~ dmt(mu[], prec[ , ], nu) 
+    }
+# --------------------------------
+    prec[1:2,1:2] <- inverse(cov[,])
+    # --------------------------------
+    cov[1,1] <- sigma[1] * sigma[1]
+    cov[1,2] <- sigma[1] * sigma[2] * rho
+    cov[2,1] <- sigma[1] * sigma[2] * rho
+    cov[2,2] <- sigma[2] * sigma[2]
+    # --------------------------------
+    sigma[1] ~ dunif(0, 1000) 
+    sigma[2] ~ dunif(0, 1000)
+    rho ~ dunif(-1, 1)
+    mu[1] ~ dnorm(0, 0.0001)
+    mu[2] ~ dnorm(0, 0.0001)
+    # --------------------------------
+    # ... and added a prior on the degree of freedom parameter nu.
+    nu <- nuMinusOne+1
+    nuMinusOne ~ dexp(1/29)
+    # --------------------------------
+    x_rand ~ dmt(mu[], prec[ , ], nu)
+  }
+
+# --------------------------------
+data_list = list(x = my_data[, c("UniqueFemaleParticipation", "FemaleParticipation")], n = nrow(my_data))
+# Use robust estimates of the parameters as initial values
+inits_list = list(mu = c(median(my_data$UniqueFemaleParticipation), median(my_data$FemaleParticipation)), rho = cor(my_data$UniqueFemaleParticipation,
+    my_data$FemaleParticipation, method = "spearman"), sigma = c(mad(my_data$UniqueFemaleParticipation), mad(my_data$FemaleParticipation)))
+# UNCOMMENT jags_model <- jags.model(textConnection(robust_model_string), data = data_list,
+  # UNCOMMENT inits = inits_list, n.adapt = 500, n.chains = 3, quiet = TRUE)
+# UNCOMMENT update(jags_model, 500)
+# UNCOMMENT mcmc_samples <- coda.samples(jags_model, c("mu", "rho", "sigma", "nu", "x_rand"),
+# UNCOMMENT     n.iter = 5000)
+# --------------------------------
+#date <- Sys.Date()
+#save.image("mcmc.RData")
+load("mcmc.RData")
+par(mar = rep(2.2, 4))
+plot(mcmc_samples)
+summary(mcmc_samples)
+# --------------------------------
+# Here the results show that there is a positive correlation
+# --------------------------------
+# --------------------------------
+# The code below can be found at: https://osf.io/bg4vw/. I pasted it here because it was easier to source like that.
+# --------------------------------
+# --------------------------------
+#################################################################################################
+#################################################################################################
+#####   This R-code serves to compute a Bayes factor for Kendall's tau, as described in     #####
+#####   van Doorn, J.B., Ly, A., Marsman, M. & Wagenmakers, E.-J. (in press). Bayesian      #####
+#####   Inference for Kendallâ€™s Rank Correlation Coefficient. The American Statistician.    #####
+#################################################################################################
+#####   To use it, input your values below for yourKendallTauValue and yourN and run the    #####
+#####   whole script. The function call at the bottom will use your values and will compute #####
+#####   and print the Bayes factor in the console. The last line will plot the posterior    #####
+#####   distribution. This analysis is also available in JASP (www.jasp-stats.org), an      #####
+#####   open-source statistical software for Bayesian statistics with a graphical user      #####
+#####   interface.                                                               #####
+#################################################################################################
+#################################################################################################
+# --------------------------------
+yourKendallTauValue <- cor(my_data$UniqueFemaleParticipation, my_data$FemaleParticipation, method = "kendall")                      # Input your obtained value for kendall's 001: tau here
+yourN <- 100                    # Input your sample size here, then run the whole script
+# --------------------------------
+# --------------------------------
+# Prior specification Kendall's Tau
+scaledBetaTau <- function(tau, alpha=1, beta=1){
+  result <-   ((pi*2^(-2*alpha))/beta(alpha,alpha))  * cos((pi*tau)/2)^(2*alpha-1)
+  return(result)
+}
+# --------------------------------
+priorTau <- function(tau, kappa){
+  scaledBetaTau(tau, alpha = (1/kappa), beta = (1/kappa))
+}
+# --------------------------------
+priorTauPlus <- function(tau, kappa=1) {
+  non.negative.index <- tau >=0
+  less.than.one.index <- tau <=1
+  value.index <- as.logical(non.negative.index*less.than.one.index)
+  result <- tau*0
+  result[value.index] <- 2*priorTau(tau[value.index], kappa)
+  return(result)
+}
+# --------------------------------
+priorTauMin <- function(tau, kappa=1) {
+  negative.index <- tau <=0
+  greater.than.min.one.index <- tau >= -1
+  value.index <- as.logical(negative.index*greater.than.min.one.index)
+  result <- tau*0
+  result[value.index] <- 2*priorTau(tau[value.index], kappa)
+  return(result)
+}
+# --------------------------------
+# Posterior specification Kendall's Tau
+postDensKendallTau <- function(delta,Tstar,n,kappa=1,var=var,test="two-sided"){ 
+  if(test == "two-sided"){priorDens <- priorTau(delta,kappa)
+  } else if(test == "positive"){priorDens <- priorTauPlus(delta,kappa)
+  } else if(test == "negative"){priorDens <- priorTauMin(delta,kappa)}
+  priorDens <- priorTau(delta,kappa)
+  dens <- dnorm(Tstar,(1.5*delta*sqrt(n)),sd=sqrt(var))* priorDens
+  return(dens)
+}
+posteriorTau <- function(delta,kentau,n,kappa=1,var=1,test="two-sided"){
+  Tstar <- (kentau * ((n*(n-1))/2))/sqrt(n*(n-1)*(2*n+5)/18)
+  var <- min(1,var)
+  if(test == "two-sided"){lims <- c(-1,1)
+  } else if(test == "positive"){lims <- c(0,1)
+  } else if(test == "negative"){lims <- c(-1,0)}
+  logicalCensor <- (delta >= lims[1] & delta <= lims[2])
+  dens <- logicalCensor*postDensKendallTau(delta,Tstar,n,kappa,var,test=test)/
+    integrate(function(delta){postDensKendallTau(delta,Tstar,n,kappa,var,test=test)},lims[1],lims[2])$value
+} 
+# --------------------------------
+# Bayes factor computation Kendall's Tau
+bfCorrieKernelKendallTau <- function(tau, n, kappa=1, var=1, ciValue=0.95){ 
+  tempList <- list(vector())
+  output <- list(n=n, r=tau, bf10=NA, bfPlus0=NA, bfMin0=NA)
+  output$bf10 <- priorTau(0,kappa)/posteriorTau(0,tau,n,kappa=kappa,var=var,test="two-sided")
+  output$bfPlus0 <- priorTauPlus(0,kappa)/posteriorTau(0,tau,n,kappa=kappa,var=var,test="positive")
+  output$bfMin0 <- priorTauMin(0,kappa)/posteriorTau(0,tau,n,kappa=kappa,var=var,test="negative")
+  return(output)
+}
+# --------------------------------
+# Compute credible intervals kendalls tau
+credibleIntervalKendallTau <- function(kentau,n,kappa=1,var=1, test="two-sided", ciValue = 0.95){
+  nSeqs <- 1000
+  lowCI <- (1-ciValue)/2
+  upCI <- (1+ciValue)/2
+  taus <- seq(-1,1,length.out = (nSeqs-1))
+  densVals <- posteriorTau(taus, kentau, n, kappa = kappa, var = var, test = test)
+  densVals <- cumsum((densVals[1:(nSeqs-1)]+densVals[2:nSeqs])*0.5*(taus[2]-taus[1]))
+  lowerCI <- taus[which(densVals>=lowCI)[1]]
+  upperCI <- taus[which(densVals>=upCI)[1]]
+  median <- taus[which(densVals>=0.5)[1]]
+  return(list(lowerCI = lowerCI, median = median, upperCI = upperCI))
+}
+# --------------------------------
+sampleTausA <- function(myTau,myN,nSamples = 3e3, var = 1){
+  nSeqs <- 1000
+  tauSamples <- NULL
+  taus <- seq(-1,1,length.out = nSeqs)
+  densVals <- posteriorTau(taus, myTau, myN, var = var)
+  ceiling <- max(densVals)
+  lowerB <- taus[which(round(densVals,digits=6) != 0 )][1]
+  upperB <- rev(taus[which(round(densVals,digits=6) != 0 )])[1]
+  # --------------------------------
+  while(length(tauSamples) < nSamples){
+    prop <- runif(1,lowerB,upperB)
+    propDens <- posteriorTau(prop, myTau, myN, var = var)
+    if(propDens > runif(1,0,ceiling)){tauSamples <- c(tauSamples,prop)}
+  }
+  return(tauSamples)
+}
+# --------------------------------
+bfCorrieKernelKendallTau(tau = yourKendallTauValue, n = yourN)  # This function call will carry out the computations
+# and returns a list with the Bayes factors (regular, plussided, minsided)
+# --------------------------------
+# The following code plots a (simple) posterior distribution of your results.
+layout(1)
+plot(density(sampleTausA(myTau = yourKendallTauValue, myN = yourN),from = -1, to = 1), las = 1, bty = "n", lwd=3, 
+     main = "Posterior Distribution for Kendall's tau", xlab = expression(tau))
+# --------------------------------
+# Again, it seems that there is a strong positive correlation 
+# $r
+# [1] 0.5220499
+# $bf10
+# [1] 656180916077
+# --------------------------------
+# --------------------------------
+# Here, we contintue with the second question.
+# --------------------------------
+my_data %>% dplyr::select(AcademicHierarchyStrict) %>% table()
+cor.test(my_data$AcademicHierarchyStrict, my_data$ContributionsThisYear, method = "kendall")
+my_data %>% dplyr::select(Workplace_SR) %>% table()
+my_data$Workplace_SR %>% table()
+# OK we see that a lot of universities have missing data -- I expected that from the variable description but wanted to check
+# it out. Will also investigate one more variable.
+my_data$Workplace_US %>% table()
+my_data$Workplace_US %>% table() %>% sum()
+nrow(my_data)
+my_data$Id %>% unique() %>% table() %>% sum()
+# I actually want to make a new variable now with contributions across all years for each unique participant
+dplyr::filter(my_data, Id == "richard_dawkins") %>% dplyr::select(Year, PreviousContributions, ContributionsThisYear) %>% dplyr::arrange(desc(Year)) %>% 
+  slice(1) %>% sum()
+# --------------------------------
+dm <- cbind(my_data, ContrTotal = dplyr::select(my_data, PreviousContributions, ContributionsThisYear) %>% apply(1, sum))
+dm %>% dplyr::select(Id, AcademicHierarchyStrict) %>% unique() %>% dplyr::select(AcademicHierarchyStrict) %>% table()
+dm %>% dplyr::select(Id, AcademicHierarchyStrict) %>% unique() %>% dplyr::select(AcademicHierarchyStrict) %>% nrow()
+# --------------------------------
+# OK, I wanted to see whether I could use the AcademicHierarchyStrict to see whether I could use it for definying statues but I have too 
+# many missing data. So, this is not possible.
+# OK, but there is no way around it. Status, as a concept, can be defined in multiple ways -- e.g., income, academic position, etc. 
+# In our case, the most **objective** way is to define status with the variable that we have, AcademicHierarchyStrict. I mean, there are also
+# other variables there, for example 'Job_Title_S' variable, putting status to this variable is arbitrary. As such, I prefer to move one with my
+# analysis using a more **objective** variable which is the 'AcademicHierarchyStrict', than other arbitrary variable. This is because this variable
+# has a clear meaning, and also translates in differences in status, income, etc.
+# --------------------------------
+dmm <- dm %>% group_by(Id) %>% summarize(ContrTotal = max(ContrTotal)) 
+dmm$Ac <- NA
+for ( i in 1:nrow(dmm)){
+  dmm$Ac[i] <- dm[which(dm$Id == dmm$Id[i]), ] %>% dplyr::select(AcademicHierarchyStrict) %>% slice(1) %>% unlist() %>% as.numeric()
+}
+# --------------------------------
+dmmf <- dmm %>% drop_na() 
+dmmf$Ac2 <- ordered(dmmf$Ac)
+dmmf$Ac3 <- as.factor(dmmf$Ac)
+# --------------------------------
+anovaBF(ContrTotal ~ Ac2, data = as.data.frame(dmmf), whichRandom = "Id", progress = FALSE)
+anovaBF(ContrTotal ~ Ac2, data = as.data.frame(dmmf[dmmf$ContrTotal < 101, ]), whichRandom = "Id", progress = FALSE)
+# --------------------------------
+# --------------------------------
+plot(dmmf$Ac[dmmf$ContrTotal < 101], dmmf$ContrTotal[dmmf$ContrTotal < 101])
+points(dmmf$Ac[dmmf$ContrTotal < 101], col = 2)
+# --------------------------------
+my_data <- cbind(my_data, ContrTotal = dplyr::select(my_data, PreviousContributions, ContributionsThisYear) %>% apply(1, sum))
+# --------------------------------
+# Redo analyses
+Some relevant websites:
+OK, change of plans as I saw that I should report effect sizes with confidence intervals.
+https://rdrr.io/cran/NSM3/man/kendall.ci.html
+http://daniellakens.blogspot.nl/2014/06/calculating-confidence-intervals-for.html
+http://www.sthda.com/english/wiki/kruskal-wallis-test-in-r
+# --------------------------------
+# --------------------------------
+my_data <- read.csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+# --------------------------------
+# Prior specification Kendall's Tau
+scaledBetaTau <- function(tau, alpha=1, beta=1){
+  result <-   ((pi*2^(-2*alpha))/beta(alpha,alpha))  * cos((pi*tau)/2)^(2*alpha-1)
+  return(result)
+}
+# --------------------------------
+priorTau <- function(tau, kappa){
+  scaledBetaTau(tau, alpha = (1/kappa), beta = (1/kappa))
+}
+# --------------------------------
+priorTauPlus <- function(tau, kappa=1) {
+  non.negative.index <- tau >=0
+  less.than.one.index <- tau <=1
+  value.index <- as.logical(non.negative.index*less.than.one.index)
+  result <- tau*0
+  result[value.index] <- 2*priorTau(tau[value.index], kappa)
+  return(result)
+}
+# --------------------------------
+priorTauMin <- function(tau, kappa=1) {
+  negative.index <- tau <=0
+  greater.than.min.one.index <- tau >= -1
+  value.index <- as.logical(negative.index*greater.than.min.one.index)
+  result <- tau*0
+  result[value.index] <- 2*priorTau(tau[value.index], kappa)
+  return(result)
+}
+# --------------------------------
+# Posterior specification Kendall's Tau
+postDensKendallTau <- function(delta,Tstar,n,kappa=1,var=var,test="two-sided"){ 
+  if(test == "two-sided"){priorDens <- priorTau(delta,kappa)
+  } else if(test == "positive"){priorDens <- priorTauPlus(delta,kappa)
+  } else if(test == "negative"){priorDens <- priorTauMin(delta,kappa)}
+  priorDens <- priorTau(delta,kappa)
+  dens <- dnorm(Tstar,(1.5*delta*sqrt(n)),sd=sqrt(var))* priorDens
+  return(dens)
+}
+posteriorTau <- function(delta,kentau,n,kappa=1,var=1,test="two-sided"){
+  Tstar <- (kentau * ((n*(n-1))/2))/sqrt(n*(n-1)*(2*n+5)/18)
+  var <- min(1,var)
+  if(test == "two-sided"){lims <- c(-1,1)
+  } else if(test == "positive"){lims <- c(0,1)
+  } else if(test == "negative"){lims <- c(-1,0)}
+  logicalCensor <- (delta >= lims[1] & delta <= lims[2])
+  dens <- logicalCensor*postDensKendallTau(delta,Tstar,n,kappa,var,test=test)/
+    integrate(function(delta){postDensKendallTau(delta,Tstar,n,kappa,var,test=test)},lims[1],lims[2])$value
+} 
+# --------------------------------
+# Bayes factor computation Kendall's Tau
+bfCorrieKernelKendallTau <- function(tau, n, kappa=1, var=1, ciValue=0.95){ 
+  tempList <- list(vector())
+  output <- list(n=n, r=tau, bf10=NA, bfPlus0=NA, bfMin0=NA)
+  output$bf10 <- priorTau(0,kappa)/posteriorTau(0,tau,n,kappa=kappa,var=var,test="two-sided")
+  output$bfPlus0 <- priorTauPlus(0,kappa)/posteriorTau(0,tau,n,kappa=kappa,var=var,test="positive")
+  output$bfMin0 <- priorTauMin(0,kappa)/posteriorTau(0,tau,n,kappa=kappa,var=var,test="negative")
+  return(output)
+}
+# --------------------------------
+# Compute credible intervals kendalls tau
+credibleIntervalKendallTau <- function(kentau,n,kappa=1,var=1, test="two-sided", ciValue = 0.95){
+  nSeqs <- 1000
+  lowCI <- (1-ciValue)/2
+  upCI <- (1+ciValue)/2
+  taus <- seq(-1,1,length.out = (nSeqs-1))
+  densVals <- posteriorTau(taus, kentau, n, kappa = kappa, var = var, test = test)
+  densVals <- cumsum((densVals[1:(nSeqs-1)]+densVals[2:nSeqs])*0.5*(taus[2]-taus[1]))
+  lowerCI <- taus[which(densVals>=lowCI)[1]]
+  upperCI <- taus[which(densVals>=upCI)[1]]
+  median <- taus[which(densVals>=0.5)[1]]
+  return(list(lowerCI = lowerCI, median = median, upperCI = upperCI))
+}
+# --------------------------------
+sampleTausA <- function(myTau,myN,nSamples = 3e3, var = 1){
+  nSeqs <- 1000
+  tauSamples <- NULL
+  taus <- seq(-1,1,length.out = nSeqs)
+  densVals <- posteriorTau(taus, myTau, myN, var = var)
+  ceiling <- max(densVals)
+  lowerB <- taus[which(round(densVals,digits=6) != 0 )][1]
+  upperB <- rev(taus[which(round(densVals,digits=6) != 0 )])[1]
+  # --------------------------------
+  while(length(tauSamples) < nSamples){
+    prop <- runif(1,lowerB,upperB)
+    propDens <- posteriorTau(prop, myTau, myN, var = var)
+    if(propDens > runif(1,0,ceiling)){tauSamples <- c(tauSamples,prop)}
+  }
+  return(tauSamples)
+}
+# --------------------------------
+bfCorrieKernelKendallTau(tau = cor.test(my_data$UniqueFemaleParticipation, my_data$FemaleParticipation, method = "kendall")$estimate %>% as.numeric(), n = length(my_data$AcademicHierarchyStrict))  
+# --------------------------------
+credibleIntervalKendallTau(cor.test(my_data$UniqueFemaleParticipation, my_data$FemaleParticipation, method = "kendall")$estimate %>% as.numeric(), length(my_data$AcademicHierarchyStrict))
+# --------------------------------
+cor.test(my_data$UniqueFemaleParticipation, my_data$FemaleParticipation, method = "kendall")
+# --------------------------------
+#' Second hypothesis
+# --------------------------------
+my_data <- cbind(my_data, nWords = my_data %>% select(Text) %>% as.data.frame() %>% apply(1, function(x) length(unlist(strsplit(as.character(x), "\\W+")))))
+# --------------------------------
+d2 <- my_data %>% group_by(Id) %>% summarize(ContrTotal = mean(nWords)) 
+d2$AcH <- NA
+for ( i in 1:nrow(d2)){
+  d2$AcH[i] <- my_data[which(my_data$Id == d2$Id[i]), ] %>% dplyr::select(AcademicHierarchyStrict) %>% slice(1) %>% unlist() %>% as.numeric()
+}
+# --------------------------------
+dd2 <- d2 %>% drop_na() 
+dd2$AcH2 <- ordered(dd2$AcH)
+# --------------------------------
+plot(dd2$ContrTotal %>% unlist, dd2$AcH2 %>% unlist)
+barplot(dd2$ContrTotal,names.arg = dd2$AcH2)
+# Assumption of normality. However, we have ties so this will not work either way.
+ks.test(dd2$ContrTotal, pnorm)
+an <- ezANOVA(data = dd2, dv = ContrTotal, between = AcH2, wid = Id, return_aov = TRUE)
+etasq(an$aov)
+ci.pvaf(F = as.numeric(an$ANOVA["F"]), df.1 = as.numeric(an$ANOVA["DFn"]), df.2 = as.numeric(an$ANOVA["DFd"]), N = nrow(dd2), conf.level = 0.95)
+#kruskal.test(ContrTotal ~ AcH2, data=d2)
+```
+
+-Analyst 22
+```{r}
+## Import data
+library(readr)
+install.packages("reshape")
+library(reshape)
+library(dplyr)
+# --------------------------------
+my_data <- read_csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+names(my_data)
+## Hypothesis 1: “A woman’s tendency to participate actively in the conversation 
+##              correlates positively with the number of females in the discussion.”
+# --------------------------------
+# --------------------------------
+FemaleContributions_by_thread=cast(my_data, ThreadId~ Year,value=c('Female_Contributions'), fun=mean)
+UniqueFemaleParticipation_by_thread=cast(my_data, ThreadId~ Year, value=c('UniqueFemaleParticipation'), fun=mean)
+# --------------------------------
+names(FemaleContributions_by_thread)=paste0("FemaleContributions",names(FemaleContributions_by_thread))
+names(UniqueFemaleParticipation_by_thread)=paste0("UniqueFemaleParticipation",names(UniqueFemaleParticipation_by_thread))
+cor.test(y=FemaleContributions_by_thread$FemaleContributions2013,x=UniqueFemaleParticipation_by_thread$UniqueFemaleParticipation2013) 
+# --------------------------------
+## Hypothesis 2: “Higher status participants are more verbose than are lower status participants.”
+data_written=my_data[my_data$Live==0,]
+data_transcribed=my_data[my_data$Live==1,]
+# --------------------------------
+#higher status measured with AcademicHierarchyStrict
+#verbose "WC"  "WPS" "Sixltr" "Number.Characters"
+## o	PreviousContributions, o	ContributionsThisYear
+# --------------------------------
+#transcribed
+mean(data_transcribed$WC[data_transcribed$AcademicHierarchyStrict==1],na.rm=TRUE)
+mean(data_transcribed$WC[data_transcribed$AcademicHierarchyStrict==2],na.rm=TRUE)
+mean(data_transcribed$WC[data_transcribed$AcademicHierarchyStrict==3],na.rm=TRUE)
+mean(data_transcribed$WC[data_transcribed$AcademicHierarchyStrict==4],na.rm=TRUE)
+mean(data_transcribed$WC[data_transcribed$AcademicHierarchyStrict==5],na.rm=TRUE)
+mean(data_transcribed$WC[data_transcribed$AcademicHierarchyStrict==6],na.rm=TRUE)
+#written
+mean(data_written$WC[data_written$AcademicHierarchyStrict==1],na.rm=TRUE)
+mean(data_written$WC[data_written$AcademicHierarchyStrict==2],na.rm=TRUE)
+mean(data_written$WC[data_written$AcademicHierarchyStrict==3],na.rm=TRUE)
+mean(data_written$WC[data_written$AcademicHierarchyStrict==4],na.rm=TRUE)
+mean(data_written$WC[data_written$AcademicHierarchyStrict==5],na.rm=TRUE)
+mean(data_written$WC[data_written$AcademicHierarchyStrict==6],na.rm=TRUE)
+# --------------------------------
+# restructure dataset
+# --------------------------------
+
+contributions_by_person=cast(my_data, Id_num~ Year,value=c('ContributionsThisYear'))
+hierarchy_by_person=cast(my_data, Id_num~ Year, value=c('AcademicHierarchyStrict'), fun=mean)
+names(contributions_by_person)=paste0("ContributionsThisYear",names(contributions_by_person))
+names(hierarchy_by_person)=paste0("AcademicHierarchyStrict",names(hierarchy_by_person))
+# --------------------------------
+
+hierarchy_by_person$AcademicHierarchyStrict2013 = coalesce(hierarchy_by_person$AcademicHierarchyStrict2012, hierarchy_by_person$AcademicHierarchyStrict2013, hierarchy_by_person$AcademicHierarchyStrict2014)
+#12-14
+hierarchy_by_person$AcademicHierarchyStrict2013[is.na(hierarchy_by_person$AcademicHierarchyStrict2013)]=rowMeans(data.frame(hierarchy_by_person$AcademicHierarchyStrict2014[is.na(hierarchy_by_person$AcademicHierarchyStrict2013)],hierarchy_by_person$AcademicHierarchyStrict2012[is.na(hierarchy_by_person$AcademicHierarchyStrict2013)]),na.rm=TRUE)
+
+
+hierarchy_by_person <- hierarchy_by_person %>%
+  mutate(AcademicHierarchyStrict2013 = coalesce(
+    AcademicHierarchyStrict2013,
+    AcademicHierarchyStrict2012,
+    AcademicHierarchyStrict2014
+  ))
+
+
+contributions_by_person[contributions_by_person$ContributionsThisYear2012==0&contributions_by_person$ContributionsThisYear2013==0&contributions_by_person$ContributionsThisYear2014==0,18:20]=NA
+# --------------------------------
+hyp1=cor.test(y=hierarchy_by_person$AcademicHierarchyStrict2013,x=contributions_by_person$ContributionsThisYear2013, method = "spearman")
+hyp1 
+summary(hierarchy_by_person$AcademicHierarchyStrict2013)
+```
+
+
+-Analyst 23
+```{r}
+library(dplyr)
+library(lme4)
+library(tidyverse)
+library(effectsize)
+library(lmerTest)
+### hypothesis 2:
+# Hypothesis 2: Higher status participants are more verbose than are lower status participants.
+# 'verbose' can be defined in different ways: more comments or more words per comment. I will
+# focus here on the average length of a comment
+# --------------------------------
+# data loading and exploration
+my_data <- read_csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+my_data
+View(my_data)
+names(my_data)
+# --------------------------------
+# potential status variables: AcademicHierarchyStrict, HavePhD, Academic
+# response (verbosity): Number_Characters
+hist(my_data$Number.Characters, breaks = 100)
+# --------------------------------
+# filter for commentators
+dat2 <- my_data %>% 
+  filter(Role == 2) 
+# --------------------------------
+# some outliers
+hist(dat2$Number.Characters, breaks = 100)
+# --------------------------------
+# check the data
+dat3 <- dat2 %>% filter(Number.Characters > 10000)
+# --------------------------------
+table(my_data$Role) # more authors than commentors
+# --------------------------------
+# create variable for all contributions of a given person
+dat2 <- dat2 %>% 
+      mutate(AllContributions = PreviousContributions + ContributionsThisYear)
+# --------------------------------
+# --------------------------------
+# calculate average comment length per commenter
+dat_sum <- dat2 %>% 
+            mutate(AllContributions = PreviousContributions + ContributionsThisYear) %>% 
+            group_by(Id) %>% 
+            # Academic Status might change, so taking the mean. This is not ideal though.
+            summarise(AcademicHierarchyStrict = mean(AcademicHierarchyStrict),
+                      comment_length = mean(Number.Characters),
+                      number_comments = mean(AllContributions))
+# --------------------------------
+# check distribution of Academic Hierachy
+dat_sum %>% 
+  ggplot(aes(x = AcademicHierarchyStrict)) + geom_histogram()
+# --> groups are very unequal
+# --------------------------------
+# plot
+dat_sum %>% 
+  ggplot(aes(x = AcademicHierarchyStrict, y = comment_length)) + 
+  geom_point(aes(size = number_comments)) +
+  geom_smooth()
+# --------------------------------
+# --------------------------------
+# modeling: 1st model
+hist(dat_sum$comment_length, breaks = 100)
+hist(dat_sum$number_comments, breaks = 100)
+hist(dat_sum$AcademicHierarchyStrict, breaks = 100)
+# --------------------------------
+# Don't take the mean of AcademicHierarchy 
+dat_sum <- dat2 %>% 
+  mutate(AllContributions = PreviousContributions + ContributionsThisYear) %>% 
+  group_by(Id, AcademicHierarchyStrict, Female) %>% 
+  # Academic Status might change, so taking the mean. This is not ideal though.
+  summarise(
+            comment_length = mean(Number.Characters),
+            number_comments = mean(AllContributions))
+# --------------------------------
+# look at it by male vs female
+dat_sum %>% 
+  ggplot(aes(x = AcademicHierarchyStrict, y = comment_length, 
+             color = factor(Female))) + 
+  geom_point(aes(size = number_comments)) +
+  geom_smooth(aes(color = factor(Female)))
+# --------------------------------
+hist(dat_sum$AcademicHierarchyStrict, breaks = 100)
+# --------------------------------
+# we want academic hierarchy as a predictor.
+# code ordinal variable as numeric, as Andrew Gelman suggests here: http://andrewgelman.com/2009/10/06/coding_ordinal/
+dat_sum <- dat_sum %>% mutate(AH = as.numeric(as.character(AcademicHierarchyStrict)))
+# --------------------------------
+# simple linear model
+# comment_length
+mod1 <- lm(comment_length ~ AH + as.factor(Female), data = dat_sum)
+summary(mod1) # -239.01   [-553.3450   75.33359] 
+standardize_parameters(mod1)
+library(lme4)
+mod4 = lmer(comment_length ~ AH + as.factor(Female) + (1|Id), data = dat_sum)
+summary(mod4)
+lmerTest::as_lmerModLmerTest(mod4)
+standardize_parameters(mod4)
+# --------------------------------
+# plot(mod1)
+CI_mod1 <- confint(mod1)
+# --------------------------------
+# number of comments
+# model number of comments too
+mod2 <- lm(number_comments ~ AH + as.factor(Female), data = dat_sum)
+summary(mod2) # 1.6627 [ -0.6519959  3.977397]
+standardize_parameters(mod2)
+# plot(mod2)
+CI_mod2 <- confint(mod2)
+CI_mod2
+# --------------------------------
+# within the university hierarchy there doesn't seem to be a trend, however, the lower level
+# groups are less represented in the dataset.
+```
+
+

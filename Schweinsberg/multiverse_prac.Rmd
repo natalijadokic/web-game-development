@@ -1,0 +1,185 @@
+---
+title: "gamedevmverse"
+output: html_document
+date: "2026-10-01"
+---
+
+```{r}
+
+library(multiverse)
+library(dplyr)
+library(tidyverse)
+library(lmerTest)
+library(ggplot2)
+library(tidyr)
+library(broom)
+library(lme4)
+
+
+
+
+```
+Document for starting out with the multiverse package 
+
+Terminology
+- Parameter --> represents a node in the three that has more than one child - so this is the point of decision, not the node itself 
+- Option --> is one of the chosen children --> so the node 
+
+practice
+
+
+```{r}
+data("hurricane")
+
+hurricane_data = hurricane |> 
+  rename(
+    year = Year, 
+    name = Name, 
+    dam = NDAM, 
+    death = alldeaths, 
+    female = Gender_MF, 
+    category = Category, 
+    pressure = Minpressure_Updated_2014, 
+    wind = HighestWindSpeed
+  ) |> 
+  mutate(
+        post = ifelse(year>1979, 1, 0),
+        zcat = as.numeric(scale(category)),
+        zpressure = -scale(pressure),
+        zwind = as.numeric(scale(wind)),
+        z3 = as.numeric((zpressure + zcat + zwind) / 3)
+    )
+
+df.filtered = hurricane_data |> 
+  filter(name != "Katrina" & name != "Audrey") |>
+  mutate(zpressure = -scale(pressure))
+
+fit = glm(
+  death ~ MasFem * dam + MasFem * zpressure,
+  data = df.filtered,
+  family = "poisson"
+  
+)
+
+summary(fit)
+
+tidy(fit) |>
+  filter(term != "(Intercept)") |>
+  ggplot() +
+  geom_vline(xintercept = 0, color = "red") +
+  geom_pointrange(aes(x = estimate, y = term, xmin = estimate + qnorm(0.025)*std.error, xmax = estimate + qnorm(0.975)*std.error)) +
+  theme_minimal()
+
+?geom_point
+```
+How to transform this single pipe analysis to a multiverse? 
+
+
+```{r}
+
+M = multiverse()
+
+
+```
+
+# By this step we are essentially creating an environment for the multiverse analysis to run - this is a necessary feature in a multiverse 
+
+
+
+It is necessary to write everything in a multiverse code_chunk, that can be implemented as an addin
+#The branch function: 1. the first part defines the parameter 2. the second section determines the options 
+```{multiverse default-m-1, inside = M}
+
+df.filtered = df |> 
+  filter(branch(death_otuliers, 
+                "no_exclusion" ~ TRUE,
+                "most_extreme" ~ name != "Katrina", 
+                "two_most_extreme" ~ !(name %in% c("Katrina", "Audrey"))
+                ))
+
+
+#There are a bunch of diagnostic functions to evaluate certain properties of the multiverse
+
+code(M)
+parameters(M)
+conditions(M)
+extract_variables(M, df.filtered)
+M
+```
+
+
+Here we are defining additional steps in the analysis 
+
+The subsequent multiverse code blocks will be subsequent decisions --> order matters
+
+Logic of parameter definition --> one starts defining the operation in R (e.g. filter, mutate, what not --> and within the operation, the parameter can be added at the specification stage of the operation)
+
+```{multiverse variable definitions, inside = M}
+
+df.filtered = df.filtered |> 
+  mutate(femininity = branch(femininity_calculation, 
+                             "masfem" ~ MasFem, 
+                             "female" ~ female), 
+         damage = branch(damage_transform, 
+                         "no_log_transform" ~ identity(dam), 
+                         "log_transform" ~ log(dam)))
+
+
+
+parameters(M)
+```
+
+
+Implementing models in the multiverse 
+ 
+ This does not only apply to models, but for other decisions of this nature too 
+ - Certain branches could be reused if subsequent choices "belong together" --> e.g. Poisson model only works for certain dvs
+ 
+ with this feature, conceptual decisions that have impacts in multiple stages of the analysis can be defnied together 
+ - Extremely useful for our case
+ 
+
+```{multiverse default-m-3, inside = M}
+
+  fit = glm(branch(mod_type, 
+         "linear" ~ log(death + 1), 
+         "poisson" ~ death) 
+  ~ femininity * dam + femininity * zpressure,
+  family = branch(mod_type, "linear" ~ gaussian, 
+                            "poisson" ~ poisson), data = df.filtered)
+```
+
+It is possible to introduce conditional options at certain parameters --> with the %when% operator right after the option 
+
+
+
+```{multiverse default-m-4, inside = M}
+
+fit = glm(death ~ branch(main_interaction, "no" ~ femininity + dam, 
+                         "yes" ~ femininity * dam) + 
+                  branch(other_predictors,
+                         "None" ~ NULL, 
+                         "pressure" %when% (main_interaction == "yes") ~ femininity * zpressure, 
+                         "wind" %when% (main_interaction == "yes") ~ femininity * zwind,
+                         "category" %when% (main_interaction == "yes") ~ femininity * zcat,
+                         "all" %when% (main_interaction == "yes") ~ femininity * z3,
+                         "all_no_interaction" %when% (main_interaction == "no") ~ z3),
+                          family = "poisson", data = df.filtered)
+                                                            
+
+```
+
+
+You can extract results of individual pipes but that will become important later
+
+
+Executing the entire multiverse
+
+```{multiverse default-m-5, inside = M}
+execute_multiverse(M, parallel = TRUE, progress = TRUE)
+
+
+?progress
+
+
+```
