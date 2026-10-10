@@ -67,7 +67,7 @@ data_st1 = raw_data %>%
                   "participant" ~ Id, 
                   "conversation" ~ NULL)) %>%  
   summarise(branch(level, 
-                   "participant" ~ across(Type:percent_by_author, unique),
+                   "participant" ~ across(c(Type:percent_by_author, Female_Contributions), unique),
                    "conversation" ~ across(Type:UniqueFemaleParticipation, unique)))
 ```
 
@@ -94,9 +94,9 @@ data_variables = data_st1 %>%
     "FemaleParticipation_FemaleContributions" %when% (level == "conversation") ~
       c(ThreadId, Id, Type, FemaleParticipation, FemaleContributions, UniqueFemaleContributors, UniqueMaleContributors),
     "FemaleContributions_UniqueFemaleContributors" %when% (level == "conversation") ~
-      c(ThreadId, Id, Type, FemaleContributions, UniqueFemaleContributors, UniqueMaleContributors),
+      c(ThreadId, Id, Type, Female_Contributions, UniqueFemaleContributors, UniqueMaleContributors),
     "FemaleContributions_UniqueFemaleParticipation" %when% (level == "conversation") ~
-      c(ThreadId, Id, Type, FemaleContributions, UniqueFemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors),
+      c(ThreadId, Id, Type, Female_Contributions, UniqueFemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors),
     "FemaleContributors_UniqueFemaleContributors" %when% (level == "conversation") ~
       c(ThreadId, Id, Type, FemaleContributors, UniqueFemaleContributors, UniqueMaleContributors),
     "FemaleContributors_UniqueFemaleParticipation" %when% (level == "conversation") ~
@@ -123,19 +123,12 @@ data_filtered2 = data_filtered %>%
 
 ```{r}
 code(game)
-execute_universe(game, 14) # 
 
 execute_multiverse(game) 
-```
 
-```{r}
-# summary: recursion from the execute_multiverse() gone. 
 res <- expand(game)
-res$.errors[[14]]
-nrow(res$.results[[14]]$data_filtered2)   # rows left after the filters
-extract_variable_from_universe(game, 14, data_filtered2)
-
-# summary after running execute_multiverse: errors in universe 3, 6, 7, 8, 9, 10, 11, 12, 13, 14 - several columns don't exist 
+res
+res$.results[[14]]$data_filtered2
 ```
 
 
