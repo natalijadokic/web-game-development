@@ -84,7 +84,7 @@ data_variables = data_st1 %>%
       c(ThreadId, Id, Type, ContributionsbyAuthor, UniqueFemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors),
     
     "ContributionsbyAuthor_FemaleContributions" %when% (level == "participant") ~
-      c(ThreadId, Id, Type, ContributionsbyAuthor, FemaleContributions, UniqueFemaleContributors, UniqueMaleContributors),
+      c(ThreadId, Id, Type, ContributionsbyAuthor, Female_Contributions, UniqueFemaleContributors, UniqueMaleContributors),
     
     "percent_by_author_UniqueFemaleContributors" %when% (level == "participant") ~
       c(ThreadId, Id, Type, percent_by_author, UniqueFemaleContributors, UniqueMaleContributors),
@@ -93,7 +93,7 @@ data_variables = data_st1 %>%
       c(ThreadId, Id, Type, percent_by_author, UniqueFemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors),
     
     "percent_by_author_FemaleContributions" %when% (level == "participant") ~
-      c(ThreadId, Id, Type, percent_by_author, FemaleContributions, UniqueFemaleContributors, UniqueMaleContributors),
+      c(ThreadId, Id, Type, percent_by_author, Female_Contributions, UniqueFemaleContributors, UniqueMaleContributors),
     
     "FemaleParticipation_UniqueFemaleContributors" %when% (level == "conversation") ~
       c(ThreadId, Id, Type, FemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors),
@@ -102,19 +102,19 @@ data_variables = data_st1 %>%
       c(ThreadId, Id, Type, FemaleParticipation, UniqueFemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors),
     
     "FemaleParticipation_FemaleContributions" %when% (level == "conversation") ~
-      c(ThreadId, Id, Type, FemaleParticipation, FemaleContributions, UniqueFemaleContributors, UniqueMaleContributors),
+      c(ThreadId, Id, Type, FemaleParticipation, Female_Contributions, UniqueFemaleContributors, UniqueMaleContributors),
     
     "FemaleContributions_UniqueFemaleContributors" %when% (level == "conversation") ~
-      c(ThreadId, Id, Type, FemaleContributions, UniqueFemaleContributors, UniqueMaleContributors),
+      c(ThreadId, Id, Type, Female_Contributions, UniqueFemaleContributors, UniqueMaleContributors),
     
     "FemaleContributions_UniqueFemaleParticipation" %when% (level == "conversation") ~
-      c(ThreadId, Id, Type, FemaleContributions, UniqueFemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors),
+      c(ThreadId, Id, Type, Female_Contributions, UniqueFemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors),
     "FemaleContributors_UniqueFemaleContributors" %when% (level == "conversation") ~
       c(ThreadId, Id, Type, FemaleContributors, UniqueFemaleContributors, UniqueMaleContributors),
     "FemaleContributors_UniqueFemaleParticipation" %when% (level == "conversation") ~
       c(ThreadId, Id, Type, FemaleContributors, UniqueFemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors),
     "FemaleContributors_FemaleContributions" %when% (level == "conversation") ~
-      c(ThreadId, Id, Type, FemaleContributors, FemaleContributions, UniqueFemaleContributors, UniqueMaleContributors)
+      c(ThreadId, Id, Type, FemaleContributors, Female_Contributions, UniqueFemaleContributors, UniqueMaleContributors)
   ))
   
 
