@@ -5,26 +5,27 @@ date: "2026-10-06"
 ---
 Loading the data, packages 
 ```{r}
-install.packages("multiverse")
 install.packages("dplyr")
-install.packages("Matrix")
-install.packages("lmerTest")
-install.packages("knitr")
-install.packages("tidyr")
-install.packages("lmerTest")
-install.packages("knitr")
-install.packages("prettycode")
 library(dplyr)
+install.packages("lmerTest")
 library(tidyverse)
+install.packages("tidyr")
 library(tidyr)
+install.packages("lme4")
 library(lme4)
+install.packages("Matrix")
 library(Matrix)
+install.packages("lmerTest")
 library(lmerTest)
+install.packages("knitr")
 library(knitr)
+install.packages("multiverse")
 library(multiverse)
+install.packages("ggplot2")
 library(ggplot2)
 install.packages("broom") 
 library(broom)
+install.packages("prettycode")
 library(prettycode)
 
 raw_data = read_csv("data/edge1.1.csv")
@@ -62,41 +63,52 @@ data_st1 = raw_data %>%
   dplyr::select(branch(level, 
                        "participant" ~ !c(Order:Number.Characters), 
                        "conversation" ~ !Live )) %>% 
-  group_by(ThreadId, 
-           branch(level, 
-                  "participant" ~ Id, 
-                  "conversation" ~ NULL)) %>%  
+  group_by(ThreadId, Id) %>%  
+           # branch(level, 
+           #        "participant" ~ Id, 
+           #        "conversation" ~ NULL)) %>%  
   summarise(branch(level, 
                    "participant" ~ across(c(Type:percent_by_author, Female_Contributions), unique),
-                   "conversation" ~ across(Type:UniqueFemaleParticipation, unique)))
+                   "conversation" ~ across(Type:UniqueFemaleParticipation, unique)), 
+            .groups = "drop")
 ```
 
 Few plots, just to check whether it works
 ```{multiverse default-m-2, inside = game}
 data_variables = data_st1 %>%  
   select(branch(dv_iv,
-    "ContributionsbyAuthor_UniqueFemaleContributors" %when% (level == "participant") ~ 
+    "ContributionsbyAuthor_UniqueFemaleContributors" %when% (level == "participant") ~
       c(ThreadId, Id, Type, ContributionsbyAuthor, UniqueFemaleContributors, UniqueMaleContributors),
-    "ContributionsbyAuthor_UniqueFemaleParticipation" %when% (level == "participant") ~ 
+    
+    "ContributionsbyAuthor_UniqueFemaleParticipation" %when% (level == "participant") ~
       c(ThreadId, Id, Type, ContributionsbyAuthor, UniqueFemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors),
-    "ContributionsbyAuthor_FemaleContributions" %when% (level == "participant") ~ 
+    
+    "ContributionsbyAuthor_FemaleContributions" %when% (level == "participant") ~
       c(ThreadId, Id, Type, ContributionsbyAuthor, FemaleContributions, UniqueFemaleContributors, UniqueMaleContributors),
+    
     "percent_by_author_UniqueFemaleContributors" %when% (level == "participant") ~
       c(ThreadId, Id, Type, percent_by_author, UniqueFemaleContributors, UniqueMaleContributors),
+    
     "percent_by_author_UniqueFemaleParticipation" %when% (level == "participant") ~
       c(ThreadId, Id, Type, percent_by_author, UniqueFemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors),
+    
     "percent_by_author_FemaleContributions" %when% (level == "participant") ~
       c(ThreadId, Id, Type, percent_by_author, FemaleContributions, UniqueFemaleContributors, UniqueMaleContributors),
+    
     "FemaleParticipation_UniqueFemaleContributors" %when% (level == "conversation") ~
       c(ThreadId, Id, Type, FemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors),
+    
     "FemaleParticipation_UniqueFemaleParticipation" %when% (level == "conversation") ~
       c(ThreadId, Id, Type, FemaleParticipation, UniqueFemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors),
+    
     "FemaleParticipation_FemaleContributions" %when% (level == "conversation") ~
       c(ThreadId, Id, Type, FemaleParticipation, FemaleContributions, UniqueFemaleContributors, UniqueMaleContributors),
+    
     "FemaleContributions_UniqueFemaleContributors" %when% (level == "conversation") ~
-      c(ThreadId, Id, Type, Female_Contributions, UniqueFemaleContributors, UniqueMaleContributors),
+      c(ThreadId, Id, Type, FemaleContributions, UniqueFemaleContributors, UniqueMaleContributors),
+    
     "FemaleContributions_UniqueFemaleParticipation" %when% (level == "conversation") ~
-      c(ThreadId, Id, Type, Female_Contributions, UniqueFemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors),
+      c(ThreadId, Id, Type, FemaleContributions, UniqueFemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors),
     "FemaleContributors_UniqueFemaleContributors" %when% (level == "conversation") ~
       c(ThreadId, Id, Type, FemaleContributors, UniqueFemaleContributors, UniqueMaleContributors),
     "FemaleContributors_UniqueFemaleParticipation" %when% (level == "conversation") ~
@@ -105,7 +117,14 @@ data_variables = data_st1 %>%
       c(ThreadId, Id, Type, FemaleContributors, FemaleContributions, UniqueFemaleContributors, UniqueMaleContributors)
   ))
   
+
 ```
+
+```{r}
+parameters(game)    # every parameter with its options, as multiverse registered them
+conditions(game)
+```
+
 
 ```{multiverse default-m-3, inside = game}
 data_filtered = data_variables %>%
@@ -124,11 +143,12 @@ data_filtered2 = data_filtered %>%
 ```{r}
 code(game)
 
-execute_multiverse(game) 
-
+execute_multiverse(game)
 res <- expand(game)
-res
-res$.results[[14]]$data_filtered2
+
+res %>%
+  mutate(has_fc = map_lgl(.results, ~ "Female_Contributions" %in% names(.x$data_filtered2))) %>%
+  count(dv_iv, has_fc)
 ```
 
 
