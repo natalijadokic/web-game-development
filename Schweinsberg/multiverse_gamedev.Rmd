@@ -3,10 +3,7 @@ title: "multiverse_package_gd"
 output: html_document
 date: "2026-10-06"
 ---
-
-
 Loading the data, packages 
-
 ```{r}
 install.packages("multiverse")
 install.packages("dplyr")
@@ -14,73 +11,75 @@ install.packages("Matrix")
 install.packages("lmerTest")
 install.packages("knitr")
 install.packages("tidyr")
-
-
+install.packages("lmerTest")
+install.packages("knitr")
+install.packages("prettycode")
 library(dplyr)
 library(tidyverse)
 library(tidyr)
 library(lme4)
 library(Matrix)
 library(lmerTest)
+library(knitr)
 library(multiverse)
 library(ggplot2)
-if (!require("broom")) install.packages("broom") 
+install.packages("broom") 
 library(broom)
+library(prettycode)
 
 raw_data = read_csv("data/edge1.1.csv")
 game = multiverse()
-
 particip_data_duplicates = raw_data %>%  
   dplyr::select(!Order:Number.Characters) %>%  
-  group_by(ThreadId, Id, ) %>%
-  summarize(across(Male_Contributions:ContributionsbyAuthor,  ~ paste(unique(.x), collapse = "; "))) 
+  group_by(ThreadId, Id) %>%
+  summarize(across(Type:ContributionsbyAuthor,  ~ paste(unique(.x), collapse = "; "))) %>% 
+  ungroup()
         
  particip_data_filt = particip_data_duplicates %>% 
-  filter(if_any(Male_Contributions:ContributionsbyAuthor, ~ grepl(";", .x)))
+  filter(if_any(Type:ContributionsbyAuthor, ~ grepl(";", .x)))
  
  raw_data = anti_join(raw_data, particip_data_filt,  by = c("ThreadId", "Id"))
  
- particip_data_clean = raw_data %>%  
-   dplyr::select(!Order:Number.Characters) %>% 
+ raw_data = raw_data  %>%  
+   mutate(percent_by_author = ContributionsbyAuthor/ DebateSize, .after = ContributionsbyAuthor)
+ 
+ particip_data_clean = raw_data %>% 
+  dplyr::select(!Order:Number.Characters) %>%  
   group_by(ThreadId, Id) %>%
-  summarize(across(Male_Contributions:ContributionsbyAuthor, unique))
+  summarize(across(Type:ContributionsbyAuthor, unique)) %>% 
+  ungroup()
 
-raw_data_n = raw_data %>%  
+raw_data_n = raw_data  %>%  
   group_by(ThreadId) %>%  
   dplyr::select(!Live) %>%  
-  summarise(across(Male_Contributions:UniqueFemaleParticipation, unique))
+  summarise(across(Type:UniqueFemaleParticipation, unique)) %>% 
+  ungroup()
 ```
 
-
-
 Attempt on trying a data_filtering decision with the multiverse 
-
 ```{multiverse default-m-1, inside = game}
-data_st1 = raw_data  %>%  
+data_st1 = raw_data %>%  
   dplyr::select(branch(level, 
                        "participant" ~ !c(Order:Number.Characters), 
                        "conversation" ~ !Live )) %>% 
-  group_by(ThreadId, Type, branch(level, 
-                            "participant" ~ Id, 
-                            "conversation" ~ NULL))  %>%  
+  group_by(ThreadId, 
+           branch(level, 
+                  "participant" ~ Id, 
+                  "conversation" ~ NULL)) %>%  
   summarise(branch(level, 
-                   "participant" ~ across(Male_Contributions:ContributionsbyAuthor, unique),
-                    "conversation" ~ across(Male_Contributions:UniqueFemaleParticipation, unique)))
-
-
-parameters(game)
+                   "participant" ~ across(Type:percent_by_author, unique),
+                   "conversation" ~ across(Type:UniqueFemaleParticipation, unique)))
 ```
-
 
 Few plots, just to check whether it works
 ```{multiverse default-m-2, inside = game}
-data_variables = data_st1 %>%  # Type removed, since col does not exist. 
- dplyr::select(branch(dv_iv,
-    "ContributionsbyAuthor_UniqueFemaleContributors" %when% (level == "participant") ~
+data_variables = data_st1 %>%  
+  select(branch(dv_iv,
+    "ContributionsbyAuthor_UniqueFemaleContributors" %when% (level == "participant") ~ 
       c(ThreadId, Id, Type, ContributionsbyAuthor, UniqueFemaleContributors, UniqueMaleContributors),
-    "ContributionsbyAuthor_UniqueFemaleParticipation" %when% (level == "participant") ~
+    "ContributionsbyAuthor_UniqueFemaleParticipation" %when% (level == "participant") ~ 
       c(ThreadId, Id, Type, ContributionsbyAuthor, UniqueFemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors),
-    "ContributionsbyAuthor_FemaleContributions" %when% (level == "participant") ~
+    "ContributionsbyAuthor_FemaleContributions" %when% (level == "participant") ~ 
       c(ThreadId, Id, Type, ContributionsbyAuthor, FemaleContributions, UniqueFemaleContributors, UniqueMaleContributors),
     "percent_by_author_UniqueFemaleContributors" %when% (level == "participant") ~
       c(ThreadId, Id, Type, percent_by_author, UniqueFemaleContributors, UniqueMaleContributors),
@@ -105,11 +104,12 @@ data_variables = data_st1 %>%  # Type removed, since col does not exist.
     "FemaleContributors_FemaleContributions" %when% (level == "conversation") ~
       c(ThreadId, Id, Type, FemaleContributors, FemaleContributions, UniqueFemaleContributors, UniqueMaleContributors)
   ))
+  
 ```
 
 ```{multiverse default-m-3, inside = game}
-data_filtered = data_variables %>% 
-  dplyr::filter(branch(n_female_male, 
+data_filtered = data_variables %>%
+  filter(branch(n_female_male, 
                 "only_female" ~ UniqueFemaleContributors >= 1, 
                 "female_and_male" ~ UniqueFemaleContributors >= 1 & UniqueMaleContributors >= 1))
 ```
@@ -121,11 +121,25 @@ data_filtered2 = data_filtered %>%
                 "only_comments" ~ Type == 2))
 ```
 
-```{multiverse default-m-5, inside = game}
-# execute_multiverse(game) 
-```
 ```{r}
-# summary: error in universe 14 -> a column causes the whole multiverse to break. likely this is percent_by_author, since this column cannot be found between colnames(raw_data), or colnames(data_st1). 
-# participant_level, percent_by_authorFemaleContributors, only_female_only_comments. 
-# yes: error confirmed: when dplyr::select(percent_by_author): ! Can't select columns that don't exist. ✖ Column `percent_by_author` doesn't exist.
+code(game)
+execute_universe(game, 14) # 
+
+execute_multiverse(game) 
 ```
+
+```{r}
+# summary: recursion from the execute_multiverse() gone. 
+res <- expand(game)
+res$.errors[[14]]
+nrow(res$.results[[14]]$data_filtered2)   # rows left after the filters
+extract_variable_from_universe(game, 14, data_filtered2)
+
+# summary after running execute_multiverse: errors in universe 3, 6, 7, 8, 9, 10, 11, 12, 13, 14 - several columns don't exist 
+```
+
+
+```{r}
+parameters(game)
+```
+
