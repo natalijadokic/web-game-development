@@ -1,0 +1,139 @@
+---
+title: "multiverse_package_gd"
+output: html_document
+date: "2026-10-06"
+---
+
+
+Loading the data, packages 
+
+```{r}
+
+library(multiverse)
+library(dplyr)
+library(tidyverse)
+library(lmerTest)
+library(ggplot2)
+library(tidyr)
+library(broom)
+library(lme4)
+
+
+
+my_data = read_csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+
+game = multiverse()
+
+
+particip_data_duplicates = my_data |> 
+  dplyr::select(!Order:Number.Characters)|> 
+  group_by(ThreadId, Id) %>%
+  summarize(across(Type:ContributionsbyAuthor,  ~ paste(unique(.x), collapse = "; "))) 
+        
+ particip_data_filt = particip_data_duplicates |>
+  filter(if_any(Type:ContributionsbyAuthor, ~ grepl(";", .x)))
+ 
+ my_data = anti_join(my_data, particip_data_filt,  by = c("ThreadId", "Id"))
+ 
+ my_data = my_data |> 
+   mutate(percent_by_author = ContributionsbyAuthor/ DebateSize, .after = ContributionsbyAuthor)
+ 
+ particip_data_clean = my_data |> 
+   dplyr::select(!Order:Number.Characters)|> 
+  group_by(ThreadId, Id) %>%
+  summarize(across(Type:ContributionsbyAuthor, unique))
+
+my_data_n = my_data |> 
+  group_by(ThreadId) |> 
+  dplyr::select(!Live) |> 
+  summarise(across(Type:UniqueFemaleParticipation, unique))
+
+```
+
+
+
+Attempt on trying a data_filtering decision with the multiverse 
+
+```{multiverse default-m-1, inside = game}
+
+
+
+my_data_st1 = my_data |> 
+  dplyr::select(branch(level, 
+                       "participant" ~ !c(Order:Number.Characters), 
+                       "conversation" ~ !Live )) |> 
+  group_by(ThreadId, branch(level, 
+                  "participant" ~ Id, 
+                  "conversation" ~ NULL)) |> 
+  summarise(branch(level, 
+                          "participant" ~ across(Type:percent_by_author, unique),
+                          "conversation" ~ across(Type:UniqueFemaleParticipation, unique)))
+
+
+parameters(game)
+
+
+```
+
+
+Few plots, just to check whether it works
+```{multiverse default-m-2, inside = game}
+
+my_data_variables = my_data_st1 |> 
+  select(branch(dv_iv,
+    "ContributionsbyAuthor_UniqueFemaleContributors" %when% (level == "participant") ~
+      c(ThreadId, Id, Type, ContributionsbyAuthor, UniqueFemaleContributors, UniqueMaleContributors),
+    "ContributionsbyAuthor_UniqueFemaleParticipation" %when% (level == "participant") ~
+      c(ThreadId, Id, Type, ContributionsbyAuthor, UniqueFemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors),
+    "ContributionsbyAuthor_FemaleContributions" %when% (level == "participant") ~
+      c(ThreadId, Id, Type, ContributionsbyAuthor, Female_Contributions, UniqueFemaleContributors, UniqueMaleContributors),
+
+    "percent_by_author_UniqueFemaleContributors" %when% (level == "participant") ~
+      c(ThreadId, Id, Type, percent_by_author, UniqueFemaleContributors, UniqueMaleContributors),
+    "percent_by_author_UniqueFemaleParticipation" %when% (level == "participant") ~
+      c(ThreadId, Id, Type, percent_by_author, UniqueFemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors),
+    "percent_by_author_FemaleContributions" %when% (level == "participant") ~
+      c(ThreadId, Id, Type, percent_by_author, Female_Contributions, UniqueFemaleContributors, UniqueMaleContributors),
+
+    "FemaleParticipation_UniqueFemaleContributors" %when% (level == "conversation") ~
+      c(ThreadId, Id, Type, FemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors),
+    "FemaleParticipation_UniqueFemaleParticipation" %when% (level == "conversation") ~
+      c(ThreadId, Id, Type, FemaleParticipation, UniqueFemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors),
+    "FemaleParticipation_FemaleContributions" %when% (level == "conversation") ~
+      c(ThreadId, Id, Type, FemaleParticipation, Female_Contributions, UniqueFemaleContributors, UniqueMaleContributors),
+
+    "FemaleContributions_UniqueFemaleContributors" %when% (level == "conversation") ~
+      c(ThreadId, Id, Type, Female_Contributions, UniqueFemaleContributors, UniqueMaleContributors),
+    "FemaleContributions_UniqueFemaleParticipation" %when% (level == "conversation") ~
+      c(ThreadId, Id, Type, Female_Contributions, UniqueFemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors)))
+
+
+
+```
+
+
+```{multiverse default-m-3, inside = game}
+my_data_filtered = my_data_variables |> 
+  filter(branch(n_female_male, 
+                "only_female" ~ UniqueFemaleContributors >= 1, 
+                "female_and_male" ~ UniqueFemaleContributors >= 1 & UniqueMaleContributors >= 1))
+
+
+
+```
+
+
+```{multiverse default-m-4, inside = game}
+my_data_filtered2 = my_data_filtered |> 
+  filter(branch(questions, 
+                "questions_and_comments" ~ Type == Type, 
+                "only_comments" ~ Type == 2))
+
+
+```
+
+
+
+```{multiverse default-m-5, inside = game}
+execute_multiverse(game)
+```
