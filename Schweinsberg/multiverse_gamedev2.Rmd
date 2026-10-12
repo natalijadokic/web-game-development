@@ -1,0 +1,241 @@
+---
+title: "multiverse_package_gd"
+output: html_document
+date: "2026-10-06"
+---
+
+
+Loading the data, packages 
+
+```{r}
+library(multiverse)
+library(dplyr)
+library(tidyverse)
+library(lmerTest)
+library(ggplot2)
+library(tidyr)
+library(broom)
+library(lme4)
+library(knitr)
+
+
+
+raw_data = read_csv("data/edge1.1.csv")
+
+game = multiverse()
+
+
+particip_data_duplicates = raw_data %>%  
+  dplyr::select(!Order:Number.Characters)|> 
+  group_by(ThreadId, Id) %>%
+  summarize(across(Type:ContributionsbyAuthor,  ~ paste(unique(.x), collapse = "; "))) 
+        
+ particip_data_filt = particip_data_duplicates %>% 
+  filter(if_any(Type:ContributionsbyAuthor, ~ grepl(";", .x)))
+ 
+ raw_data = anti_join(raw_data, particip_data_filt,  by = c("ThreadId", "Id"))
+ 
+ raw_data = raw_data %>%  
+   mutate(percent_by_author = ContributionsbyAuthor/ DebateSize, .after = ContributionsbyAuthor)
+ 
+ particip_data_clean = raw_data %>%  
+   dplyr::select(!Order:Number.Characters) %>%  
+  group_by(ThreadId, Id) %>%
+  summarize(across(Type:ContributionsbyAuthor, unique))
+
+raw_data_n = raw_data %>%  
+  group_by(across(c(ThreadId, Id))) %>%  
+  dplyr::select(!Live) %>% 
+  summarise(across(Type:UniqueFemaleParticipation, unique))
+
+raw_data_n = raw_data %>%  
+  dplyr::select(!Live) %>%  
+  group_by(across(ThreadId)) %>%  
+  summarise(across(Type:UniqueFemaleParticipation, unique))
+```
+
+#' ===================================================================
+#' NODE 1: data_filtering 
+#' @params: (parameters(game)): 
+#' $level[[1]]: participant, $level[[2]]: conversation
+
+```{multiverse default-m-1, inside = game}
+data_st1 = raw_data %>%  
+  dplyr::select(branch(level, 
+                       "participant" ~ !c(Order:Number.Characters), 
+                       "conversation" ~ !Live )) |> 
+  group_by(across(branch(level,
+                         "participant" ~ c(ThreadId, Id),
+                         "conversation" ~ ThreadId))) |> 
+  summarise(branch(level,
+                   "participant" ~ across(Type:percent_by_author, unique),
+                   "conversation" ~ across(Type:UniqueFemaleParticipation, unique)))
+
+
+parameters(game)
+```
+#' ===================================================================
+#' NODE 2: Selecting relevant variables (for analysis)
+#' 11 branching points => n(universes) = 11
+
+```{multiverse default-m-2, inside = game}
+data_variables = data_st1 %>%  
+  select(branch(dv_iv,
+    "ContributionsbyAuthor_UniqueFemaleContributors" %when% (level == "participant") ~
+      c(ThreadId, Id, Type, ContributionsbyAuthor, UniqueFemaleContributors, UniqueMaleContributors),
+    "ContributionsbyAuthor_UniqueFemaleParticipation" %when% (level == "participant") ~
+      c(ThreadId, Id, Type, ContributionsbyAuthor, UniqueFemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors),
+    "ContributionsbyAuthor_FemaleContributions" %when% (level == "participant") ~
+      c(ThreadId, Id, Type, ContributionsbyAuthor, Female_Contributions, UniqueFemaleContributors, UniqueMaleContributors),
+
+    "percent_by_author_UniqueFemaleContributors" %when% (level == "participant") ~
+      c(ThreadId, Id, Type, percent_by_author, UniqueFemaleContributors, UniqueMaleContributors),
+    "percent_by_author_UniqueFemaleParticipation" %when% (level == "participant") ~
+      c(ThreadId, Id, Type, percent_by_author, UniqueFemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors),
+    "percent_by_author_FemaleContributions" %when% (level == "participant") ~
+      c(ThreadId, Id, Type, percent_by_author, Female_Contributions, UniqueFemaleContributors, UniqueMaleContributors),
+
+    "FemaleParticipation_UniqueFemaleContributors" %when% (level == "conversation") ~
+      c(ThreadId, Type, FemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors),
+    "FemaleParticipation_UniqueFemaleParticipation" %when% (level == "conversation") ~
+      c(ThreadId, Type, FemaleParticipation, UniqueFemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors),
+    "FemaleParticipation_FemaleContributions" %when% (level == "conversation") ~
+      c(ThreadId, Type, FemaleParticipation, Female_Contributions, UniqueFemaleContributors, UniqueMaleContributors),
+
+    "FemaleContributions_UniqueFemaleContributors" %when% (level == "conversation") ~
+      c(ThreadId, Type, Female_Contributions, UniqueFemaleContributors, UniqueMaleContributors),
+    "FemaleContributions_UniqueFemaleParticipation" %when% (level == "conversation") ~
+      c(ThreadId, Type, Female_Contributions, UniqueFemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors)))
+```
+
+#' ===================================================================
+#' NODE 3: Filtering => numbers of females in noth levels
+#' n(universes = 22)
+
+```{multiverse default-m-3, inside = game}
+data_filtered = data_variables %>%  
+  filter(branch(n_female_male, 
+                "only_female" ~ UniqueFemaleContributors >= 1, 
+                "female_and_male" ~ UniqueFemaleContributors >= 1 & UniqueMaleContributors >= 1))
+```
+
+#' ===================================================================
+#' NODE 4: Filtering: including only comments, or questions and comments. 
+#' n(universes) = 44
+
+```{multiverse default-m-4, inside = game}
+data_filtered2 <- data_filtered %>%  
+  filter(branch(questions, 
+                "questions_and_comments" ~ Type == Type, 
+                "only_comments" ~ Type == 2))
+```
+
+#' Data frame for all 44 possible universes
+
+```{r}
+df_expand = multiverse::expand(game)
+```
+
+#' Execute multiverse, storing results
+
+```{r}
+execute_multiverse(game, progress = TRUE)
+
+results_n4 = extract_variables(game, data_filtered2)
+
+nine <- results_n4$data_filtered2[[9]]     # df from the 9th universe
+```
+
+#' ===================================================================
+#' NODE 5: PLOTS
+
+```{r}
+# plots should be a column in results_n4: a function takes each row, extracts each universe one by one, then creates a df with only the dv and the iv
+# then: plots dv (and iv), and the relationship between dv and iv
+# also: the plots should be saved into lists 
+```
+
+
+```{r}
+install.packages("stringr")
+library(stringr)
+library(scales)
+
+# for (i in results_n4$dv_iv[[i]] {
+#   
+#   
+# }
+
+dv_iv_8 <- results_n4$dv_iv[[8]]
+
+parts <- str_split_1(dv_iv_8, "_")
+dv <- parts[1]
+dv
+iv <- parts[2]
+iv
+
+iv <- if_else(iv == "FemaleContributions", "Female_Contributions", iv)
+
+eight <- results_n4$data_filtered2[[8]] %>% 
+  ungroup() %>% 
+  select(dv, iv)
+  
+dv_iv_8_plot <- eight %>% 
+  ggplot(aes(x = .data[[iv]], y = .data[[dv]])) +
+  geom_point(alpha = 0.4) +
+  theme_bw() +
+  labs(x = iv, y = dv,
+       title = "Relationship between the dependent and independent variable")
+
+plots <- vector("list", nrow(results_n4))
+dv_plots <- vector("list", nrow(results_n4))
+
+for (i in seq_len(nrow(results_n4))) {
+  
+  x <- results_n4$dv_iv[[i]]
+
+  if (str_starts(x, "percent")) {
+  dv <- "percent_by_author"
+  iv <- str_remove(x, "^percent_by_author_")
+    } else {
+      dv <- str_extract(x, "^[^_]+")    # everything before the first underscore
+      iv <- str_remove(x, "^[^_]+_")    # everything after it
+    }
+  iv <- if_else(iv == "FemaleContributions", "Female_Contributions", iv)
+  dv <- if_else(dv == "FemaleContributions", "Female_Contributions", dv)
+
+
+  df <- results_n4$data_filtered2[[i]] %>%
+    ungroup() %>%
+    select(all_of(c(dv, iv)))
+
+  plots[[i]] <- ggplot(df, aes(x = .data[[iv]], y = .data[[dv]])) +
+    geom_point(alpha = 0.4) +
+    theme_bw() +
+    labs(x = iv, 
+         y = dv,
+         title = "Relationship between the dependent and independent variable",
+         subtitle = paste("Universe", results_n4$.universe[[i]]))
+  
+  x <- df[[dv]]
+  rng <- diff(range(x, na.rm = TRUE))
+  n_bins <- 60
+  bw <- rng / 60                                  # binwidth: ~60 bins across the range
+  
+  max_stack <- max(table(floor((x - min(x, na.rm = TRUE)) / bw)))   # tallest pile of dots
+  aspect <- 2                                   # approx. panel width / height
+  ds <- min(1, 0.8 * n_bins / (max_stack * aspect))
+  
+  dv_plots[[i]] <- ggplot(df, aes(x = .data[[dv]])) +
+    geom_dotplot(binwidth = bw, dotsize = ds, method = "histodot", stackratio = 1) +
+    theme_bw() +
+    labs(x = dv, y = NULL,
+         title = paste("Distribution of", dv),
+         subtitle = paste("Universe", results_n4$.universe[[i]]))
+    
+}
+
+plots[[8]]
+dv_plots[[20]] # universe 8. yayy, plot looks amazing
+```
+
