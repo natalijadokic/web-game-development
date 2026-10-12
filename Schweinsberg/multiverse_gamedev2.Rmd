@@ -194,12 +194,13 @@ for (i in seq_len(nrow(results_n4))) {
   
   x <- results_n4$dv_iv[[i]]
 
+  # dealing with underscores
   if (str_starts(x, "percent")) {
   dv <- "percent_by_author"
   iv <- str_remove(x, "^percent_by_author_")
     } else {
-      dv <- str_extract(x, "^[^_]+")    # everything before the first underscore
-      iv <- str_remove(x, "^[^_]+_")    # everything after it
+      dv <- str_extract(x, "^[^_]+")    
+      iv <- str_remove(x, "^[^_]+_")
     }
   iv <- if_else(iv == "FemaleContributions", "Female_Contributions", iv)
   dv <- if_else(dv == "FemaleContributions", "Female_Contributions", dv)
@@ -217,13 +218,14 @@ for (i in seq_len(nrow(results_n4))) {
          title = "Relationship between the dependent and independent variable",
          subtitle = paste("Universe", results_n4$.universe[[i]]))
   
+  # dynamic scaling for y axis
   x <- df[[dv]]
   rng <- diff(range(x, na.rm = TRUE))
   n_bins <- 60
-  bw <- rng / 60                                  # binwidth: ~60 bins across the range
+  bw <- rng / 60                                 
   
-  max_stack <- max(table(floor((x - min(x, na.rm = TRUE)) / bw)))   # tallest pile of dots
-  aspect <- 2                                   # approx. panel width / height
+  max_stack <- max(table(floor((x - min(x, na.rm = TRUE)) / bw)))   
+  aspect <- 2                                   
   ds <- min(1, 0.8 * n_bins / (max_stack * aspect))
   
   dv_plots[[i]] <- ggplot(df, aes(x = .data[[dv]])) +
