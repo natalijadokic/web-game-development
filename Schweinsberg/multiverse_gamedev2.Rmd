@@ -14,13 +14,15 @@ library(tidyverse)
 library(lmerTest)
 library(ggplot2)
 library(tidyr)
+install.packages("broom")
 library(broom)
 library(lme4)
 library(knitr)
 
-
-
 raw_data = read_csv("data/edge1.1.csv")
+# TODO: "Warning: One or more parsing issues, call `problems()` on your data frame for details, e.g.:
+  # dat <- vroom(...)
+  # problems(dat)"
 
 game = multiverse()
 
@@ -36,10 +38,10 @@ particip_data_duplicates = raw_data %>%
  raw_data = anti_join(raw_data, particip_data_filt,  by = c("ThreadId", "Id"))
  
  raw_data = raw_data %>%  
-   mutate(percent_by_author = ContributionsbyAuthor/ DebateSize, .after = ContributionsbyAuthor)
+  mutate(percent_by_author = ContributionsbyAuthor/ DebateSize, .after = ContributionsbyAuthor)
  
  particip_data_clean = raw_data %>%  
-   dplyr::select(!Order:Number.Characters) %>%  
+  dplyr::select(!Order:Number.Characters) %>%  
   group_by(ThreadId, Id) %>%
   summarize(across(Type:ContributionsbyAuthor, unique))
 
@@ -71,9 +73,13 @@ data_st1 = raw_data %>%
                    "participant" ~ across(Type:percent_by_author, unique),
                    "conversation" ~ across(Type:UniqueFemaleParticipation, unique)))
 
-
 parameters(game)
 ```
+```{r}
+# TODO: solve summarise() regroup warning -> output grouped by ThreadId, summaries grouped by ThreadId and Id
+```
+
+
 #' ===================================================================
 #' NODE 2: Selecting relevant variables (for analysis)
 #' 11 branching points => n(universes) = 11
@@ -161,34 +167,9 @@ install.packages("stringr")
 library(stringr)
 library(scales)
 
-# for (i in results_n4$dv_iv[[i]] {
-#   
-#   
-# }
-
-dv_iv_8 <- results_n4$dv_iv[[8]]
-
-parts <- str_split_1(dv_iv_8, "_")
-dv <- parts[1]
-dv
-iv <- parts[2]
-iv
-
-iv <- if_else(iv == "FemaleContributions", "Female_Contributions", iv)
-
-eight <- results_n4$data_filtered2[[8]] %>% 
-  ungroup() %>% 
-  select(dv, iv)
-  
-dv_iv_8_plot <- eight %>% 
-  ggplot(aes(x = .data[[iv]], y = .data[[dv]])) +
-  geom_point(alpha = 0.4) +
-  theme_bw() +
-  labs(x = iv, y = dv,
-       title = "Relationship between the dependent and independent variable")
-
 plots <- vector("list", nrow(results_n4))
 dv_plots <- vector("list", nrow(results_n4))
+iv_plots <- vector("list", nrow(results_n4))
 
 for (i in seq_len(nrow(results_n4))) {
   
@@ -204,7 +185,6 @@ for (i in seq_len(nrow(results_n4))) {
     }
   iv <- if_else(iv == "FemaleContributions", "Female_Contributions", iv)
   dv <- if_else(dv == "FemaleContributions", "Female_Contributions", dv)
-
 
   df <- results_n4$data_filtered2[[i]] %>%
     ungroup() %>%
@@ -234,10 +214,95 @@ for (i in seq_len(nrow(results_n4))) {
     labs(x = dv, y = NULL,
          title = paste("Distribution of", dv),
          subtitle = paste("Universe", results_n4$.universe[[i]]))
+  
+  iv_plots[[i]] <- ggplot(df, aes(x = .data[[iv]])) +
+    geom_dotplot(binwidth = bw, dotsize = ds, method = "histodot", stackratio = 1) +
+    theme_bw() +
+    labs(x = iv, y = NULL,
+         title = paste("Distribution of", iv),
+         subtitle = paste("Universe", results_n4$.universe[[i]]))
+  
+  print(plots[[i]])
     
 }
 
 plots[[8]]
 dv_plots[[20]] # universe 8. yayy, plot looks amazing
+
+results_n5 <- results_n4 %>% 
+  mutate(dv_iv_plots = plots, 
+         dv_plots = dv_plots, 
+         iv_plots = iv_plots) 
 ```
 
+#' ===================================================================
+#' NODE 6: STATISTICAL MODELS
+
+```{r}
+library(stats)
+one <- results_n5$data_filtered2[[1]]
+
+x <- results_n4$dv_iv[[1]]
+
+  if (str_starts(x, "percent")) {
+  dv <- "percent_by_author"
+  iv <- str_remove(x, "^percent_by_author_")
+    } else {
+      dv <- str_extract(x, "^[^_]+")    
+      iv <- str_remove(x, "^[^_]+_")
+    }
+  iv <- if_else(iv == "FemaleContributions", "Female_Contributions", iv)
+  dv <- if_else(dv == "FemaleContributions", "Female_Contributions", dv)
+  
+  iv
+  dv
+
+model_data1 <- one %>% 
+  ungroup() 
+
+model1 <- glm(ContributionsbyAuthor ~ UniqueFemaleContributors, family = "poisson", data = model_data1)
+
+summary(model1)
+```
+
+#' LINEAR REGRESSIONS
+
+```{r}
+models <- vector("list", nrow(results_n5))
+summaries <- vector("list", nrow(results_n5))
+
+for (i in seq_len(nrow(results_n5))) {
+  x <- results_n5$dv_iv[[i]]
+
+  # dealing with underscores, naming dv-iv
+  if (str_starts(x, "percent")) {
+  dv <- "percent_by_author"
+  iv <- str_remove(x, "^percent_by_author_")
+    } else {
+      dv <- str_extract(x, "^[^_]+")    
+      iv <- str_remove(x, "^[^_]+_")
+    }
+  iv <- if_else(iv == "FemaleContributions", "Female_Contributions", iv)
+  dv <- if_else(dv == "FemaleContributions", "Female_Contributions", dv)
+  
+  df <- results_n5$data_filtered2[[i]] %>%
+    ungroup()
+  
+  f <- reformulate(iv, response = dv)
+  
+  models[[i]] <- lm(f, data = df)
+  summaries[[i]] <- summary(models[[i]])
+  print(summaries[[i]])
+}
+```
+
+```{r}
+# possible models: 
+# - poisson regression
+# - linear regression 
+# - beta regression (suitable regression)
+# assumptions for regression <- should be included before the analysis node 
+
+# TODO: Poisson regression <- conditional tryCatch errors, also for beta regression - all the warning should be included in only one biiiig warning
+# TODO: REGRESSION PLOT
+```
