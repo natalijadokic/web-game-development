@@ -4,7 +4,6 @@ output: html_document
 date: "2026-10-06"
 ---
 
-
 Loading the data, packages 
 
 ```{r}
@@ -18,6 +17,17 @@ install.packages("broom")
 library(broom)
 library(lme4)
 library(knitr)
+library(purrr)
+library(readr)
+install.packages("stringr")
+library(stringr)
+library(scales)
+library(betareg)
+library(flexmix)
+library(modeltools)
+install.packages("statmod")
+library(statmod)
+library(stats)
 
 raw_data = read_csv("data/edge1.1.csv")
 # TODO: "Warning: One or more parsing issues, call `problems()` on your data frame for details, e.g.:
@@ -163,10 +173,6 @@ nine <- results_n4$data_filtered2[[9]]     # df from the 9th universe
 
 
 ```{r}
-install.packages("stringr")
-library(stringr)
-library(scales)
-
 plots <- vector("list", nrow(results_n4))
 dv_plots <- vector("list", nrow(results_n4))
 iv_plots <- vector("list", nrow(results_n4))
@@ -222,7 +228,10 @@ for (i in seq_len(nrow(results_n4))) {
          title = paste("Distribution of", iv),
          subtitle = paste("Universe", results_n4$.universe[[i]]))
   
-  print(plots[[i]])
+  # Only uncomment when needed! 
+  # print(plots[[i]])
+  # print(iv_plots[[i]])
+  # print(dv_plots[[i]])
     
 }
 
@@ -240,7 +249,6 @@ results_n5 <- results_n4 %>%
 ##' TEST 1: Linear regression
 
 ```{r}
-library(stats)
 one <- results_n5$data_filtered2[[1]]
 
 x <- results_n4$dv_iv[[1]]
@@ -269,12 +277,6 @@ summary(model1)
 ##' Test 2 - Beta regression: for proportion variables (`percent_by_author`)
 
 ```{r}
-library(betareg)
-library(flexmix)
-library(modeltools)
-install.packages("statmod")
-library(statmod)
-
 eighteen <- results_n5$data_filtered2[[18]]
 
 model_data18 <- eighteen %>% 
@@ -284,8 +286,6 @@ model_betareg <- betareg::betareg(percent_by_author ~ UniqueFemaleParticipation,
 betareg_sum <- summary(model_betareg)
 
 betareg_sum
-
-# TODO: explanation: why logit? 
 ```
 
 #' NODE 6: STATISTICAL MODELS
@@ -294,109 +294,284 @@ betareg_sum
 ```{r}
 n <- nrow(results_n5)
 
-lm_models <- vector("list", n)
+# Initialize result containers
+lm_models    <- vector("list", n)
 lm_summaries <- vector("list", n)
 
-poisson_ms <- vector("list", n)
+poisson_ms   <- vector("list", n)
 poisson_sums <- vector("list", n)
 poisson_notes <- rep(NA_character_, n)
 
-library(betareg)
-beta_models <- vector("list", n)
+beta_models   <- vector("list", n)
 beta_summaries <- vector("list", n)
 beta_notes <- rep(NA_character_, n)
+```
 
+```{r}
+# Capture model warnings and errors
+capture_fit <- function(expr) {
+  warnings <- character()
+
+  fit <- tryCatch(
+    withCallingHandlers(
+      expr,
+      warning = function(w) {
+        warnings <<- c(warnings, conditionMessage(w))
+        invokeRestart("muffleWarning")
+      }
+    ),
+    error = function(e) e
+  )
+
+  list(
+    fit = fit,
+    warnings = paste(unique(warnings), collapse = " | "),
+    error = if (inherits(fit, "error")) {
+      conditionMessage(fit)
+    } else {
+      NA_character_
+    }
+  )
+}
+
+# Convert a model summary into text for a CSV cell
+summary_to_text <- function(model) {
+  if (is.null(model)) return(NA_character_)
+
+  paste(
+    capture.output(print(summary(model))),
+    collapse = "\n"
+  )
+}
+
+# create one row for a model's results
+make_record <- function(i, dv, iv, status,
+                        model_summary = NA_character_,
+                        warnings = NA_character_,
+                        note = NA_character_) {
+  data.frame(
+    universe = i,
+    dv = dv,
+    iv = iv,
+    status = status,
+    summary = model_summary,
+    warnings = warnings,
+    note = note,
+    stringsAsFactors = FALSE
+  )
+}
+```
+
+
+```{r}
+lm_results <- list()
+poisson_results <- list()
+beta_results <- list()
 
 for (i in seq_len(n)) {
+
   x <- results_n5$dv_iv[[i]]
 
-  # dealing with underscores, naming dv-iv
-  if (str_starts(x, "percent")) {
-  dv <- "percent_by_author"
-  iv <- str_remove(x, "^percent_by_author_")
-    } else {
-      dv <- str_extract(x, "^[^_]+")    
-      iv <- str_remove(x, "^[^_]+_")
-    }
+  # ============================================================
+  # iv-dv declaration
+
+  if (str_starts(x, "percent_by_author_")) {
+
+    dv <- "percent_by_author"
+    iv <- str_remove(x, "^percent_by_author_")
+
+  } else {
+
+    dv <- str_extract(x, "^[^_]+")
+    iv <- str_remove(x, "^[^_]+_")
+
+  }
+
   iv <- if_else(iv == "FemaleContributions", "Female_Contributions", iv)
   dv <- if_else(dv == "FemaleContributions", "Female_Contributions", dv)
-  
+
   df <- results_n5$data_filtered2[[i]] %>%
     ungroup()
-  
- # ==========================================================================
-  # LINEAR REGRESSION:
-  
+
+  # do all variables exist? 
+  if (!all(c(dv, iv) %in% names(df))) {
+    message(
+      "Universe ", i,
+      ": DV or IV not found. DV = ", dv,
+      "; IV = ", iv
+    )
+    next
+  }
+
+  # parsing info printing
+  message(
+    "\nUniverse ", i,
+    " | DV: ", dv,
+    " | IV: ", iv
+  )
+
   f <- reformulate(iv, response = dv)
-  
-  lm_models[[i]] <- lm(f, data = df)
-  lm_summaries[[i]] <- summary(lm_models[[i]])
- # ==========================================================================
-  # POISSON REGRESSION: only applicable for non-negative integer count values
-  
-  # is the dv a count variable?
   y <- df[[dv]]
-  is_count <- all(y >= 0 & abs(y - round(y)) < 1e-8)
+
+  # ============================================================
+  # LINEAR REGRESSION
+
+  lm_result <- capture_fit(lm(f, data = df))
+
+  # if error, then return error
+  if (!is.na(lm_result$error)) {
+    message("Linear regression error in Universe ", i, ": ", lm_result$error)
   
-  # if not -> Poisson not applicable
+    lm_results[[i]] <- make_record(
+      i, dv, iv, "error",
+      warnings = lm_result$warnings,
+      note = lm_result$error
+    )
+  
+  } else {
+    lm_models[[i]] <- lm_result$fit
+    lm_summaries[[i]] <- summary(lm_result$fit)
+  
+    lm_results[[i]] <- make_record(
+      i, dv, iv, "success",
+      model_summary = summary_to_text(lm_result$fit),
+      warnings = lm_result$warnings
+    )
+  }
+
+  # ============================================================
+  # POISSON REGRESSION: applicable to non-negative integer counts 
+
+  y_obs <- y[!is.na(y)]
+
+  is_count <- (
+    is.numeric(y) &&
+    length(y_obs) > 0 &&
+    all(is.finite(y_obs)) &&
+    all(y_obs >= 0) &&
+    all(abs(y_obs - round(y_obs)) < 1e-8)
+  )
+
   if (!is_count) {
-      poisson_notes[i] <- paste0("Poisson regression not applicable: '", dv, "' is not a non-negative integer count")
-      cat(poisson_notes[i], "\n")
-      next
-  }
+    poisson_notes[i] <- paste0("Poisson regression not applicable: '", dv, "' is not a non-negative integer count.")
 
-  # fit model
-  poisson_fit <- tryCatch(
-    glm(reformulate(iv, response = dv), family = poisson, data = df),
-    error = function(e) e
-  )
-  if (inherits(poisson_fit, "error")) {
-      poisson_notes[i] <- paste0("Error for Universe ", i, ": ", conditionMessage(poisson_fit))
-      cat(poisson_notes[i], "\n")
-      next
-  }
+    # create row for model's results
+    poisson_results[[i]] <- make_record(
+      i, dv, iv, "not_applicable",
+      note = poisson_notes[i])
+    
+  } else { # fitter function, poisson with log link function
+    poisson_result <- capture_fit(glm(f, family = poisson(link = "log"), data = df))
 
-  poisson_ms[[i]] <- poisson_fit
-  poisson_sums[[i]] <- summary(poisson_fit)
-  
-  cat("Universe", i, "\n")
-  print(poisson_sums[[i]])
-  
- # ==========================================================================
-  # BETA REGRESSION: only applicable for proportional values
-  
-  z <- df[[dv]]
-  in_unit_interval <- all(z >= 0 & z <= 1)
-  has_non_integers <- any(abs(z - round(z)) > 1e-8) 
-  is_proportion <- in_unit_interval && has_non_integers
-  beta_applicable <- is_proportion && all(z > 0 & z <= 1)
-  
-  # if not -> Poisson not applicable
-  if (!beta_applicable) {
-      beta_notes[i] <- paste0("Beta regression not applicable: '", dv, "' is not a proportional value")
-      cat(beta_notes[i], "\n")
-      next
-  }
+  if (!is.na(poisson_result$error)) {
 
-  # fit model
-  beta_fit <- tryCatch(
-    betareg(reformulate(iv, response = dv), link = "logit", data = df, type = "ML"),
-    error = function(e) e
-  )
-  if (inherits(beta_fit, "error")) {
-      beta_notes[i] <- paste0("Error for Universe ", i, ": ", conditionMessage(beta_fit))
-      cat(beta_notes[i], "\n")
-      next
-  }
+    poisson_notes[i] <- poisson_result$error
 
-  beta_models[[i]] <- beta_fit
-  beta_summaries[[i]] <- summary(beta_fit)
-  
-  cat("Universe", i, "\n")
-  print(beta_summaries[[i]])
-  
-  # print(lm_summaries[[i]])
+    # create one row for the results - here errors 
+    poisson_results[[i]] <- make_record(
+      i, dv, iv, "error",
+      warnings = poisson_result$warnings,
+      note = poisson_result$error
+    )
+
+  } else {
+
+    poisson_ms[[i]] <- poisson_result$fit
+    poisson_sums[[i]] <- summary(poisson_result$fit)
+
+    poisson_results[[i]] <- make_record(
+      i, dv, iv, "success",
+      model_summary = summary_to_text(poisson_result$fit),
+      warnings = poisson_result$warnings
+    )
+  }
 }
+
+  # ============================================================
+  # BETA REGRESSION: requires 0 < y < 1 (proportional values)
+  
+    z <- df[[dv]]
+    z_obs <- z[!is.na(z)]
+    
+    beta_applicable <- (
+      is.numeric(z) &&
+      length(z_obs) > 0 &&
+      all(is.finite(z_obs)) &&
+      all(z_obs >= 0 & z_obs <= 1)
+    )
+    
+    if (!beta_applicable) {
+      beta_notes[i] <- paste0(
+        "Beta regression not applicable: '",
+        dv, "' must contain numeric values between 0 and 1.")
+      
+      beta_results[[i]] <- make_record(
+        i, dv, iv, "not_applicable",
+        note = beta_notes[i]
+      )
+    } else {
+  
+      beta_result <- capture_fit(
+        betareg::betareg(
+          f,
+          link = "logit",
+          data = df,
+          type = "ML"
+        )
+      )
+    
+    if (!is.na(beta_result$error)) {
+    
+        beta_notes[i] <- beta_result$error
+    
+        beta_results[[i]] <- make_record(
+          i, dv, iv, "error",
+          warnings = beta_result$warnings,
+          note = beta_result$error
+        )
+    
+      } else {
+    
+        beta_models[[i]] <- beta_result$fit
+        beta_summaries[[i]] <- summary(beta_result$fit)
+    
+        beta_results[[i]] <- make_record(
+          i, dv, iv, "success",
+          model_summary = summary_to_text(beta_result$fit),
+          warnings = beta_result$warnings)
+      }
+  }
+}
+
+```
+
+
+#' NODE 7: SAVING RESULTS: 
+```{r}
+lm_results_df <- dplyr::bind_rows(lm_results)
+poisson_results_df <- dplyr::bind_rows(poisson_results)
+beta_results_df <- dplyr::bind_rows(beta_results)
+
+write.csv(
+  lm_results_df,
+  "lm_summaries.csv",
+  row.names = FALSE,
+  na = ""
+)
+
+write.csv(
+  poisson_results_df,
+  "poisson_summaries.csv",
+  row.names = FALSE,
+  na = ""
+)
+
+write.csv(
+  beta_results_df,
+  "beta_summaries.csv",
+  row.names = FALSE,
+  na = ""
+)
 ```
 
 
@@ -407,7 +582,5 @@ for (i in seq_len(n)) {
 # - beta regression  
 # assumptions for regression <- should be included before the analysis node 
 
-# TODO: REGRESSION PLOT
 # TODO: szepen elmenteni a summaryket csv-kent vagy txt-kent, univerzumokra lebontva
-# TODO: BETA REGRESSION
 ```
