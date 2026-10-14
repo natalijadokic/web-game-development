@@ -287,53 +287,23 @@ betareg_sum
 # TODO: explanation: why logit? 
 ```
 
-## step 1: trycatch error function (?) for one universe in which the Poissoon regression is not applicable
-```{r}
-# -> then step 1.5 - apply it to the whole analytical space
-poisson_fit <- sapply(eighteen, function(x) {
-  
-  x <- results_n5$dv_iv[[18]]
-
-  if (str_starts(x, "percent")) {
-    dv <- "percent_by_author"
-    iv <- str_remove(x, "^percent_by_author_")
-      } else {
-        dv <- str_extract(x, "^[^_]+")    
-        iv <- str_remove(x, "^[^_]+_")
-      }
-  iv <- if_else(iv == "FemaleContributions", "Female_Contributions", iv)
-  dv <- if_else(dv == "FemaleContributions", "Female_Contributions", dv)
-  
-  poisson_data18 <- eighteen %>% 
-    ungroup()
-  
-  # flag where: dv < 1 | iv < 1
-  
-  tryCatch(
-    {
-      poisson_model <- glm(dv ~ iv, family = "poisson", data = poisson_data18)
-    }, error = function(msg){
-      message(paste("Error for Universe 18: ", dv, "is not a non-negative integer count."))
-    }
-  )
-})
-
-poisson_fit
-```
-
 ## step 2: beta regression
 ```{r}
 
 ```
 
 
-#' node only includes: LINEAR REGRESSIONS
+#' node only includes: LINEAR REGRESSIONS, POISSON REGRESSION
 
 ```{r}
-lm_models <- vector("list", nrow(results_n5))
-lm_summaries <- vector("list", nrow(results_n5))
+n <- nrow(results_n5)
+lm_models <- vector("list", n)
+lm_summaries <- vector("list", n)
+poisson_ms <- vector("list", n)
+poisson_sums <- vector("list", n)
+poisson_notes <- rep(NA_character_, n)
 
-for (i in seq_len(nrow(results_n5))) {
+for (i in seq_len(n)) {
   x <- results_n5$dv_iv[[i]]
 
   # dealing with underscores, naming dv-iv
@@ -350,21 +320,56 @@ for (i in seq_len(nrow(results_n5))) {
   df <- results_n5$data_filtered2[[i]] %>%
     ungroup()
   
+ # ==========================================================================
+  # LINEAR REGRESSION:
+  
   f <- reformulate(iv, response = dv)
   
   lm_models[[i]] <- lm(f, data = df)
-  lm_summaries[[i]] <- summary(models[[i]])
-  print(lm_summaries[[i]])
+  lm_summaries[[i]] <- summary(lm_models[[i]])
+ # ==========================================================================
+  # POISSON REGRESSION: 
+  
+  # is the dv a count variable?
+  y <- df[[dv]]
+  is_count <- all(y >= 0 & abs(y - round(y)) < 1e-8)
+  
+  # if not -> Poisson not applicable
+  if (!is_count) {
+      poisson_notes[i] <- paste0("Poisson not applicable: '", dv, "' is not a non-negative integer count")
+      cat(poisson_notes[i], "\n")
+      next
+  }
+
+  # fit model
+  poisson_fit <- tryCatch(
+    glm(reformulate(iv, response = dv), family = poisson, data = df),
+    error = function(e) e
+  )
+  if (inherits(poisson_fit, "error")) {
+      poisson_notes[i] <- paste0("Error for Universe ", i, ": ", conditionMessage(poisson_fit))
+      cat(poisson_notes[i], "\n")
+      next
+  }
+
+  poisson_ms[[i]]   <- poisson_fit
+  poisson_sums[[i]] <- summary(poisson_fit)
+  
+  cat("Universe", i, "\n")
+  print(poisson_sums[[i]])
+  
+  # print(lm_summaries[[i]])
 }
 ```
 
 ```{r}
 # possible models: 
-# - poisson regression
-# - linear regression 
-# - beta regression (suitable regression)
+# - poisson regression - done! :)
+# - linear regression - done! :) 
+# - beta regression  
 # assumptions for regression <- should be included before the analysis node 
 
-# TODO: Poisson regression <- conditional tryCatch errors, also for beta regression - all the warning should be included in only one biiiig warning
 # TODO: REGRESSION PLOT
+# TODO: szepen elmenteni a summaryket csv-kent vagy txt-kent, univerzumokra lebontva
+# TODO: BETA REGRESSION
 ```
