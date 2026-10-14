@@ -265,7 +265,8 @@ model1 <- glm(ContributionsbyAuthor ~ UniqueFemaleContributors, family = "poisso
 
 summary(model1)
 ```
-##' Beta regression: for proportion variables (`percent_by_author`)
+
+##' Test 2 - Beta regression: for proportion variables (`percent_by_author`)
 
 ```{r}
 library(betareg)
@@ -287,21 +288,24 @@ betareg_sum
 # TODO: explanation: why logit? 
 ```
 
-## step 2: beta regression
-```{r}
-
-```
-
-
-#' node only includes: LINEAR REGRESSIONS, POISSON REGRESSION
+#' NODE 6: STATISTICAL MODELS
+#' Includes: Poisson regression, Linear regression, Beta regression
 
 ```{r}
 n <- nrow(results_n5)
+
 lm_models <- vector("list", n)
 lm_summaries <- vector("list", n)
+
 poisson_ms <- vector("list", n)
 poisson_sums <- vector("list", n)
 poisson_notes <- rep(NA_character_, n)
+
+library(betareg)
+beta_models <- vector("list", n)
+beta_summaries <- vector("list", n)
+beta_notes <- rep(NA_character_, n)
+
 
 for (i in seq_len(n)) {
   x <- results_n5$dv_iv[[i]]
@@ -328,7 +332,7 @@ for (i in seq_len(n)) {
   lm_models[[i]] <- lm(f, data = df)
   lm_summaries[[i]] <- summary(lm_models[[i]])
  # ==========================================================================
-  # POISSON REGRESSION: 
+  # POISSON REGRESSION: only applicable for non-negative integer count values
   
   # is the dv a count variable?
   y <- df[[dv]]
@@ -336,7 +340,7 @@ for (i in seq_len(n)) {
   
   # if not -> Poisson not applicable
   if (!is_count) {
-      poisson_notes[i] <- paste0("Poisson not applicable: '", dv, "' is not a non-negative integer count")
+      poisson_notes[i] <- paste0("Poisson regression not applicable: '", dv, "' is not a non-negative integer count")
       cat(poisson_notes[i], "\n")
       next
   }
@@ -352,15 +356,49 @@ for (i in seq_len(n)) {
       next
   }
 
-  poisson_ms[[i]]   <- poisson_fit
+  poisson_ms[[i]] <- poisson_fit
   poisson_sums[[i]] <- summary(poisson_fit)
   
   cat("Universe", i, "\n")
   print(poisson_sums[[i]])
   
+ # ==========================================================================
+  # BETA REGRESSION: only applicable for proportional values
+  
+  z <- df[[dv]]
+  in_unit_interval <- all(z >= 0 & z <= 1)
+  has_non_integers <- any(abs(z - round(z)) > 1e-8) 
+  is_proportion <- in_unit_interval && has_non_integers
+  beta_applicable <- is_proportion && all(z > 0 & z <= 1)
+  
+  # if not -> Poisson not applicable
+  if (!beta_applicable) {
+      beta_notes[i] <- paste0("Beta regression not applicable: '", dv, "' is not a proportional value")
+      cat(beta_notes[i], "\n")
+      next
+  }
+
+  # fit model
+  beta_fit <- tryCatch(
+    betareg(reformulate(iv, response = dv), link = "logit", data = df, type = "ML"),
+    error = function(e) e
+  )
+  if (inherits(beta_fit, "error")) {
+      beta_notes[i] <- paste0("Error for Universe ", i, ": ", conditionMessage(beta_fit))
+      cat(beta_notes[i], "\n")
+      next
+  }
+
+  beta_models[[i]] <- beta_fit
+  beta_summaries[[i]] <- summary(beta_fit)
+  
+  cat("Universe", i, "\n")
+  print(beta_summaries[[i]])
+  
   # print(lm_summaries[[i]])
 }
 ```
+
 
 ```{r}
 # possible models: 
