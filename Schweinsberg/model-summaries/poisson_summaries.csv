@@ -1,0 +1,405 @@
+"universe","dv","iv","status","summary","warnings","note"
+1,"ContributionsbyAuthor","UniqueFemaleContributors","success","
+Call:
+glm(formula = f, family = poisson(link = ""log""), data = df)
+
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)               1.215936   0.019909   61.08   <2e-16 ***
+UniqueFemaleContributors -0.058718   0.001567  -37.48   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 8018.0  on 3198  degrees of freedom
+Residual deviance: 6404.4  on 3197  degrees of freedom
+AIC: 13217
+
+Number of Fisher Scoring iterations: 6
+","",
+2,"ContributionsbyAuthor","UniqueFemaleContributors","success","
+Call:
+glm(formula = f, family = poisson(link = ""log""), data = df)
+
+Coefficients:
+                         Estimate Std. Error z value Pr(>|z|)    
+(Intercept)               1.77282    0.03082   57.52   <2e-16 ***
+UniqueFemaleContributors -0.27548    0.01566  -17.60   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 5932.2  on 860  degrees of freedom
+Residual deviance: 5497.4  on 859  degrees of freedom
+AIC: 7627.5
+
+Number of Fisher Scoring iterations: 6
+","",
+3,"ContributionsbyAuthor","UniqueFemaleContributors","success","
+Call:
+glm(formula = f, family = poisson(link = ""log""), data = df)
+
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)               1.237585   0.020046   61.74   <2e-16 ***
+UniqueFemaleContributors -0.059897   0.001577  -37.98   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 8009.4  on 3172  degrees of freedom
+Residual deviance: 6350.0  on 3171  degrees of freedom
+AIC: 13110
+
+Number of Fisher Scoring iterations: 6
+","",
+4,"ContributionsbyAuthor","UniqueFemaleContributors","success","
+Call:
+glm(formula = f, family = poisson(link = ""log""), data = df)
+
+Coefficients:
+                         Estimate Std. Error z value Pr(>|z|)    
+(Intercept)               1.82510    0.03120   58.50   <2e-16 ***
+UniqueFemaleContributors -0.28914    0.01586  -18.23   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 5864.6  on 834  degrees of freedom
+Residual deviance: 5391.3  on 833  degrees of freedom
+AIC: 7469.5
+
+Number of Fisher Scoring iterations: 6
+","",
+5,"ContributionsbyAuthor","UniqueFemaleParticipation","success","
+Call:
+glm(formula = f, family = poisson(link = ""log""), data = df)
+
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                0.21745    0.01914   11.36   <2e-16 ***
+UniqueFemaleParticipation  1.81327    0.07016   25.85   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 8018.0  on 3198  degrees of freedom
+Residual deviance: 7554.3  on 3197  degrees of freedom
+AIC: 14367
+
+Number of Fisher Scoring iterations: 7
+","",
+6,"ContributionsbyAuthor","UniqueFemaleParticipation","success","
+Call:
+glm(formula = f, family = poisson(link = ""log""), data = df)
+
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                1.09956    0.02577  42.661   <2e-16 ***
+UniqueFemaleParticipation  0.74502    0.07731   9.637   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 5932.2  on 860  degrees of freedom
+Residual deviance: 5851.1  on 859  degrees of freedom
+AIC: 7981.2
+
+Number of Fisher Scoring iterations: 6
+","",
+7,"ContributionsbyAuthor","UniqueFemaleParticipation","success","
+Call:
+glm(formula = f, family = poisson(link = ""log""), data = df)
+
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                0.01673    0.02036   0.822    0.411    
+UniqueFemaleParticipation  3.16505    0.08041  39.361   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 8009.4  on 3172  degrees of freedom
+Residual deviance: 7089.7  on 3171  degrees of freedom
+AIC: 13850
+
+Number of Fisher Scoring iterations: 6
+","",
+8,"ContributionsbyAuthor","UniqueFemaleParticipation","success","
+Call:
+glm(formula = f, family = poisson(link = ""log""), data = df)
+
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                0.89268    0.02775   32.17   <2e-16 ***
+UniqueFemaleParticipation  1.95237    0.09089   21.48   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 5864.6  on 834  degrees of freedom
+Residual deviance: 5516.2  on 833  degrees of freedom
+AIC: 7594.4
+
+Number of Fisher Scoring iterations: 6
+","",
+9,"ContributionsbyAuthor","Female_Contributions","success","
+Call:
+glm(formula = f, family = poisson(link = ""log""), data = df)
+
+Coefficients:
+                      Estimate Std. Error z value Pr(>|z|)    
+(Intercept)           1.062606   0.021289   49.91   <2e-16 ***
+Female_Contributions -0.041601   0.001476  -28.18   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 8018.0  on 3198  degrees of freedom
+Residual deviance: 7162.3  on 3197  degrees of freedom
+AIC: 13975
+
+Number of Fisher Scoring iterations: 6
+","",
+10,"ContributionsbyAuthor","Female_Contributions","success","
+Call:
+glm(formula = f, family = poisson(link = ""log""), data = df)
+
+Coefficients:
+                     Estimate Std. Error z value Pr(>|z|)    
+(Intercept)          1.086578   0.021950    49.5   <2e-16 ***
+Female_Contributions 0.044835   0.002607    17.2   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 5932.2  on 860  degrees of freedom
+Residual deviance: 5709.0  on 859  degrees of freedom
+AIC: 7839.1
+
+Number of Fisher Scoring iterations: 6
+","",
+11,"ContributionsbyAuthor","Female_Contributions","success","
+Call:
+glm(formula = f, family = poisson(link = ""log""), data = df)
+
+Coefficients:
+                      Estimate Std. Error z value Pr(>|z|)    
+(Intercept)           1.082869   0.021453   50.48   <2e-16 ***
+Female_Contributions -0.042640   0.001486  -28.69   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 8009.4  on 3172  degrees of freedom
+Residual deviance: 7122.1  on 3171  degrees of freedom
+AIC: 13882
+
+Number of Fisher Scoring iterations: 6
+","",
+12,"ContributionsbyAuthor","Female_Contributions","success","
+Call:
+glm(formula = f, family = poisson(link = ""log""), data = df)
+
+Coefficients:
+                     Estimate Std. Error z value Pr(>|z|)    
+(Intercept)          1.111750   0.022131   50.23   <2e-16 ***
+Female_Contributions 0.043399   0.002633   16.48   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 5864.6  on 834  degrees of freedom
+Residual deviance: 5657.3  on 833  degrees of freedom
+AIC: 7735.5
+
+Number of Fisher Scoring iterations: 6
+","",
+13,"percent_by_author","UniqueFemaleContributors","not_applicable",,,"Poisson regression not applicable: 'percent_by_author' is not a non-negative integer count."
+14,"percent_by_author","UniqueFemaleContributors","not_applicable",,,"Poisson regression not applicable: 'percent_by_author' is not a non-negative integer count."
+15,"percent_by_author","UniqueFemaleContributors","not_applicable",,,"Poisson regression not applicable: 'percent_by_author' is not a non-negative integer count."
+16,"percent_by_author","UniqueFemaleContributors","not_applicable",,,"Poisson regression not applicable: 'percent_by_author' is not a non-negative integer count."
+17,"percent_by_author","UniqueFemaleParticipation","not_applicable",,,"Poisson regression not applicable: 'percent_by_author' is not a non-negative integer count."
+18,"percent_by_author","UniqueFemaleParticipation","not_applicable",,,"Poisson regression not applicable: 'percent_by_author' is not a non-negative integer count."
+19,"percent_by_author","UniqueFemaleParticipation","not_applicable",,,"Poisson regression not applicable: 'percent_by_author' is not a non-negative integer count."
+20,"percent_by_author","UniqueFemaleParticipation","not_applicable",,,"Poisson regression not applicable: 'percent_by_author' is not a non-negative integer count."
+21,"percent_by_author","Female_Contributions","not_applicable",,,"Poisson regression not applicable: 'percent_by_author' is not a non-negative integer count."
+22,"percent_by_author","Female_Contributions","not_applicable",,,"Poisson regression not applicable: 'percent_by_author' is not a non-negative integer count."
+23,"percent_by_author","Female_Contributions","not_applicable",,,"Poisson regression not applicable: 'percent_by_author' is not a non-negative integer count."
+24,"percent_by_author","Female_Contributions","not_applicable",,,"Poisson regression not applicable: 'percent_by_author' is not a non-negative integer count."
+25,"FemaleParticipation","UniqueFemaleContributors","not_applicable",,,"Poisson regression not applicable: 'FemaleParticipation' is not a non-negative integer count."
+26,"FemaleParticipation","UniqueFemaleContributors","not_applicable",,,"Poisson regression not applicable: 'FemaleParticipation' is not a non-negative integer count."
+27,"FemaleParticipation","UniqueFemaleContributors","not_applicable",,,"Poisson regression not applicable: 'FemaleParticipation' is not a non-negative integer count."
+28,"FemaleParticipation","UniqueFemaleContributors","not_applicable",,,"Poisson regression not applicable: 'FemaleParticipation' is not a non-negative integer count."
+29,"FemaleParticipation","UniqueFemaleParticipation","not_applicable",,,"Poisson regression not applicable: 'FemaleParticipation' is not a non-negative integer count."
+30,"FemaleParticipation","UniqueFemaleParticipation","not_applicable",,,"Poisson regression not applicable: 'FemaleParticipation' is not a non-negative integer count."
+31,"FemaleParticipation","UniqueFemaleParticipation","not_applicable",,,"Poisson regression not applicable: 'FemaleParticipation' is not a non-negative integer count."
+32,"FemaleParticipation","UniqueFemaleParticipation","not_applicable",,,"Poisson regression not applicable: 'FemaleParticipation' is not a non-negative integer count."
+33,"FemaleParticipation","Female_Contributions","not_applicable",,,"Poisson regression not applicable: 'FemaleParticipation' is not a non-negative integer count."
+34,"FemaleParticipation","Female_Contributions","not_applicable",,,"Poisson regression not applicable: 'FemaleParticipation' is not a non-negative integer count."
+35,"FemaleParticipation","Female_Contributions","not_applicable",,,"Poisson regression not applicable: 'FemaleParticipation' is not a non-negative integer count."
+36,"FemaleParticipation","Female_Contributions","not_applicable",,,"Poisson regression not applicable: 'FemaleParticipation' is not a non-negative integer count."
+37,"Female_Contributions","UniqueFemaleContributors","success","
+Call:
+glm(formula = f, family = poisson(link = ""log""), data = df)
+
+Coefficients:
+                         Estimate Std. Error z value Pr(>|z|)    
+(Intercept)               0.97844    0.05111   19.14   <2e-16 ***
+UniqueFemaleContributors  0.08654    0.00312   27.74   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 1219.02  on 147  degrees of freedom
+Residual deviance:  687.36  on 146  degrees of freedom
+AIC: 1045.3
+
+Number of Fisher Scoring iterations: 6
+","",
+38,"Female_Contributions","UniqueFemaleContributors","success","
+Call:
+glm(formula = f, family = poisson(link = ""log""), data = df)
+
+Coefficients:
+                         Estimate Std. Error z value Pr(>|z|)    
+(Intercept)               0.59784    0.08169   7.319 2.51e-13 ***
+UniqueFemaleContributors  0.26738    0.03495   7.650 2.01e-14 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 668.22  on 129  degrees of freedom
+Residual deviance: 624.31  on 128  degrees of freedom
+AIC: 899.69
+
+Number of Fisher Scoring iterations: 6
+","",
+39,"Female_Contributions","UniqueFemaleContributors","success","
+Call:
+glm(formula = f, family = poisson(link = ""log""), data = df)
+
+Coefficients:
+                         Estimate Std. Error z value Pr(>|z|)    
+(Intercept)              1.120737   0.053117   21.10   <2e-16 ***
+UniqueFemaleContributors 0.081125   0.003203   25.33   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 1099.38  on 121  degrees of freedom
+Residual deviance:  636.99  on 120  degrees of freedom
+AIC: 942.96
+
+Number of Fisher Scoring iterations: 6
+","",
+40,"Female_Contributions","UniqueFemaleContributors","success","
+Call:
+glm(formula = f, family = poisson(link = ""log""), data = df)
+
+Coefficients:
+                         Estimate Std. Error z value Pr(>|z|)    
+(Intercept)               0.79070    0.08657   9.134  < 2e-16 ***
+UniqueFemaleContributors  0.22571    0.03632   6.214 5.15e-10 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 622.80  on 103  degrees of freedom
+Residual deviance: 592.24  on 102  degrees of freedom
+AIC: 815.62
+
+Number of Fisher Scoring iterations: 6
+","",
+41,"Female_Contributions","UniqueFemaleParticipation","success","
+Call:
+glm(formula = f, family = poisson(link = ""log""), data = df)
+
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                1.94035    0.05611  34.579   <2e-16 ***
+UniqueFemaleParticipation -1.36029    0.15537  -8.755   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 1219.0  on 147  degrees of freedom
+Residual deviance: 1122.1  on 146  degrees of freedom
+AIC: 1480
+
+Number of Fisher Scoring iterations: 6
+","",
+42,"Female_Contributions","UniqueFemaleParticipation","success","
+Call:
+glm(formula = f, family = poisson(link = ""log""), data = df)
+
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                1.17975    0.08021  14.708  < 2e-16 ***
+UniqueFemaleParticipation -0.42655    0.16412  -2.599  0.00935 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 668.22  on 129  degrees of freedom
+Residual deviance: 661.11  on 128  degrees of freedom
+AIC: 936.49
+
+Number of Fisher Scoring iterations: 6
+","",
+43,"Female_Contributions","UniqueFemaleParticipation","success","
+Call:
+glm(formula = f, family = poisson(link = ""log""), data = df)
+
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                1.77191    0.06408  27.652   <2e-16 ***
+UniqueFemaleParticipation -0.44431    0.21757  -2.042   0.0411 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 1099.4  on 121  degrees of freedom
+Residual deviance: 1094.9  on 120  degrees of freedom
+AIC: 1400.9
+
+Number of Fisher Scoring iterations: 6
+","",
+44,"Female_Contributions","UniqueFemaleParticipation","success","
+Call:
+glm(formula = f, family = poisson(link = ""log""), data = df)
+
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                0.88590    0.08904   9.949  < 2e-16 ***
+UniqueFemaleParticipation  0.94063    0.22041   4.268 1.98e-05 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 622.80  on 103  degrees of freedom
+Residual deviance: 606.59  on 102  degrees of freedom
+AIC: 829.98
+
+Number of Fisher Scoring iterations: 6
+","",
