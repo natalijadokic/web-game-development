@@ -237,6 +237,7 @@ results_n5 <- results_n4 %>%
 
 #' ===================================================================
 #' NODE 6: STATISTICAL MODELS
+##' TEST 1: Linear regression
 
 ```{r}
 library(stats)
@@ -264,12 +265,73 @@ model1 <- glm(ContributionsbyAuthor ~ UniqueFemaleContributors, family = "poisso
 
 summary(model1)
 ```
-
-#' LINEAR REGRESSIONS
+##' Beta regression: for proportion variables (`percent_by_author`)
 
 ```{r}
-models <- vector("list", nrow(results_n5))
-summaries <- vector("list", nrow(results_n5))
+library(betareg)
+library(flexmix)
+library(modeltools)
+install.packages("statmod")
+library(statmod)
+
+eighteen <- results_n5$data_filtered2[[18]]
+
+model_data18 <- eighteen %>% 
+  ungroup() 
+
+model_betareg <- betareg::betareg(percent_by_author ~ UniqueFemaleParticipation, data = model_data18, link = "logit", type = "ML")
+betareg_sum <- summary(model_betareg)
+
+betareg_sum
+
+# TODO: explanation: why logit? 
+```
+
+## step 1: trycatch error function (?) for one universe in which the Poissoon regression is not applicable
+```{r}
+# -> then step 1.5 - apply it to the whole analytical space
+poisson_fit <- sapply(eighteen, function(x) {
+  
+  x <- results_n5$dv_iv[[18]]
+
+  if (str_starts(x, "percent")) {
+    dv <- "percent_by_author"
+    iv <- str_remove(x, "^percent_by_author_")
+      } else {
+        dv <- str_extract(x, "^[^_]+")    
+        iv <- str_remove(x, "^[^_]+_")
+      }
+  iv <- if_else(iv == "FemaleContributions", "Female_Contributions", iv)
+  dv <- if_else(dv == "FemaleContributions", "Female_Contributions", dv)
+  
+  poisson_data18 <- eighteen %>% 
+    ungroup()
+  
+  # flag where: dv < 1 | iv < 1
+  
+  tryCatch(
+    {
+      poisson_model <- glm(dv ~ iv, family = "poisson", data = poisson_data18)
+    }, error = function(msg){
+      message(paste("Error for Universe 18: ", dv, "is not a non-negative integer count."))
+    }
+  )
+})
+
+poisson_fit
+```
+
+## step 2: beta regression
+```{r}
+
+```
+
+
+#' node only includes: LINEAR REGRESSIONS
+
+```{r}
+lm_models <- vector("list", nrow(results_n5))
+lm_summaries <- vector("list", nrow(results_n5))
 
 for (i in seq_len(nrow(results_n5))) {
   x <- results_n5$dv_iv[[i]]
@@ -290,9 +352,9 @@ for (i in seq_len(nrow(results_n5))) {
   
   f <- reformulate(iv, response = dv)
   
-  models[[i]] <- lm(f, data = df)
-  summaries[[i]] <- summary(models[[i]])
-  print(summaries[[i]])
+  lm_models[[i]] <- lm(f, data = df)
+  lm_summaries[[i]] <- summary(models[[i]])
+  print(lm_summaries[[i]])
 }
 ```
 
