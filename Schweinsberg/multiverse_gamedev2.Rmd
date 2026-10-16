@@ -234,8 +234,8 @@ plots_tbl <- multiverse::expand(game) %>%
   transmute(
     .universe,
     dv_iv_plots = map(.results, ~ .x$dv_iv_plot),
-    dv_plots    = map(.results, ~ .x$dv_plot),
-    iv_plots    = map(.results, ~ .x$iv_plot)
+    dv_plots = map(.results, ~ .x$dv_plot),
+    iv_plots = map(.results, ~ .x$iv_plot)
   )
 
 results_n5 <- results_n4 %>%
@@ -243,6 +243,14 @@ results_n5 <- results_n4 %>%
   left_join(plots_tbl, by = ".universe") %>%
   mutate(across(c(dv_iv_plots, dv_plots, iv_plots),
                 ~ map2(.x, .universe, ~ .x + labs(subtitle = paste("Universe", .y)))))
+
+# test:
+# eight_dv <- results_n5 %>%
+#   filter(.universe == 8) %>%
+#   pull(dv_plots) %>%
+#   .[[1]]
+# 
+# eight_dv
 ```
 
 
@@ -300,14 +308,14 @@ betareg_sum
 n <- nrow(results_n5)
 
 # Initialize result containers
-lm_models    <- vector("list", n)
+lm_models <- vector("list", n)
 lm_summaries <- vector("list", n)
 
-poisson_ms   <- vector("list", n)
+poisson_ms <- vector("list", n)
 poisson_sums <- vector("list", n)
 poisson_notes <- rep(NA_character_, n)
 
-beta_models   <- vector("list", n)
+beta_models <- vector("list", n)
 beta_summaries <- vector("list", n)
 beta_notes <- rep(NA_character_, n)
 ```
