@@ -159,7 +159,7 @@ execute_multiverse(game, progress = TRUE)
 
 results_n4 = extract_variables(game, data_filtered2)
 
-two <- results_n4$data_filtered2[[2]]     # df from the 9th universe
+eighteen <- results_n4$data_filtered2[[18]]     # df from the 9th universe
 ```
 
 #' ===================================================================
@@ -323,9 +323,16 @@ beta_notes <- rep(NA_character_, n)
 #' Helper functions
 
 ```{r}
-# Capture model warnings and errors
+# variable handling
+get_dv_iv <- function(data) {
+  cols <- setdiff(names(data), c("ThreadId", "Id", "Type"))
+  list(dv = cols[1], iv = cols[2])
+}
+
+# capture model warnings and errors
 capture_fit <- function(expr) {
   warnings <- character()
+
   fit <- tryCatch(
     withCallingHandlers(
       expr,
@@ -336,262 +343,123 @@ capture_fit <- function(expr) {
     ),
     error = function(e) e
   )
+
   list(
     fit = fit,
     warnings = paste(unique(warnings), collapse = " | "),
-    error = if (inherits(fit, "error")) {
-      conditionMessage(fit)
-    } else {
-      NA_character_
-    }
+    error = if (inherits(fit, "error")) conditionMessage(fit) else NA_character_
   )
 }
 
-# convert model summary to CSV cell 
+# model summary should be converted into a csv cell
 summary_to_text <- function(model) {
   if (is.null(model)) return(NA_character_)
-  paste(
-    capture.output(print(summary(model))),
-    collapse = "\n"
-  )
-}
-
-# create one row for a model's results
-make_record <- function(i, dv, iv, status,
-                        model_summary = NA_character_,
-                        warnings = NA_character_,
-                        note = NA_character_) {
-  data.frame(
-    universe = i,
-    dv = dv,
-    iv = iv,
-    status = status,
-    summary = model_summary,
-    warnings = warnings,
-    note = note,
-    stringsAsFactors = FALSE
-  )
+  paste(capture.output(print(summary(model))), collapse = "\n")
 }
 ```
 
 
 ```{r}
-lm_results <- list()
-poisson_results <- list()
-beta_results <- list()
+# make record <- what do we want to store? 
+make_record <- function(model, status, model_summary = NA_character_,
+                        warnings = NA_character_, note = NA_character_) {
+  data.frame(model = model, status = status, summary = model_summary,
+             warnings = warnings, note = note, stringsAsFactors = FALSE)
+}
 
-for (i in seq_len(n)) {
-
-  x <- results_n5$dv_iv[[i]]
-
-  # ============================================================
-  # iv-dv declaration
-
-  if (str_starts(x, "percent_by_author_")) {
-
-    dv <- "percent_by_author"
-    iv <- str_remove(x, "^percent_by_author_")
-
+# run one fit, check for errors, then return
+run_fit <- function(name, expr) {
+  res <- capture_fit(expr)
+  if (!is.na(res$error)) {
+    list(model = NULL, summary = NULL,
+         record = make_record(name, "error", warnings = res$warnings, note = res$error))
   } else {
-
-    dv <- str_extract(x, "^[^_]+")
-    iv <- str_remove(x, "^[^_]+_")
-
+    list(model = res$fit, summary = summary(res$fit),
+         record = make_record(name, "success",
+                              model_summary = summary_to_text(res$fit),
+                              warnings = res$warnings))
   }
+}
 
-  iv <- if_else(iv == "FemaleContributions", "Female_Contributions", iv)
-  dv <- if_else(dv == "FemaleContributions", "Female_Contributions", dv)
+# na function <- records note, then output is note
+not_applicable <- function(name, note) {
+  list(model = NULL, summary = NULL,
+       record = make_record(name, "not_applicable", note = note))
+}
 
-  df <- results_n5$data_filtered2[[i]] %>%
-    ungroup()
-
-  # do all variables exist? 
-  if (!all(c(dv, iv) %in% names(df))) {
-    message(
-      "Universe ", i,
-      ": DV or IV not found. DV = ", dv,
-      "; IV = ", iv
-    )
-    next
-  }
-
-  # parsing info printing
-  message(
-    "\nUniverse ", i,
-    " | DV: ", dv,
-    " | IV: ", iv
-  )
-
-  f <- reformulate(iv, response = dv)
-  y <- df[[dv]]
-
-  # ============================================================
-  # LINEAR REGRESSION
-
-  lm_result <- capture_fit(lm(f, data = df))
-
-  # if error, then return error
-  if (!is.na(lm_result$error)) {
-    message("Linear regression error in Universe ", i, ": ", lm_result$error)
-  
-    lm_results[[i]] <- make_record(
-      i, dv, iv, "error",
-      warnings = lm_result$warnings,
-      note = lm_result$error
-    )
-  
-  } else {
-    lm_models[[i]] <- lm_result$fit
-    lm_summaries[[i]] <- summary(lm_result$fit)
-  
-    lm_results[[i]] <- make_record(
-      i, dv, iv, "success",
-      model_summary = summary_to_text(lm_result$fit),
-      warnings = lm_result$warnings
-    )
-  }
-
-  # ============================================================
-  # POISSON REGRESSION: applicable to non-negative integer counts 
-
+# model fitter function
+fit_models <- function(data, dv, iv) {
+  df <- ungroup(data)
+  f  <- reformulate(iv, response = dv)
+  y  <- df[[dv]]
   y_obs <- y[!is.na(y)]
 
-  is_count <- (
-    is.numeric(y) &&
-    length(y_obs) > 0 &&
-    all(is.finite(y_obs)) &&
-    all(y_obs >= 0) &&
-    all(abs(y_obs - round(y_obs)) < 1e-8)
+  # Linear regression
+  lm_out <- run_fit("lm", lm(f, data = df))
+
+  # Poisson regression: non-negative integer counts only
+  is_count <- is.numeric(y) && length(y_obs) > 0 && all(is.finite(y_obs)) &&
+    all(y_obs >= 0) && all(abs(y_obs - round(y_obs)) < 1e-8)
+  poisson_out <- if (!is_count) {
+    not_applicable("poisson",
+      paste0("Poisson regression not applicable: '", dv, "' is not a non-negative integer count."))
+  } else {
+    run_fit("poisson", glm(f, family = poisson(link = "log"), data = df))
+  }
+
+  # Beta regression: only for proportional values (between 0 and 1)
+  is_prop <- is.numeric(y) && length(y_obs) > 0 && all(is.finite(y_obs)) &&
+    all(y_obs >= 0 & y_obs <= 1)
+  beta_out <- if (!is_prop) {
+    not_applicable("beta",
+      paste0("Beta regression not applicable: '", dv, "' is not a proportional value. Variable must contain numeric values between 0 and 1."))
+  } else {
+    run_fit("beta", betareg::betareg(f, link = "logit", data = df, type = "ML"))
+  }
+
+  # output
+  list(
+    lm = lm_out, poisson = poisson_out, beta = beta_out,
+    records = bind_rows(lm_out$record, poisson_out$record, beta_out$record)
+  )
+}
+```
+
+#' Multiverse chunk, running all analyses
+```{multiverse default-m-6, inside = game}
+dv_iv_names <- get_dv_iv(data_variables)
+model_out   <- fit_models(data_filtered2, dv_iv_names$dv, dv_iv_names$iv)
+```
+
+#' Save results in the results_n6 tibble
+```{r}
+multiverse::execute_multiverse(game)
+
+res_n6 <- multiverse::expand(game)
+
+# mapping results into an object
+stats_records <- res_n6 %>%
+  transmute(.universe, rec = map(.results, ~ .x$model_out$records)) %>%
+  unnest(rec) 
+
+# model parameters included, not only the summaries. 
+stats_models <- res_n6 %>%
+  transmute(
+    .universe,
+    lm_models      = map(.results, ~ .x$model_out$lm$model),
+    lm_summaries   = map(.results, ~ .x$model_out$lm$summary),
+    poisson_ms     = map(.results, ~ .x$model_out$poisson$model),
+    poisson_sums   = map(.results, ~ .x$model_out$poisson$summary),
+    beta_models    = map(.results, ~ .x$model_out$beta$model),
+    beta_summaries = map(.results, ~ .x$model_out$beta$summary)
   )
 
-  if (!is_count) {
-    poisson_notes[i] <- paste0("Poisson regression not applicable: '", dv, "' is not a non-negative integer count.")
-
-    # create row for model's results
-    poisson_results[[i]] <- make_record(
-      i, dv, iv, "not_applicable",
-      note = poisson_notes[i])
-    
-  } else { # fitter function, poisson with log link function
-    poisson_result <- capture_fit(glm(f, family = poisson(link = "log"), data = df))
-
-  if (!is.na(poisson_result$error)) {
-
-    poisson_notes[i] <- poisson_result$error
-
-    # create one row for the results - here errors 
-    poisson_results[[i]] <- make_record(
-      i, dv, iv, "error",
-      warnings = poisson_result$warnings,
-      note = poisson_result$error
-    )
-
-  } else {
-
-    poisson_ms[[i]] <- poisson_result$fit
-    poisson_sums[[i]] <- summary(poisson_result$fit)
-
-    poisson_results[[i]] <- make_record(
-      i, dv, iv, "success",
-      model_summary = summary_to_text(poisson_result$fit),
-      warnings = poisson_result$warnings
-    )
-  }
-}
-
-  # ============================================================
-  # BETA REGRESSION: requires 0 < y < 1 (proportional values)
-  
-    z <- df[[dv]]
-    z_obs <- z[!is.na(z)]
-    
-    beta_applicable <- (
-      is.numeric(z) &&
-      length(z_obs) > 0 &&
-      all(is.finite(z_obs)) &&
-      all(z_obs >= 0 & z_obs <= 1)
-    )
-    
-    if (!beta_applicable) {
-      beta_notes[i] <- paste0(
-        "Beta regression not applicable: '",
-        dv, "' must contain numeric values between 0 and 1.")
-      
-      beta_results[[i]] <- make_record(
-        i, dv, iv, "not_applicable",
-        note = beta_notes[i]
-      )
-    } else {
-  
-      beta_result <- capture_fit(
-        betareg::betareg(
-          f,
-          link = "logit",
-          data = df,
-          type = "ML"
-        )
-      )
-    
-    if (!is.na(beta_result$error)) {
-    
-        beta_notes[i] <- beta_result$error
-    
-        beta_results[[i]] <- make_record(
-          i, dv, iv, "error",
-          warnings = beta_result$warnings,
-          note = beta_result$error
-        )
-    
-      } else {
-    
-        beta_models[[i]] <- beta_result$fit
-        beta_summaries[[i]] <- summary(beta_result$fit)
-    
-        beta_results[[i]] <- make_record(
-          i, dv, iv, "success",
-          model_summary = summary_to_text(beta_result$fit),
-          warnings = beta_result$warnings)
-      }
-  }
-}
-```
+# left joining the results-only object to the big node tibble
+results_n6 <- results_n5 %>%
+  left_join(stats_models, by = ".universe")
 
 
-#' NODE 7: SAVING RESULTS: 
-```{r}
-lm_results_df <- dplyr::bind_rows(lm_results)
-poisson_results_df <- dplyr::bind_rows(poisson_results)
-beta_results_df <- dplyr::bind_rows(beta_results)
+# TODO: hogy kellene kineznie a nagy results df-nek? 
 
-write.csv(
-  lm_results_df,
-  "lm_summaries.csv",
-  row.names = FALSE,
-  na = ""
-)
-
-write.csv(
-  poisson_results_df,
-  "poisson_summaries.csv",
-  row.names = FALSE,
-  na = ""
-)
-
-write.csv(
-  beta_results_df,
-  "beta_summaries.csv",
-  row.names = FALSE,
-  na = ""
-)
-```
-
-
-```{r}
-# possible models: 
-# - poisson regression - done! :)
-# - linear regression - done! :) 
-# - beta regression  
-# assumptions for regression <- should be included before the analysis node 
-
-# TODO: szepen elmenteni a summaryket csv-kent vagy txt-kent, univerzumokra lebontva
+# dv    | iv      | decision-parameters ... | poisson-note (success/not) | poisson-model | poisson-summary | lm-note | lm-model | lm-summary | beta-note | beta-model | beta-summary
 ```
