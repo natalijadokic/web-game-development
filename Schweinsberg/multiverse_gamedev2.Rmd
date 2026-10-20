@@ -13,19 +13,19 @@ library(tidyverse)
 library(lmerTest)
 library(ggplot2)
 library(tidyr)
-install.packages("broom")
+#install.packages("broom")
 library(broom)
 library(lme4)
 library(knitr)
 library(purrr)
 library(readr)
-install.packages("stringr")
+#install.packages("stringr")
 library(stringr)
 library(scales)
 library(betareg)
 library(flexmix)
 library(modeltools)
-install.packages("statmod")
+#install.packages("statmod")
 library(statmod)
 library(stats)
 
@@ -50,20 +50,6 @@ particip_data_duplicates = raw_data %>%
  raw_data = raw_data %>%  
   mutate(percent_by_author = ContributionsbyAuthor/ DebateSize, .after = ContributionsbyAuthor)
  
- particip_data_clean = raw_data %>%  
-  dplyr::select(!Order:Number.Characters) %>%  
-  group_by(ThreadId, Id) %>%
-  summarize(across(Type:ContributionsbyAuthor, unique))
-
-raw_data_n = raw_data %>%  
-  group_by(across(c(ThreadId, Id))) %>%  
-  dplyr::select(!Live) %>% 
-  summarise(across(Type:UniqueFemaleParticipation, unique))
-
-raw_data_n = raw_data %>%  
-  dplyr::select(!Live) %>%  
-  group_by(across(ThreadId)) %>%  
-  summarise(across(Type:UniqueFemaleParticipation, unique))
 ```
 
 #' ===================================================================
@@ -82,8 +68,6 @@ data_st1 = raw_data %>%
   summarise(branch(level,
                    "participant" ~ across(Type:percent_by_author, unique),
                    "conversation" ~ across(Type:UniqueFemaleParticipation, unique)))
-
-parameters(game)
 ```
 ```{r}
 # TODO: solve summarise() regroup warning -> output grouped by ThreadId, summaries grouped by ThreadId and Id
@@ -146,12 +130,6 @@ data_filtered2 <- data_filtered %>%
                 "only_comments" ~ Type == 2))
 ```
 
-#' Data frame for all 44 possible universes
-
-```{r}
-df_expand = multiverse::expand(game)
-```
-
 #' Execute multiverse, storing results
 
 ```{r}
@@ -212,7 +190,7 @@ get_dv_iv <- function(data) {
 ```
 
 #' 2. `multiverse` node - only the plotting code
-```{multiverse default-m-6, inside = game}
+```{multiverse default-m-5, inside = game}
 parts <- get_dv_iv(data_variables)
 plot_df <- data_filtered2 %>%
   ungroup() %>%
@@ -244,13 +222,6 @@ results_n5 <- results_n4 %>%
   mutate(across(c(dv_iv_plots, dv_plots, iv_plots),
                 ~ map2(.x, .universe, ~ .x + labs(subtitle = paste("Universe", .y)))))
 
-# test:
-# eight_dv <- results_n5 %>%
-#   filter(.universe == 8) %>%
-#   pull(dv_plots) %>%
-#   .[[1]]
-# 
-# eight_dv
 ```
 
 
@@ -304,30 +275,10 @@ betareg_sum
 #' NODE 6: STATISTICAL MODELS
 #' Includes: Poisson regression, Linear regression, Beta regression
 
-```{r}
-n <- nrow(results_n5)
-
-# Initialize result containers
-lm_models <- vector("list", n)
-lm_summaries <- vector("list", n)
-
-poisson_ms <- vector("list", n)
-poisson_sums <- vector("list", n)
-poisson_notes <- rep(NA_character_, n)
-
-beta_models <- vector("list", n)
-beta_summaries <- vector("list", n)
-beta_notes <- rep(NA_character_, n)
-```
 
 #' Helper functions
 
 ```{r}
-# variable handling
-get_dv_iv <- function(data) {
-  cols <- setdiff(names(data), c("ThreadId", "Id", "Type"))
-  list(dv = cols[1], iv = cols[2])
-}
 
 # capture model warnings and errors
 capture_fit <- function(expr) {
@@ -425,41 +376,51 @@ fit_models <- function(data, dv, iv) {
 }
 ```
 
-#' Multiverse chunk, running all analyses
+
 ```{multiverse default-m-6, inside = game}
 dv_iv_names <- get_dv_iv(data_variables)
-model_out   <- fit_models(data_filtered2, dv_iv_names$dv, dv_iv_names$iv)
+reform <- reformulate(dv_iv_names$iv, response = dv_iv_names$dv)
+data_filtered_ungrouped <- ungroup(data_filtered2)
+
+model_out <- branch(model,
+  "lm"      ~ run_fit("lm", lm(reform, data = data_filtered_ungrouped)),
+  "poisson" ~ run_fit("poisson", glm(reform, family = poisson(link = "log"), data = data_filtered_ungrouped)),
+  "beta"    ~ run_fit("beta", betareg::betareg(reform, link = "logit", data = data_filtered_ungrouped, type = "ML"))
+)
 ```
 
-#' Save results in the results_n6 tibble
+
 ```{r}
-multiverse::execute_multiverse(game)
+execute_multiverse(game, progress = TRUE)
 
-res_n6 <- multiverse::expand(game)
-
-# mapping results into an object
-stats_records <- res_n6 %>%
-  transmute(.universe, rec = map(.results, ~ .x$model_out$records)) %>%
-  unnest(rec) 
-
-# model parameters included, not only the summaries. 
-stats_models <- res_n6 %>%
-  transmute(
-    .universe,
-    lm_models      = map(.results, ~ .x$model_out$lm$model),
-    lm_summaries   = map(.results, ~ .x$model_out$lm$summary),
-    poisson_ms     = map(.results, ~ .x$model_out$poisson$model),
-    poisson_sums   = map(.results, ~ .x$model_out$poisson$summary),
-    beta_models    = map(.results, ~ .x$model_out$beta$model),
-    beta_summaries = map(.results, ~ .x$model_out$beta$summary)
-  )
-
-# left joining the results-only object to the big node tibble
-results_n6 <- results_n5 %>%
-  left_join(stats_models, by = ".universe")
+results_final <- extract_variables(game, model_out) %>%
+  dplyr::select(.universe, level, dv_iv, n_female_male, questions, model, model_out) %>%
+  mutate(fit = map(model_out, "model"),
+         rec = map(model_out, ~ dplyr::select(.x$record, -model))) %>%
+  unnest(rec) %>%
+  dplyr::select(-model_out)
+```
 
 
-# TODO: hogy kellene kineznie a nagy results df-nek? 
+```{r}
+results_final_unpacked <- results_final %>%
+  mutate(est = map(fit, function(m) {
+    blank <- tibble(term = NA_character_, estimate = NA_real_, std.error = NA_real_,
+                    statistic = NA_real_, p.value = NA_real_)
+    if (is.null(m)) return(blank)
+    td <- tryCatch(broom::tidy(m), error = function(e) NULL)
+    if (is.null(td) || !"term" %in% names(td)) return(blank)
+    td <- td[as.character(td$term) != "(Intercept)", , drop = FALSE]
+    if (nrow(td) == 0) return(blank)
+    pick <- function(col) if (col %in% names(td)) as.numeric(td[[col]][1]) else NA_real_
+    tibble(term      = as.character(td$term[1]),
+           estimate  = pick("estimate"),
+           std.error = pick("std.error"),
+           statistic = pick("statistic"),
+           p.value   = pick("p.value"))
+  })) %>%
+  unnest(est)
 
-# dv    | iv      | decision-parameters ... | poisson-note (success/not) | poisson-model | poisson-summary | lm-note | lm-model | lm-summary | beta-note | beta-model | beta-summary
+write_csv(results_final_unpacked, "multiverse_results.csv" )
+
 ```

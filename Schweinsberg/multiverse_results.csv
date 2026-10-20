@@ -1,0 +1,2365 @@
+.universe,level,dv_iv,n_female_male,questions,model,fit,status,summary,warnings,note,term,estimate,std.error,statistic,p.value
+1,participant,ContributionsbyAuthor_UniqueFemaleContributors,only_female,questions_and_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+ -1.864  -1.088  -0.484   0.119 115.136 
+
+Coefficients:
+                          Estimate Std. Error t value Pr(>|t|)    
+(Intercept)               2.949729   0.127748   23.09   <2e-16 ***
+UniqueFemaleContributors -0.086212   0.007136  -12.08   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 4.145 on 3197 degrees of freedom
+Multiple R-squared:  0.04367,	Adjusted R-squared:  0.04337 
+F-statistic:   146 on 1 and 3197 DF,  p-value: < 2.2e-16
+",,NA,UniqueFemaleContributors,-0.08621152748759901,0.00713554615555216,-12.081980216821655,6.776312172064225e-33
+2,participant,ContributionsbyAuthor_UniqueFemaleContributors,only_female,questions_and_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)               1.215936   0.019909   61.08   <2e-16 ***
+UniqueFemaleContributors -0.058718   0.001567  -37.48   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 8018.0  on 3198  degrees of freedom
+Residual deviance: 6404.4  on 3197  degrees of freedom
+AIC: 13217
+
+Number of Fisher Scoring iterations: 6
+",,NA,UniqueFemaleContributors,-0.05871787044035024,0.0015668592540688288,-37.474885052930794,2.363032030761936e-307
+3,participant,ContributionsbyAuthor_UniqueFemaleContributors,only_female,questions_and_comments,beta,,error,NA,,"invalid dependent variable, all observations must be in [0, 1]",NA,NA,NA,NA,NA
+4,participant,ContributionsbyAuthor_UniqueFemaleContributors,only_female,only_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+ -3.309  -3.309  -2.666   0.262 113.691 
+
+Coefficients:
+                         Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                4.9513     0.4153  11.923  < 2e-16 ***
+UniqueFemaleContributors  -0.6426     0.1449  -4.436 1.04e-05 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 7.795 on 859 degrees of freedom
+Multiple R-squared:  0.02239,	Adjusted R-squared:  0.02126 
+F-statistic: 19.68 on 1 and 859 DF,  p-value: 1.036e-05
+",,NA,UniqueFemaleContributors,-0.6426329119610972,0.14487179038708714,-4.435873334926197,1.0360969644018177e-5
+5,participant,ContributionsbyAuthor_UniqueFemaleContributors,only_female,only_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                         Estimate Std. Error z value Pr(>|z|)    
+(Intercept)               1.77282    0.03082   57.52   <2e-16 ***
+UniqueFemaleContributors -0.27548    0.01566  -17.60   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 5932.2  on 860  degrees of freedom
+Residual deviance: 5497.4  on 859  degrees of freedom
+AIC: 7627.5
+
+Number of Fisher Scoring iterations: 6
+",,NA,UniqueFemaleContributors,-0.2754847143196295,0.01565639539198122,-17.59566665394292,2.659081294088261e-69
+6,participant,ContributionsbyAuthor_UniqueFemaleContributors,only_female,only_comments,beta,,error,NA,,"invalid dependent variable, all observations must be in [0, 1]",NA,NA,NA,NA,NA
+7,participant,ContributionsbyAuthor_UniqueFemaleContributors,female_and_male,questions_and_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+ -1.906  -1.112  -0.495   0.123 115.094 
+
+Coefficients:
+                          Estimate Std. Error t value Pr(>|t|)    
+(Intercept)               2.994655   0.129628   23.10   <2e-16 ***
+UniqueFemaleContributors -0.088219   0.007211  -12.23   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 4.159 on 3171 degrees of freedom
+Multiple R-squared:  0.04507,	Adjusted R-squared:  0.04477 
+F-statistic: 149.7 on 1 and 3171 DF,  p-value: < 2.2e-16
+",,NA,UniqueFemaleContributors,-0.08821860014078918,0.007211196456180238,-12.233559392933037,1.1664266414275332e-33
+8,participant,ContributionsbyAuthor_UniqueFemaleContributors,female_and_male,questions_and_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)               1.237585   0.020046   61.74   <2e-16 ***
+UniqueFemaleContributors -0.059897   0.001577  -37.98   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 8009.4  on 3172  degrees of freedom
+Residual deviance: 6350.0  on 3171  degrees of freedom
+AIC: 13110
+
+Number of Fisher Scoring iterations: 6
+",,NA,UniqueFemaleContributors,-0.059896553453073875,0.0015769197033791917,-37.98326149690511,1.09045873e-315
+9,participant,ContributionsbyAuthor_UniqueFemaleContributors,female_and_male,questions_and_comments,beta,,error,NA,,"invalid dependent variable, all observations must be in [0, 1]",NA,NA,NA,NA,NA
+10,participant,ContributionsbyAuthor_UniqueFemaleContributors,female_and_male,only_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+ -3.458  -3.458  -2.778   0.262 113.542 
+
+Coefficients:
+                         Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                5.1381     0.4291  11.974  < 2e-16 ***
+UniqueFemaleContributors  -0.6800     0.1477  -4.604 4.79e-06 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 7.894 on 833 degrees of freedom
+Multiple R-squared:  0.02482,	Adjusted R-squared:  0.02365 
+F-statistic:  21.2 on 1 and 833 DF,  p-value: 4.785e-06
+",,NA,UniqueFemaleContributors,-0.6799965119311258,0.1476888088812262,-4.604252123652715,4.785329641738699e-6
+11,participant,ContributionsbyAuthor_UniqueFemaleContributors,female_and_male,only_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                         Estimate Std. Error z value Pr(>|z|)    
+(Intercept)               1.82510    0.03120   58.50   <2e-16 ***
+UniqueFemaleContributors -0.28914    0.01586  -18.23   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 5864.6  on 834  degrees of freedom
+Residual deviance: 5391.3  on 833  degrees of freedom
+AIC: 7469.5
+
+Number of Fisher Scoring iterations: 6
+",,NA,UniqueFemaleContributors,-0.28913714946567587,0.015863018662685982,-18.22712029872366,3.14448481024459e-74
+12,participant,ContributionsbyAuthor_UniqueFemaleContributors,female_and_male,only_comments,beta,,error,NA,,"invalid dependent variable, all observations must be in [0, 1]",NA,NA,NA,NA,NA
+13,participant,ContributionsbyAuthor_UniqueFemaleParticipation,only_female,questions_and_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+ -5.622  -0.671  -0.537  -0.408 116.670 
+
+Coefficients:
+                          Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                 0.8005     0.1286   6.223  5.5e-10 ***
+UniqueFemaleParticipation   5.8217     0.6915   8.419  < 2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 4.192 on 3197 degrees of freedom
+Multiple R-squared:  0.02169,	Adjusted R-squared:  0.02138 
+F-statistic: 70.88 on 1 and 3197 DF,  p-value: < 2.2e-16
+",,NA,UniqueFemaleParticipation,5.821727270502992,0.6914945154697982,8.419050535126424,5.6511722691516e-17
+14,participant,ContributionsbyAuthor_UniqueFemaleParticipation,only_female,questions_and_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                0.21745    0.01914   11.36   <2e-16 ***
+UniqueFemaleParticipation  1.81327    0.07016   25.85   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 8018.0  on 3198  degrees of freedom
+Residual deviance: 7554.3  on 3197  degrees of freedom
+AIC: 14367
+
+Number of Fisher Scoring iterations: 7
+",,NA,UniqueFemaleParticipation,1.8132739361795827,0.07015740829557332,25.84579419667636,2.7129569582390867e-147
+15,participant,ContributionsbyAuthor_UniqueFemaleParticipation,only_female,questions_and_comments,beta,,error,NA,,"invalid dependent variable, all observations must be in [0, 1]",NA,NA,NA,NA,NA
+16,participant,ContributionsbyAuthor_UniqueFemaleParticipation,only_female,only_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+ -5.150  -2.372  -2.232  -1.524 114.835 
+
+Coefficients:
+                          Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                  2.867      0.393   7.295 6.78e-13 ***
+UniqueFemaleParticipation    3.283      1.412   2.325   0.0203 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 7.86 on 859 degrees of freedom
+Multiple R-squared:  0.006253,	Adjusted R-squared:  0.005096 
+F-statistic: 5.405 on 1 and 859 DF,  p-value: 0.02031
+",,NA,UniqueFemaleParticipation,3.2831870572643282,1.4121820441532964,2.3249035567739655,0.02030933127935168
+17,participant,ContributionsbyAuthor_UniqueFemaleParticipation,only_female,only_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                1.09956    0.02577  42.661   <2e-16 ***
+UniqueFemaleParticipation  0.74502    0.07731   9.637   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 5932.2  on 860  degrees of freedom
+Residual deviance: 5851.1  on 859  degrees of freedom
+AIC: 7981.2
+
+Number of Fisher Scoring iterations: 6
+",,NA,UniqueFemaleParticipation,0.7450152830205151,0.07730805527073836,9.63696836521651,5.581192227694157e-22
+18,participant,ContributionsbyAuthor_UniqueFemaleParticipation,only_female,only_comments,beta,,error,NA,,"invalid dependent variable, all observations must be in [0, 1]",NA,NA,NA,NA,NA
+19,participant,ContributionsbyAuthor_UniqueFemaleParticipation,female_and_male,questions_and_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-11.634  -0.748  -0.453  -0.169 117.002 
+
+Coefficients:
+                          Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                -0.1658     0.1600  -1.036      0.3    
+UniqueFemaleParticipation  12.7997     0.9795  13.067   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 4.145 on 3171 degrees of freedom
+Multiple R-squared:  0.05109,	Adjusted R-squared:  0.0508 
+F-statistic: 170.7 on 1 and 3171 DF,  p-value: < 2.2e-16
+",,NA,UniqueFemaleParticipation,12.799738579727661,0.9795498438684134,13.06695995088852,4.802711541135055e-38
+20,participant,ContributionsbyAuthor_UniqueFemaleParticipation,female_and_male,questions_and_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                0.01673    0.02036   0.822    0.411    
+UniqueFemaleParticipation  3.16505    0.08041  39.361   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 8009.4  on 3172  degrees of freedom
+Residual deviance: 7089.7  on 3171  degrees of freedom
+AIC: 13850
+
+Number of Fisher Scoring iterations: 6
+",,NA,UniqueFemaleParticipation,3.1650495185697056,0.08041010069896104,39.36134255594335,0
+21,participant,ContributionsbyAuthor_UniqueFemaleParticipation,female_and_male,questions_and_comments,beta,,error,NA,,"invalid dependent variable, all observations must be in [0, 1]",NA,NA,NA,NA,NA
+22,participant,ContributionsbyAuthor_UniqueFemaleParticipation,female_and_male,only_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-11.773  -2.336  -1.859  -1.417 115.366 
+
+Coefficients:
+                          Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                 1.6199     0.4642   3.490 0.000509 ***
+UniqueFemaleParticipation  11.1528     2.1032   5.303 1.46e-07 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 7.862 on 833 degrees of freedom
+Multiple R-squared:  0.03265,	Adjusted R-squared:  0.03149 
+F-statistic: 28.12 on 1 and 833 DF,  p-value: 1.463e-07
+",,NA,UniqueFemaleParticipation,11.152846729351904,2.10324685427485,5.302680808333905,1.4629828034873375e-7
+23,participant,ContributionsbyAuthor_UniqueFemaleParticipation,female_and_male,only_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                0.89268    0.02775   32.17   <2e-16 ***
+UniqueFemaleParticipation  1.95237    0.09089   21.48   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 5864.6  on 834  degrees of freedom
+Residual deviance: 5516.2  on 833  degrees of freedom
+AIC: 7594.4
+
+Number of Fisher Scoring iterations: 6
+",,NA,UniqueFemaleParticipation,1.952365789235833,0.0908943832488064,21.47949872646802,2.4210482024867996e-102
+24,participant,ContributionsbyAuthor_UniqueFemaleParticipation,female_and_male,only_comments,beta,,error,NA,,"invalid dependent variable, all observations must be in [0, 1]",NA,NA,NA,NA,NA
+25,participant,ContributionsbyAuthor_FemaleContributions,only_female,questions_and_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+ -1.658  -1.011  -0.557  -0.104 115.406 
+
+Coefficients:
+                      Estimate Std. Error t value Pr(>|t|)    
+(Intercept)           2.658388   0.132504  20.063   <2e-16 ***
+Female_Contributions -0.064763   0.007315  -8.853   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 4.188 on 3197 degrees of freedom
+Multiple R-squared:  0.02393,	Adjusted R-squared:  0.02362 
+F-statistic: 78.38 on 1 and 3197 DF,  p-value: < 2.2e-16
+",,NA,Female_Contributions,-0.06476297533812132,0.007315224763758689,-8.853176413522117,1.381184988669097e-18
+26,participant,ContributionsbyAuthor_FemaleContributions,only_female,questions_and_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                      Estimate Std. Error z value Pr(>|z|)    
+(Intercept)           1.062606   0.021289   49.91   <2e-16 ***
+Female_Contributions -0.041601   0.001476  -28.18   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 8018.0  on 3198  degrees of freedom
+Residual deviance: 7162.3  on 3197  degrees of freedom
+AIC: 13975
+
+Number of Fisher Scoring iterations: 6
+",,NA,Female_Contributions,-0.041600594972492064,0.001476024449711864,-28.184218073496652,9.129478581803215e-175
+27,participant,ContributionsbyAuthor_FemaleContributions,only_female,questions_and_comments,beta,,error,NA,,"invalid dependent variable, all observations must be in [0, 1]",NA,NA,NA,NA,NA
+28,participant,ContributionsbyAuthor_FemaleContributions,only_female,only_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-11.381  -2.209  -1.961  -1.952 115.039 
+
+Coefficients:
+                     Estimate Std. Error t value Pr(>|t|)    
+(Intercept)           2.71284    0.33001    8.22 7.44e-16 ***
+Female_Contributions  0.24790    0.05888    4.21 2.82e-05 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 7.804 on 859 degrees of freedom
+Multiple R-squared:  0.02022,	Adjusted R-squared:  0.01908 
+F-statistic: 17.73 on 1 and 859 DF,  p-value: 2.818e-05
+",,NA,Female_Contributions,0.24789928299157615,0.05887780952657898,4.21040261152494,2.8179274482759708e-5
+29,participant,ContributionsbyAuthor_FemaleContributions,only_female,only_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                     Estimate Std. Error z value Pr(>|z|)    
+(Intercept)          1.086578   0.021950    49.5   <2e-16 ***
+Female_Contributions 0.044835   0.002607    17.2   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 5932.2  on 860  degrees of freedom
+Residual deviance: 5709.0  on 859  degrees of freedom
+AIC: 7839.1
+
+Number of Fisher Scoring iterations: 6
+",,NA,Female_Contributions,0.044835134609836964,0.0026071184405540445,17.197198988899387,2.786812703867046e-66
+30,participant,ContributionsbyAuthor_FemaleContributions,only_female,only_comments,beta,,error,NA,,"invalid dependent variable, all observations must be in [0, 1]",NA,NA,NA,NA,NA
+31,participant,ContributionsbyAuthor_FemaleContributions,female_and_male,questions_and_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+ -1.699  -1.033  -0.567  -0.101 115.368 
+
+Coefficients:
+                      Estimate Std. Error t value Pr(>|t|)    
+(Intercept)           2.698935   0.134570  20.056   <2e-16 ***
+Female_Contributions -0.066579   0.007399  -8.998   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 4.202 on 3171 degrees of freedom
+Multiple R-squared:  0.0249,	Adjusted R-squared:  0.02459 
+F-statistic: 80.97 on 1 and 3171 DF,  p-value: < 2.2e-16
+",,NA,Female_Contributions,-0.06657897131125058,0.007399135726886508,-8.998209219128142,3.861982818692126e-19
+32,participant,ContributionsbyAuthor_FemaleContributions,female_and_male,questions_and_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                      Estimate Std. Error z value Pr(>|z|)    
+(Intercept)           1.082869   0.021453   50.48   <2e-16 ***
+Female_Contributions -0.042640   0.001486  -28.69   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 8009.4  on 3172  degrees of freedom
+Residual deviance: 7122.1  on 3171  degrees of freedom
+AIC: 13882
+
+Number of Fisher Scoring iterations: 6
+",,NA,Female_Contributions,-0.04264015315302906,0.0014863039528398964,-28.688716780680075,5.275956451962187e-181
+33,participant,ContributionsbyAuthor_FemaleContributions,female_and_male,questions_and_comments,beta,,error,NA,,"invalid dependent variable, all observations must be in [0, 1]",NA,NA,NA,NA,NA
+34,participant,ContributionsbyAuthor_FemaleContributions,female_and_male,only_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-11.193  -2.520  -2.039  -1.798 114.961 
+
+Coefficients:
+                     Estimate Std. Error t value Pr(>|t|)    
+(Intercept)           2.79760    0.34120   8.199 9.10e-16 ***
+Female_Contributions  0.24091    0.05998   4.017 6.44e-05 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 7.917 on 833 degrees of freedom
+Multiple R-squared:  0.019,	Adjusted R-squared:  0.01782 
+F-statistic: 16.13 on 1 and 833 DF,  p-value: 6.436e-05
+",,NA,Female_Contributions,0.24090568813917518,0.05997663637647965,4.016658864078086,6.436355415010987e-5
+35,participant,ContributionsbyAuthor_FemaleContributions,female_and_male,only_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                     Estimate Std. Error z value Pr(>|z|)    
+(Intercept)          1.111750   0.022131   50.23   <2e-16 ***
+Female_Contributions 0.043399   0.002633   16.48   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 5864.6  on 834  degrees of freedom
+Residual deviance: 5657.3  on 833  degrees of freedom
+AIC: 7735.5
+
+Number of Fisher Scoring iterations: 6
+",,NA,Female_Contributions,0.04339935159288313,0.002632751407865114,16.484409224217437,4.749140990411031e-61
+36,participant,ContributionsbyAuthor_FemaleContributions,female_and_male,only_comments,beta,,error,NA,,"invalid dependent variable, all observations must be in [0, 1]",NA,NA,NA,NA,NA
+37,participant,percent_by_author_UniqueFemaleContributors,only_female,questions_and_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.10613 -0.04926 -0.02506  0.00593  0.89042 
+
+Coefficients:
+                           Estimate Std. Error t value Pr(>|t|)    
+(Intercept)               0.1143371  0.0033867   33.76   <2e-16 ***
+UniqueFemaleContributors -0.0047615  0.0001892  -25.17   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.1099 on 3197 degrees of freedom
+Multiple R-squared:  0.1654,	Adjusted R-squared:  0.1651 
+F-statistic: 633.5 on 1 and 3197 DF,  p-value: < 2.2e-16
+",,NA,UniqueFemaleContributors,-0.0047614520654463725,1.8917062002404394e-4,-25.17014568563122,1.0721862644076155e-127
+38,participant,percent_by_author_UniqueFemaleContributors,only_female,questions_and_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                         Estimate Std. Error z value Pr(>|z|)    
+(Intercept)              -1.61707    0.10676  -15.15   <2e-16 ***
+UniqueFemaleContributors -0.20053    0.01956  -10.25   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 384.36  on 3198  degrees of freedom
+Residual deviance: 151.71  on 3197  degrees of freedom
+AIC: Inf
+
+Number of Fisher Scoring iterations: 7
+",non-integer x = 0.005650 | non-integer x = 0.006452 | non-integer x = 0.005155 | non-integer x = 0.005988 | non-integer x = 0.008197 | non-integer x = 0.016393 | non-integer x = 0.006579 | non-integer x = 0.006024 | non-integer x = 0.006289 | non-integer x = 0.012579 | non-integer x = 0.008475 | non-integer x = 0.008333 | non-integer x = 0.006135 | non-integer x = 0.010638 | non-integer x = 0.010101 | non-integer x = 0.017544 | non-integer x = 0.035088 | non-integer x = 0.010870 | non-integer x = 0.021739 | non-integer x = 0.010309 | non-integer x = 0.020619 | non-integer x = 0.009346 | non-integer x = 0.009174 | non-integer x = 0.166667 | non-integer x = 0.111111 | non-integer x = 0.125000 | non-integer x = 0.142857 | non-integer x = 0.090909 | non-integer x = 0.026316 | non-integer x = 0.421053 | non-integer x = 0.034483 | non-integer x = 0.310345 | non-integer x = 0.346154 | non-integer x = 0.076923 | non-integer x = 0.038462 | non-integer x = 0.428571 | non-integer x = 0.571429 | non-integer x = 0.471698 | non-integer x = 0.018868 | non-integer x = 0.333333 | non-integer x = 0.366667 | non-integer x = 0.300000 | non-integer x = 0.500000 | non-integer x = 0.012658 | non-integer x = 0.493671 | non-integer x = 0.222222 | non-integer x = 0.296296 | non-integer x = 0.259259 | non-integer x = 0.083333 | non-integer x = 0.513514 | non-integer x = 0.486486 | non-integer x = 0.058824 | non-integer x = 0.117647 | non-integer x = 0.391304 | non-integer x = 0.043478 | non-integer x = 0.434783 | non-integer x = 0.411765 | non-integer x = 0.480000 | non-integer x = 0.520000 | non-integer x = 0.470588 | non-integer x = 0.029412 | non-integer x = 0.153846 | non-integer x = 0.062500 | non-integer x = 0.071429 | non-integer x = 0.193548 | non-integer x = 0.032258 | non-integer x = 0.387097 | non-integer x = 0.100000 | non-integer x = 0.250000 | non-integer x = 0.033898 | non-integer x = 0.389831 | non-integer x = 0.016949 | non-integer x = 0.254237 | non-integer x = 0.050847 | non-integer x = 0.084746 | non-integer x = 0.152542 | non-integer x = 0.010000 | non-integer x = 0.090000 | non-integer x = 0.350000 | non-integer x = 0.240000 | non-integer x = 0.060000 | non-integer x = 0.150000 | non-integer x = 0.102564 | non-integer x = 0.205128 | non-integer x = 0.461538 | non-integer x = 0.051282 | non-integer x = 0.431579 | non-integer x = 0.094737 | non-integer x = 0.105263 | non-integer x = 0.221053 | non-integer x = 0.042105 | non-integer x = 0.052632 | non-integer x = 0.200000 | non-integer x = 0.400000 | non-integer x = 0.285714 | non-integer x = 0.031250 | non-integer x = 0.015625 | non-integer x = 0.046875 | non-integer x = 0.312500 | non-integer x = 0.421875 | non-integer x = 0.140625 | non-integer x = 0.026667 | non-integer x = 0.186667 | non-integer x = 0.013333 | non-integer x = 0.066667 | non-integer x = 0.080000 | non-integer x = 0.093333 | non-integer x = 0.173333 | non-integer x = 0.023622 | non-integer x = 0.082677 | non-integer x = 0.003937 | non-integer x = 0.181102 | non-integer x = 0.011811 | non-integer x = 0.090551 | non-integer x = 0.149606 | non-integer x = 0.007874 | non-integer x = 0.027559 | non-integer x = 0.385827 | non-integer x = 0.035433 | non-integer x = 0.034247 | non-integer x = 0.020548 | non-integer x = 0.027397 | non-integer x = 0.013699 | non-integer x = 0.006849 | non-integer x = 0.041096 | non-integer x = 0.031034 | non-integer x = 0.048276 | non-integer x = 0.013793 | non-integer x = 0.106897 | non-integer x = 0.003448 | non-integer x = 0.144828 | non-integer x = 0.110345 | non-integer x = 0.037931 | non-integer x = 0.406897 | non-integer x = 0.065517 | non-integer x = 0.526316 | non-integer x = 0.473684 | non-integer x = 0.414286 | non-integer x = 0.171429 | non-integer x = 0.085714 | non-integer x = 0.028571 | non-integer x = 0.055556 | non-integer x = 0.538462 | non-integer x = 0.148148 | non-integer x = 0.456790 | non-integer x = 0.123457 | non-integer x = 0.271605 | non-integer x = 0.025641 | non-integer x = 0.015873 | non-integer x = 0.458333 | non-integer x = 0.020833 | non-integer x = 0.437500 | non-integer x = 0.533333 | non-integer x = 0.466667 | non-integer x = 0.137255 | non-integer x = 0.019608 | non-integer x = 0.176471 | non-integer x = 0.027778 | non-integer x = 0.028986 | non-integer x = 0.086957 | non-integer x = 0.101449 | non-integer x = 0.449275 | non-integer x = 0.115942 | non-integer x = 0.093750 | non-integer x = 0.343750 | non-integer x = 0.122807 | non-integer x = 0.140351 | non-integer x = 0.157895 | non-integer x = 0.214286 | non-integer x = 0.272727 | non-integer x = 0.545455 | non-integer x = 0.040000 | non-integer x = 0.022222 | non-integer x = 0.044444 | non-integer x = 0.511111 | non-integer x = 0.192308 | non-integer x = 0.115385 | non-integer x = 0.130435 | non-integer x = 0.347826 | non-integer x = 0.173913 | non-integer x = 0.518519 | non-integer x = 0.074074 | non-integer x = 0.081081 | non-integer x = 0.108108 | non-integer x = 0.054054 | non-integer x = 0.189189 | non-integer x = 0.405405 | non-integer x = 0.027027 | non-integer x = 0.280000 | non-integer x = 0.033333 | non-integer x = 0.120000,NA,UniqueFemaleContributors,-0.20052966872969416,0.01956382116173692,-10.250025650504908,1.1831213690092213e-24
+39,participant,percent_by_author_UniqueFemaleContributors,only_female,questions_and_comments,beta,,success,"
+Call:
+betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logit"", 
+    type = ""ML"")
+
+Randomized quantile residuals:
+    Min      1Q  Median      3Q     Max 
+-2.5548 -0.6831 -0.2738  0.2033     Inf 
+
+Coefficients (mu model with logit link):
+                         Estimate Std. Error z value Pr(>|z|)    
+(Intercept)              -2.41052    0.02601  -92.67   <2e-16 ***
+UniqueFemaleContributors -0.06642    0.00196  -33.88   <2e-16 ***
+
+Phi coefficients (phi model with identity link):
+      Estimate Std. Error z value Pr(>|z|)    
+(phi)  23.3322     0.7118   32.78   <2e-16 ***
+
+Exceedence parameter (extended-support xbetax model):
+        Estimate Std. Error z value Pr(>|z|)
+Log(nu)   -19.43      37.10  -0.524      0.6
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Exceedence parameter nu: 0
+Type of estimator: ML (maximum likelihood)
+Log-likelihood:  7046 on 4 Df
+Number of iterations in BFGS optimization: 21 ",,NA,UniqueFemaleContributors,-0.06642412773426944,0.0019604025049634673,-33.882902906975865,1.189737371167593e-251
+40,participant,percent_by_author_UniqueFemaleContributors,only_female,only_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.18411 -0.10422 -0.07484  0.03467  0.81245 
+
+Coefficients:
+                          Estimate Std. Error t value Pr(>|t|)    
+(Intercept)               0.223346   0.010081   22.16   <2e-16 ***
+UniqueFemaleContributors -0.035791   0.003517  -10.18   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.1892 on 859 degrees of freedom
+Multiple R-squared:  0.1076,	Adjusted R-squared:  0.1066 
+F-statistic: 103.6 on 1 and 859 DF,  p-value: < 2.2e-16
+",,NA,UniqueFemaleContributors,-0.03579142270929781,0.003516596443654031,-10.177858984611722,4.753682024884398e-23
+41,participant,percent_by_author_UniqueFemaleContributors,only_female,only_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                         Estimate Std. Error z value Pr(>|z|)    
+(Intercept)               -1.0739     0.1794  -5.986 2.15e-09 ***
+UniqueFemaleContributors  -0.5145     0.1134  -4.537 5.71e-06 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 152.88  on 860  degrees of freedom
+Residual deviance: 114.16  on 859  degrees of freedom
+AIC: Inf
+
+Number of Fisher Scoring iterations: 6
+",non-integer x = 0.166667 | non-integer x = 0.111111 | non-integer x = 0.125000 | non-integer x = 0.142857 | non-integer x = 0.090909 | non-integer x = 0.026316 | non-integer x = 0.421053 | non-integer x = 0.034483 | non-integer x = 0.310345 | non-integer x = 0.346154 | non-integer x = 0.076923 | non-integer x = 0.038462 | non-integer x = 0.428571 | non-integer x = 0.571429 | non-integer x = 0.471698 | non-integer x = 0.018868 | non-integer x = 0.333333 | non-integer x = 0.366667 | non-integer x = 0.300000 | non-integer x = 0.500000 | non-integer x = 0.012658 | non-integer x = 0.493671 | non-integer x = 0.222222 | non-integer x = 0.296296 | non-integer x = 0.259259 | non-integer x = 0.083333 | non-integer x = 0.513514 | non-integer x = 0.486486 | non-integer x = 0.058824 | non-integer x = 0.117647 | non-integer x = 0.391304 | non-integer x = 0.043478 | non-integer x = 0.434783 | non-integer x = 0.411765 | non-integer x = 0.480000 | non-integer x = 0.520000 | non-integer x = 0.470588 | non-integer x = 0.029412 | non-integer x = 0.153846 | non-integer x = 0.062500 | non-integer x = 0.071429 | non-integer x = 0.193548 | non-integer x = 0.032258 | non-integer x = 0.387097 | non-integer x = 0.100000 | non-integer x = 0.250000 | non-integer x = 0.033898 | non-integer x = 0.389831 | non-integer x = 0.016949 | non-integer x = 0.254237 | non-integer x = 0.050847 | non-integer x = 0.084746 | non-integer x = 0.152542 | non-integer x = 0.010000 | non-integer x = 0.090000 | non-integer x = 0.350000 | non-integer x = 0.240000 | non-integer x = 0.060000 | non-integer x = 0.150000 | non-integer x = 0.102564 | non-integer x = 0.205128 | non-integer x = 0.461538 | non-integer x = 0.051282 | non-integer x = 0.431579 | non-integer x = 0.094737 | non-integer x = 0.105263 | non-integer x = 0.221053 | non-integer x = 0.042105 | non-integer x = 0.052632 | non-integer x = 0.200000 | non-integer x = 0.400000 | non-integer x = 0.285714 | non-integer x = 0.031250 | non-integer x = 0.015625 | non-integer x = 0.046875 | non-integer x = 0.312500 | non-integer x = 0.421875 | non-integer x = 0.140625 | non-integer x = 0.026667 | non-integer x = 0.186667 | non-integer x = 0.013333 | non-integer x = 0.066667 | non-integer x = 0.080000 | non-integer x = 0.093333 | non-integer x = 0.173333 | non-integer x = 0.023622 | non-integer x = 0.082677 | non-integer x = 0.003937 | non-integer x = 0.181102 | non-integer x = 0.011811 | non-integer x = 0.090551 | non-integer x = 0.149606 | non-integer x = 0.007874 | non-integer x = 0.027559 | non-integer x = 0.385827 | non-integer x = 0.035433 | non-integer x = 0.034247 | non-integer x = 0.020548 | non-integer x = 0.027397 | non-integer x = 0.013699 | non-integer x = 0.006849 | non-integer x = 0.041096 | non-integer x = 0.031034 | non-integer x = 0.048276 | non-integer x = 0.013793 | non-integer x = 0.106897 | non-integer x = 0.003448 | non-integer x = 0.144828 | non-integer x = 0.110345 | non-integer x = 0.037931 | non-integer x = 0.406897 | non-integer x = 0.065517 | non-integer x = 0.526316 | non-integer x = 0.473684 | non-integer x = 0.414286 | non-integer x = 0.171429 | non-integer x = 0.085714 | non-integer x = 0.028571 | non-integer x = 0.055556 | non-integer x = 0.538462 | non-integer x = 0.148148 | non-integer x = 0.456790 | non-integer x = 0.123457 | non-integer x = 0.271605 | non-integer x = 0.025641 | non-integer x = 0.015873 | non-integer x = 0.458333 | non-integer x = 0.020833 | non-integer x = 0.437500 | non-integer x = 0.533333 | non-integer x = 0.466667 | non-integer x = 0.137255 | non-integer x = 0.019608 | non-integer x = 0.176471 | non-integer x = 0.027778 | non-integer x = 0.028986 | non-integer x = 0.086957 | non-integer x = 0.101449 | non-integer x = 0.449275 | non-integer x = 0.115942 | non-integer x = 0.093750 | non-integer x = 0.343750 | non-integer x = 0.017544 | non-integer x = 0.035088 | non-integer x = 0.122807 | non-integer x = 0.140351 | non-integer x = 0.157895 | non-integer x = 0.214286 | non-integer x = 0.272727 | non-integer x = 0.545455 | non-integer x = 0.040000 | non-integer x = 0.022222 | non-integer x = 0.044444 | non-integer x = 0.511111 | non-integer x = 0.192308 | non-integer x = 0.115385 | non-integer x = 0.130435 | non-integer x = 0.347826 | non-integer x = 0.173913 | non-integer x = 0.518519 | non-integer x = 0.074074 | non-integer x = 0.081081 | non-integer x = 0.108108 | non-integer x = 0.054054 | non-integer x = 0.189189 | non-integer x = 0.405405 | non-integer x = 0.027027 | non-integer x = 0.280000 | non-integer x = 0.033333 | non-integer x = 0.120000,NA,UniqueFemaleContributors,-0.514486074602798,0.11340243845600492,-4.536816682318482,5.7109707097839345e-6
+42,participant,percent_by_author_UniqueFemaleContributors,only_female,only_comments,beta,,success,"
+Call:
+betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logit"", 
+    type = ""ML"")
+
+Randomized quantile residuals:
+    Min      1Q  Median      3Q     Max 
+-1.4826 -0.5973 -0.3326  0.0137  4.8229 
+
+Coefficients (mu model with logit link):
+                         Estimate Std. Error z value Pr(>|z|)    
+(Intercept)              -1.03260    0.05620 -18.373   <2e-16 ***
+UniqueFemaleContributors -0.19232    0.01999  -9.621   <2e-16 ***
+
+Phi coefficients (phi model with identity link):
+      Estimate Std. Error z value Pr(>|z|)    
+(phi)   4.1506     0.3333   12.45   <2e-16 ***
+
+Exceedence parameter (extended-support xbetax model):
+        Estimate Std. Error z value Pr(>|z|)    
+Log(nu)  -4.1015     0.1852  -22.14   <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Exceedence parameter nu: 0.0165
+Type of estimator: ML (maximum likelihood)
+Log-likelihood: 459.6 on 4 Df
+Number of iterations in BFGS optimization: 18 ",,NA,UniqueFemaleContributors,-0.1923243377300626,0.01999024953190749,-9.620907303987558,6.5253017230592735e-22
+43,participant,percent_by_author_UniqueFemaleContributors,female_and_male,questions_and_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.08562 -0.03807 -0.01860  0.02005  0.91093 
+
+Coefficients:
+                           Estimate Std. Error t value Pr(>|t|)    
+(Intercept)               0.0928704  0.0023168   40.09   <2e-16 ***
+UniqueFemaleContributors -0.0038024  0.0001289  -29.50   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.07433 on 3171 degrees of freedom
+Multiple R-squared:  0.2154,	Adjusted R-squared:  0.2151 
+F-statistic: 870.4 on 1 and 3171 DF,  p-value: < 2.2e-16
+",,NA,UniqueFemaleContributors,-0.0038024341952997824,1.2888550919030366e-4,-29.502418225196784,2.991433419105162e-169
+44,participant,percent_by_author_UniqueFemaleContributors,female_and_male,questions_and_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                         Estimate Std. Error z value Pr(>|z|)    
+(Intercept)              -1.86888    0.11915 -15.686   <2e-16 ***
+UniqueFemaleContributors -0.17867    0.01913  -9.338   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 267.58  on 3172  degrees of freedom
+Residual deviance:  95.91  on 3171  degrees of freedom
+AIC: Inf
+
+Number of Fisher Scoring iterations: 7
+",non-integer x = 0.005650 | non-integer x = 0.006452 | non-integer x = 0.005155 | non-integer x = 0.005988 | non-integer x = 0.008197 | non-integer x = 0.016393 | non-integer x = 0.006579 | non-integer x = 0.006024 | non-integer x = 0.006289 | non-integer x = 0.012579 | non-integer x = 0.008475 | non-integer x = 0.008333 | non-integer x = 0.006135 | non-integer x = 0.010638 | non-integer x = 0.010101 | non-integer x = 0.017544 | non-integer x = 0.035088 | non-integer x = 0.010870 | non-integer x = 0.021739 | non-integer x = 0.010309 | non-integer x = 0.020619 | non-integer x = 0.009346 | non-integer x = 0.009174 | non-integer x = 0.166667 | non-integer x = 0.111111 | non-integer x = 0.125000 | non-integer x = 0.142857 | non-integer x = 0.090909 | non-integer x = 0.026316 | non-integer x = 0.421053 | non-integer x = 0.034483 | non-integer x = 0.310345 | non-integer x = 0.346154 | non-integer x = 0.076923 | non-integer x = 0.038462 | non-integer x = 0.428571 | non-integer x = 0.571429 | non-integer x = 0.471698 | non-integer x = 0.018868 | non-integer x = 0.333333 | non-integer x = 0.366667 | non-integer x = 0.300000 | non-integer x = 0.500000 | non-integer x = 0.012658 | non-integer x = 0.493671 | non-integer x = 0.222222 | non-integer x = 0.296296 | non-integer x = 0.259259 | non-integer x = 0.083333 | non-integer x = 0.513514 | non-integer x = 0.486486 | non-integer x = 0.058824 | non-integer x = 0.117647 | non-integer x = 0.391304 | non-integer x = 0.043478 | non-integer x = 0.434783 | non-integer x = 0.411765 | non-integer x = 0.480000 | non-integer x = 0.520000 | non-integer x = 0.470588 | non-integer x = 0.029412 | non-integer x = 0.153846 | non-integer x = 0.062500 | non-integer x = 0.071429 | non-integer x = 0.193548 | non-integer x = 0.032258 | non-integer x = 0.387097 | non-integer x = 0.100000 | non-integer x = 0.250000 | non-integer x = 0.033898 | non-integer x = 0.389831 | non-integer x = 0.016949 | non-integer x = 0.254237 | non-integer x = 0.050847 | non-integer x = 0.084746 | non-integer x = 0.152542 | non-integer x = 0.010000 | non-integer x = 0.090000 | non-integer x = 0.350000 | non-integer x = 0.240000 | non-integer x = 0.060000 | non-integer x = 0.150000 | non-integer x = 0.102564 | non-integer x = 0.205128 | non-integer x = 0.461538 | non-integer x = 0.051282 | non-integer x = 0.431579 | non-integer x = 0.094737 | non-integer x = 0.105263 | non-integer x = 0.221053 | non-integer x = 0.042105 | non-integer x = 0.052632 | non-integer x = 0.200000 | non-integer x = 0.400000 | non-integer x = 0.285714 | non-integer x = 0.031250 | non-integer x = 0.015625 | non-integer x = 0.046875 | non-integer x = 0.312500 | non-integer x = 0.421875 | non-integer x = 0.140625 | non-integer x = 0.026667 | non-integer x = 0.186667 | non-integer x = 0.013333 | non-integer x = 0.066667 | non-integer x = 0.080000 | non-integer x = 0.093333 | non-integer x = 0.173333 | non-integer x = 0.023622 | non-integer x = 0.082677 | non-integer x = 0.003937 | non-integer x = 0.181102 | non-integer x = 0.011811 | non-integer x = 0.090551 | non-integer x = 0.149606 | non-integer x = 0.007874 | non-integer x = 0.027559 | non-integer x = 0.385827 | non-integer x = 0.035433 | non-integer x = 0.034247 | non-integer x = 0.020548 | non-integer x = 0.027397 | non-integer x = 0.013699 | non-integer x = 0.006849 | non-integer x = 0.041096 | non-integer x = 0.031034 | non-integer x = 0.048276 | non-integer x = 0.013793 | non-integer x = 0.106897 | non-integer x = 0.003448 | non-integer x = 0.144828 | non-integer x = 0.110345 | non-integer x = 0.037931 | non-integer x = 0.406897 | non-integer x = 0.065517 | non-integer x = 0.526316 | non-integer x = 0.473684 | non-integer x = 0.414286 | non-integer x = 0.171429 | non-integer x = 0.085714 | non-integer x = 0.028571 | non-integer x = 0.055556 | non-integer x = 0.538462 | non-integer x = 0.148148 | non-integer x = 0.456790 | non-integer x = 0.123457 | non-integer x = 0.271605 | non-integer x = 0.025641 | non-integer x = 0.015873 | non-integer x = 0.458333 | non-integer x = 0.020833 | non-integer x = 0.437500 | non-integer x = 0.533333 | non-integer x = 0.466667 | non-integer x = 0.137255 | non-integer x = 0.019608 | non-integer x = 0.176471 | non-integer x = 0.027778 | non-integer x = 0.028986 | non-integer x = 0.086957 | non-integer x = 0.101449 | non-integer x = 0.449275 | non-integer x = 0.115942 | non-integer x = 0.093750 | non-integer x = 0.343750 | non-integer x = 0.122807 | non-integer x = 0.140351 | non-integer x = 0.157895 | non-integer x = 0.214286 | non-integer x = 0.272727 | non-integer x = 0.545455 | non-integer x = 0.040000 | non-integer x = 0.022222 | non-integer x = 0.044444 | non-integer x = 0.511111 | non-integer x = 0.192308 | non-integer x = 0.115385 | non-integer x = 0.130435 | non-integer x = 0.347826 | non-integer x = 0.173913 | non-integer x = 0.518519 | non-integer x = 0.074074 | non-integer x = 0.081081 | non-integer x = 0.108108 | non-integer x = 0.054054 | non-integer x = 0.189189 | non-integer x = 0.405405 | non-integer x = 0.027027 | non-integer x = 0.280000 | non-integer x = 0.033333 | non-integer x = 0.120000,NA,UniqueFemaleContributors,-0.1786717863277508,0.01913345908920688,-9.338185295963497,9.79992992667829e-21
+45,participant,percent_by_author_UniqueFemaleContributors,female_and_male,questions_and_comments,beta,,success,"
+Call:
+betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logit"", 
+    type = ""ML"")
+
+Randomized quantile residuals:
+    Min      1Q  Median      3Q     Max 
+-2.5552 -0.6832 -0.2737  0.1740  8.2095 
+
+Coefficients (mu model with logit link):
+                         Estimate Std. Error z value Pr(>|z|)    
+(Intercept)              -2.41038    0.02601  -92.67   <2e-16 ***
+UniqueFemaleContributors -0.06644    0.00196  -33.89   <2e-16 ***
+
+Phi coefficients (phi model with identity link):
+      Estimate Std. Error z value Pr(>|z|)    
+(phi)  23.3333     0.7118   32.78   <2e-16 ***
+
+Exceedence parameter (extended-support xbetax model):
+        Estimate Std. Error z value Pr(>|z|)  
+Log(nu)  -16.103      7.032   -2.29    0.022 *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Exceedence parameter nu: 0
+Type of estimator: ML (maximum likelihood)
+Log-likelihood:  7983 on 4 Df
+Number of iterations in BFGS optimization: 19 ",,NA,UniqueFemaleContributors,-0.0664366369551436,0.001960377416479372,-33.88971755982411,9.442242302985737e-252
+46,participant,percent_by_author_UniqueFemaleContributors,female_and_male,only_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.14743 -0.06870 -0.03976  0.02470  0.84913 
+
+Coefficients:
+                          Estimate Std. Error t value Pr(>|t|)    
+(Intercept)               0.177490   0.006744   26.32   <2e-16 ***
+UniqueFemaleContributors -0.026617   0.002321  -11.47   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.1241 on 833 degrees of freedom
+Multiple R-squared:  0.1363,	Adjusted R-squared:  0.1353 
+F-statistic: 131.5 on 1 and 833 DF,  p-value: < 2.2e-16
+",,NA,UniqueFemaleContributors,-0.026616782023688362,0.002321194283836123,-11.466847996756275,2.2901172971744664e-28
+47,participant,percent_by_author_UniqueFemaleContributors,female_and_male,only_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                         Estimate Std. Error z value Pr(>|z|)    
+(Intercept)               -1.4170     0.1863  -7.608 2.79e-14 ***
+UniqueFemaleContributors  -0.4076     0.1067  -3.821 0.000133 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 92.395  on 834  degrees of freedom
+Residual deviance: 68.215  on 833  degrees of freedom
+AIC: Inf
+
+Number of Fisher Scoring iterations: 6
+",non-integer x = 0.166667 | non-integer x = 0.111111 | non-integer x = 0.125000 | non-integer x = 0.142857 | non-integer x = 0.090909 | non-integer x = 0.026316 | non-integer x = 0.421053 | non-integer x = 0.034483 | non-integer x = 0.310345 | non-integer x = 0.346154 | non-integer x = 0.076923 | non-integer x = 0.038462 | non-integer x = 0.428571 | non-integer x = 0.571429 | non-integer x = 0.471698 | non-integer x = 0.018868 | non-integer x = 0.333333 | non-integer x = 0.366667 | non-integer x = 0.300000 | non-integer x = 0.500000 | non-integer x = 0.012658 | non-integer x = 0.493671 | non-integer x = 0.222222 | non-integer x = 0.296296 | non-integer x = 0.259259 | non-integer x = 0.083333 | non-integer x = 0.513514 | non-integer x = 0.486486 | non-integer x = 0.058824 | non-integer x = 0.117647 | non-integer x = 0.391304 | non-integer x = 0.043478 | non-integer x = 0.434783 | non-integer x = 0.411765 | non-integer x = 0.480000 | non-integer x = 0.520000 | non-integer x = 0.470588 | non-integer x = 0.029412 | non-integer x = 0.153846 | non-integer x = 0.062500 | non-integer x = 0.071429 | non-integer x = 0.193548 | non-integer x = 0.032258 | non-integer x = 0.387097 | non-integer x = 0.100000 | non-integer x = 0.250000 | non-integer x = 0.033898 | non-integer x = 0.389831 | non-integer x = 0.016949 | non-integer x = 0.254237 | non-integer x = 0.050847 | non-integer x = 0.084746 | non-integer x = 0.152542 | non-integer x = 0.010000 | non-integer x = 0.090000 | non-integer x = 0.350000 | non-integer x = 0.240000 | non-integer x = 0.060000 | non-integer x = 0.150000 | non-integer x = 0.102564 | non-integer x = 0.205128 | non-integer x = 0.461538 | non-integer x = 0.051282 | non-integer x = 0.431579 | non-integer x = 0.094737 | non-integer x = 0.105263 | non-integer x = 0.221053 | non-integer x = 0.042105 | non-integer x = 0.052632 | non-integer x = 0.200000 | non-integer x = 0.400000 | non-integer x = 0.285714 | non-integer x = 0.031250 | non-integer x = 0.015625 | non-integer x = 0.046875 | non-integer x = 0.312500 | non-integer x = 0.421875 | non-integer x = 0.140625 | non-integer x = 0.026667 | non-integer x = 0.186667 | non-integer x = 0.013333 | non-integer x = 0.066667 | non-integer x = 0.080000 | non-integer x = 0.093333 | non-integer x = 0.173333 | non-integer x = 0.023622 | non-integer x = 0.082677 | non-integer x = 0.003937 | non-integer x = 0.181102 | non-integer x = 0.011811 | non-integer x = 0.090551 | non-integer x = 0.149606 | non-integer x = 0.007874 | non-integer x = 0.027559 | non-integer x = 0.385827 | non-integer x = 0.035433 | non-integer x = 0.034247 | non-integer x = 0.020548 | non-integer x = 0.027397 | non-integer x = 0.013699 | non-integer x = 0.006849 | non-integer x = 0.041096 | non-integer x = 0.031034 | non-integer x = 0.048276 | non-integer x = 0.013793 | non-integer x = 0.106897 | non-integer x = 0.003448 | non-integer x = 0.144828 | non-integer x = 0.110345 | non-integer x = 0.037931 | non-integer x = 0.406897 | non-integer x = 0.065517 | non-integer x = 0.526316 | non-integer x = 0.473684 | non-integer x = 0.414286 | non-integer x = 0.171429 | non-integer x = 0.085714 | non-integer x = 0.028571 | non-integer x = 0.055556 | non-integer x = 0.538462 | non-integer x = 0.148148 | non-integer x = 0.456790 | non-integer x = 0.123457 | non-integer x = 0.271605 | non-integer x = 0.025641 | non-integer x = 0.015873 | non-integer x = 0.458333 | non-integer x = 0.020833 | non-integer x = 0.437500 | non-integer x = 0.533333 | non-integer x = 0.466667 | non-integer x = 0.137255 | non-integer x = 0.019608 | non-integer x = 0.176471 | non-integer x = 0.027778 | non-integer x = 0.028986 | non-integer x = 0.086957 | non-integer x = 0.101449 | non-integer x = 0.449275 | non-integer x = 0.115942 | non-integer x = 0.093750 | non-integer x = 0.343750 | non-integer x = 0.017544 | non-integer x = 0.035088 | non-integer x = 0.122807 | non-integer x = 0.140351 | non-integer x = 0.157895 | non-integer x = 0.214286 | non-integer x = 0.272727 | non-integer x = 0.545455 | non-integer x = 0.040000 | non-integer x = 0.022222 | non-integer x = 0.044444 | non-integer x = 0.511111 | non-integer x = 0.192308 | non-integer x = 0.115385 | non-integer x = 0.130435 | non-integer x = 0.347826 | non-integer x = 0.173913 | non-integer x = 0.518519 | non-integer x = 0.074074 | non-integer x = 0.081081 | non-integer x = 0.108108 | non-integer x = 0.054054 | non-integer x = 0.189189 | non-integer x = 0.405405 | non-integer x = 0.027027 | non-integer x = 0.280000 | non-integer x = 0.033333 | non-integer x = 0.120000,NA,UniqueFemaleContributors,-0.40764629594907226,0.10668976304240718,-3.8208567000663454,1.3298891069579306e-4
+48,participant,percent_by_author_UniqueFemaleContributors,female_and_male,only_comments,beta,,success,"
+Call:
+betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logit"", 
+    type = ""ML"")
+
+Randomized quantile residuals:
+    Min      1Q  Median      3Q     Max 
+-2.7273 -0.6808 -0.2558  0.1757  8.2095 
+
+Coefficients (mu model with logit link):
+                         Estimate Std. Error z value Pr(>|z|)    
+(Intercept)              -1.53855    0.04514  -34.09   <2e-16 ***
+UniqueFemaleContributors -0.22560    0.01811  -12.46   <2e-16 ***
+
+Phi coefficients (phi model with identity link):
+      Estimate Std. Error z value Pr(>|z|)    
+(phi)  10.7723     0.5496    19.6   <2e-16 ***
+
+Exceedence parameter (extended-support xbetax model):
+        Estimate Std. Error z value Pr(>|z|)
+Log(nu)    -18.2      111.2  -0.164     0.87
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Exceedence parameter nu: 0
+Type of estimator: ML (maximum likelihood)
+Log-likelihood: 963.4 on 4 Df
+Number of iterations in BFGS optimization: 31 ",,NA,UniqueFemaleContributors,-0.2255952457615997,0.01811197474121162,-12.45558526803181,1.3039140704584682e-35
+49,participant,percent_by_author_UniqueFemaleParticipation,only_female,questions_and_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.44795 -0.03203 -0.00993  0.01744  0.45976 
+
+Coefficients:
+                           Estimate Std. Error t value Pr(>|t|)    
+(Intercept)               -0.092035   0.002211  -41.63   <2e-16 ***
+UniqueFemaleParticipation  0.898217   0.011885   75.57   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.07206 on 3197 degrees of freedom
+Multiple R-squared:  0.6411,	Adjusted R-squared:  0.641 
+F-statistic:  5711 on 1 and 3197 DF,  p-value: < 2.2e-16
+",,NA,UniqueFemaleParticipation,0.8982173314128259,0.011885418816909856,75.5730483922785,0
+50,participant,percent_by_author_UniqueFemaleParticipation,only_female,questions_and_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                -4.0423     0.1205  -33.56   <2e-16 ***
+UniqueFemaleParticipation   4.1508     0.2254   18.41   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 384.36  on 3198  degrees of freedom
+Residual deviance: 195.53  on 3197  degrees of freedom
+AIC: Inf
+
+Number of Fisher Scoring iterations: 6
+",non-integer x = 0.005650 | non-integer x = 0.006452 | non-integer x = 0.005155 | non-integer x = 0.005988 | non-integer x = 0.008197 | non-integer x = 0.016393 | non-integer x = 0.006579 | non-integer x = 0.006024 | non-integer x = 0.006289 | non-integer x = 0.012579 | non-integer x = 0.008475 | non-integer x = 0.008333 | non-integer x = 0.006135 | non-integer x = 0.010638 | non-integer x = 0.010101 | non-integer x = 0.017544 | non-integer x = 0.035088 | non-integer x = 0.010870 | non-integer x = 0.021739 | non-integer x = 0.010309 | non-integer x = 0.020619 | non-integer x = 0.009346 | non-integer x = 0.009174 | non-integer x = 0.166667 | non-integer x = 0.111111 | non-integer x = 0.125000 | non-integer x = 0.142857 | non-integer x = 0.090909 | non-integer x = 0.026316 | non-integer x = 0.421053 | non-integer x = 0.034483 | non-integer x = 0.310345 | non-integer x = 0.346154 | non-integer x = 0.076923 | non-integer x = 0.038462 | non-integer x = 0.428571 | non-integer x = 0.571429 | non-integer x = 0.471698 | non-integer x = 0.018868 | non-integer x = 0.333333 | non-integer x = 0.366667 | non-integer x = 0.300000 | non-integer x = 0.500000 | non-integer x = 0.012658 | non-integer x = 0.493671 | non-integer x = 0.222222 | non-integer x = 0.296296 | non-integer x = 0.259259 | non-integer x = 0.083333 | non-integer x = 0.513514 | non-integer x = 0.486486 | non-integer x = 0.058824 | non-integer x = 0.117647 | non-integer x = 0.391304 | non-integer x = 0.043478 | non-integer x = 0.434783 | non-integer x = 0.411765 | non-integer x = 0.480000 | non-integer x = 0.520000 | non-integer x = 0.470588 | non-integer x = 0.029412 | non-integer x = 0.153846 | non-integer x = 0.062500 | non-integer x = 0.071429 | non-integer x = 0.193548 | non-integer x = 0.032258 | non-integer x = 0.387097 | non-integer x = 0.100000 | non-integer x = 0.250000 | non-integer x = 0.033898 | non-integer x = 0.389831 | non-integer x = 0.016949 | non-integer x = 0.254237 | non-integer x = 0.050847 | non-integer x = 0.084746 | non-integer x = 0.152542 | non-integer x = 0.010000 | non-integer x = 0.090000 | non-integer x = 0.350000 | non-integer x = 0.240000 | non-integer x = 0.060000 | non-integer x = 0.150000 | non-integer x = 0.102564 | non-integer x = 0.205128 | non-integer x = 0.461538 | non-integer x = 0.051282 | non-integer x = 0.431579 | non-integer x = 0.094737 | non-integer x = 0.105263 | non-integer x = 0.221053 | non-integer x = 0.042105 | non-integer x = 0.052632 | non-integer x = 0.200000 | non-integer x = 0.400000 | non-integer x = 0.285714 | non-integer x = 0.031250 | non-integer x = 0.015625 | non-integer x = 0.046875 | non-integer x = 0.312500 | non-integer x = 0.421875 | non-integer x = 0.140625 | non-integer x = 0.026667 | non-integer x = 0.186667 | non-integer x = 0.013333 | non-integer x = 0.066667 | non-integer x = 0.080000 | non-integer x = 0.093333 | non-integer x = 0.173333 | non-integer x = 0.023622 | non-integer x = 0.082677 | non-integer x = 0.003937 | non-integer x = 0.181102 | non-integer x = 0.011811 | non-integer x = 0.090551 | non-integer x = 0.149606 | non-integer x = 0.007874 | non-integer x = 0.027559 | non-integer x = 0.385827 | non-integer x = 0.035433 | non-integer x = 0.034247 | non-integer x = 0.020548 | non-integer x = 0.027397 | non-integer x = 0.013699 | non-integer x = 0.006849 | non-integer x = 0.041096 | non-integer x = 0.031034 | non-integer x = 0.048276 | non-integer x = 0.013793 | non-integer x = 0.106897 | non-integer x = 0.003448 | non-integer x = 0.144828 | non-integer x = 0.110345 | non-integer x = 0.037931 | non-integer x = 0.406897 | non-integer x = 0.065517 | non-integer x = 0.526316 | non-integer x = 0.473684 | non-integer x = 0.414286 | non-integer x = 0.171429 | non-integer x = 0.085714 | non-integer x = 0.028571 | non-integer x = 0.055556 | non-integer x = 0.538462 | non-integer x = 0.148148 | non-integer x = 0.456790 | non-integer x = 0.123457 | non-integer x = 0.271605 | non-integer x = 0.025641 | non-integer x = 0.015873 | non-integer x = 0.458333 | non-integer x = 0.020833 | non-integer x = 0.437500 | non-integer x = 0.533333 | non-integer x = 0.466667 | non-integer x = 0.137255 | non-integer x = 0.019608 | non-integer x = 0.176471 | non-integer x = 0.027778 | non-integer x = 0.028986 | non-integer x = 0.086957 | non-integer x = 0.101449 | non-integer x = 0.449275 | non-integer x = 0.115942 | non-integer x = 0.093750 | non-integer x = 0.343750 | non-integer x = 0.122807 | non-integer x = 0.140351 | non-integer x = 0.157895 | non-integer x = 0.214286 | non-integer x = 0.272727 | non-integer x = 0.545455 | non-integer x = 0.040000 | non-integer x = 0.022222 | non-integer x = 0.044444 | non-integer x = 0.511111 | non-integer x = 0.192308 | non-integer x = 0.115385 | non-integer x = 0.130435 | non-integer x = 0.347826 | non-integer x = 0.173913 | non-integer x = 0.518519 | non-integer x = 0.074074 | non-integer x = 0.081081 | non-integer x = 0.108108 | non-integer x = 0.054054 | non-integer x = 0.189189 | non-integer x = 0.405405 | non-integer x = 0.027027 | non-integer x = 0.280000 | non-integer x = 0.033333 | non-integer x = 0.120000,NA,UniqueFemaleParticipation,4.150779079054079,0.22542100443618673,18.41345303839732,1.0247562174743097e-75
+51,participant,percent_by_author_UniqueFemaleParticipation,only_female,questions_and_comments,beta,,success,"
+Call:
+betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logit"", 
+    type = ""ML"")
+
+Randomized quantile residuals:
+    Min      1Q  Median      3Q     Max 
+-6.5446 -0.6231 -0.2748  0.1177  4.3014 
+
+Coefficients (mu model with logit link):
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)               -4.37933    0.03363 -130.22   <2e-16 ***
+UniqueFemaleParticipation  7.76570    0.11791   65.86   <2e-16 ***
+
+Phi coefficients (phi model with identity link):
+      Estimate Std. Error z value Pr(>|z|)    
+(phi)  15.9720     0.4924   32.43   <2e-16 ***
+
+Exceedence parameter (extended-support xbetax model):
+        Estimate Std. Error z value Pr(>|z|)    
+Log(nu)   -9.453      0.283  -33.41   <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Exceedence parameter nu: 1e-04
+Type of estimator: ML (maximum likelihood)
+Log-likelihood:  7483 on 4 Df
+Number of iterations in BFGS optimization: 25 ",,NA,UniqueFemaleParticipation,7.765698367403681,0.11791102607277648,65.86066312925284,0
+52,participant,percent_by_author_UniqueFemaleParticipation,only_female,only_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.48983 -0.04786 -0.01388  0.04914  0.40414 
+
+Coefficients:
+                           Estimate Std. Error t value Pr(>|t|)    
+(Intercept)               -0.033249   0.005624  -5.912 4.88e-09 ***
+UniqueFemaleParticipation  0.872853   0.020210  43.189  < 2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.1125 on 859 degrees of freedom
+Multiple R-squared:  0.6847,	Adjusted R-squared:  0.6843 
+F-statistic:  1865 on 1 and 859 DF,  p-value: < 2.2e-16
+",,NA,UniqueFemaleParticipation,0.8728530562902229,0.02020996257330597,43.189246547300286,1.6755397763495883e-217
+53,participant,percent_by_author_UniqueFemaleParticipation,only_female,only_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                -2.7221     0.1366  -19.93   <2e-16 ***
+UniqueFemaleParticipation   2.7233     0.2447   11.13   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 152.884  on 860  degrees of freedom
+Residual deviance:  63.595  on 859  degrees of freedom
+AIC: Inf
+
+Number of Fisher Scoring iterations: 5
+",non-integer x = 0.166667 | non-integer x = 0.111111 | non-integer x = 0.125000 | non-integer x = 0.142857 | non-integer x = 0.090909 | non-integer x = 0.026316 | non-integer x = 0.421053 | non-integer x = 0.034483 | non-integer x = 0.310345 | non-integer x = 0.346154 | non-integer x = 0.076923 | non-integer x = 0.038462 | non-integer x = 0.428571 | non-integer x = 0.571429 | non-integer x = 0.471698 | non-integer x = 0.018868 | non-integer x = 0.333333 | non-integer x = 0.366667 | non-integer x = 0.300000 | non-integer x = 0.500000 | non-integer x = 0.012658 | non-integer x = 0.493671 | non-integer x = 0.222222 | non-integer x = 0.296296 | non-integer x = 0.259259 | non-integer x = 0.083333 | non-integer x = 0.513514 | non-integer x = 0.486486 | non-integer x = 0.058824 | non-integer x = 0.117647 | non-integer x = 0.391304 | non-integer x = 0.043478 | non-integer x = 0.434783 | non-integer x = 0.411765 | non-integer x = 0.480000 | non-integer x = 0.520000 | non-integer x = 0.470588 | non-integer x = 0.029412 | non-integer x = 0.153846 | non-integer x = 0.062500 | non-integer x = 0.071429 | non-integer x = 0.193548 | non-integer x = 0.032258 | non-integer x = 0.387097 | non-integer x = 0.100000 | non-integer x = 0.250000 | non-integer x = 0.033898 | non-integer x = 0.389831 | non-integer x = 0.016949 | non-integer x = 0.254237 | non-integer x = 0.050847 | non-integer x = 0.084746 | non-integer x = 0.152542 | non-integer x = 0.010000 | non-integer x = 0.090000 | non-integer x = 0.350000 | non-integer x = 0.240000 | non-integer x = 0.060000 | non-integer x = 0.150000 | non-integer x = 0.102564 | non-integer x = 0.205128 | non-integer x = 0.461538 | non-integer x = 0.051282 | non-integer x = 0.431579 | non-integer x = 0.094737 | non-integer x = 0.105263 | non-integer x = 0.221053 | non-integer x = 0.042105 | non-integer x = 0.052632 | non-integer x = 0.200000 | non-integer x = 0.400000 | non-integer x = 0.285714 | non-integer x = 0.031250 | non-integer x = 0.015625 | non-integer x = 0.046875 | non-integer x = 0.312500 | non-integer x = 0.421875 | non-integer x = 0.140625 | non-integer x = 0.026667 | non-integer x = 0.186667 | non-integer x = 0.013333 | non-integer x = 0.066667 | non-integer x = 0.080000 | non-integer x = 0.093333 | non-integer x = 0.173333 | non-integer x = 0.023622 | non-integer x = 0.082677 | non-integer x = 0.003937 | non-integer x = 0.181102 | non-integer x = 0.011811 | non-integer x = 0.090551 | non-integer x = 0.149606 | non-integer x = 0.007874 | non-integer x = 0.027559 | non-integer x = 0.385827 | non-integer x = 0.035433 | non-integer x = 0.034247 | non-integer x = 0.020548 | non-integer x = 0.027397 | non-integer x = 0.013699 | non-integer x = 0.006849 | non-integer x = 0.041096 | non-integer x = 0.031034 | non-integer x = 0.048276 | non-integer x = 0.013793 | non-integer x = 0.106897 | non-integer x = 0.003448 | non-integer x = 0.144828 | non-integer x = 0.110345 | non-integer x = 0.037931 | non-integer x = 0.406897 | non-integer x = 0.065517 | non-integer x = 0.526316 | non-integer x = 0.473684 | non-integer x = 0.414286 | non-integer x = 0.171429 | non-integer x = 0.085714 | non-integer x = 0.028571 | non-integer x = 0.055556 | non-integer x = 0.538462 | non-integer x = 0.148148 | non-integer x = 0.456790 | non-integer x = 0.123457 | non-integer x = 0.271605 | non-integer x = 0.025641 | non-integer x = 0.015873 | non-integer x = 0.458333 | non-integer x = 0.020833 | non-integer x = 0.437500 | non-integer x = 0.533333 | non-integer x = 0.466667 | non-integer x = 0.137255 | non-integer x = 0.019608 | non-integer x = 0.176471 | non-integer x = 0.027778 | non-integer x = 0.028986 | non-integer x = 0.086957 | non-integer x = 0.101449 | non-integer x = 0.449275 | non-integer x = 0.115942 | non-integer x = 0.093750 | non-integer x = 0.343750 | non-integer x = 0.017544 | non-integer x = 0.035088 | non-integer x = 0.122807 | non-integer x = 0.140351 | non-integer x = 0.157895 | non-integer x = 0.214286 | non-integer x = 0.272727 | non-integer x = 0.545455 | non-integer x = 0.040000 | non-integer x = 0.022222 | non-integer x = 0.044444 | non-integer x = 0.511111 | non-integer x = 0.192308 | non-integer x = 0.115385 | non-integer x = 0.130435 | non-integer x = 0.347826 | non-integer x = 0.173913 | non-integer x = 0.518519 | non-integer x = 0.074074 | non-integer x = 0.081081 | non-integer x = 0.108108 | non-integer x = 0.054054 | non-integer x = 0.189189 | non-integer x = 0.405405 | non-integer x = 0.027027 | non-integer x = 0.280000 | non-integer x = 0.033333 | non-integer x = 0.120000,NA,UniqueFemaleParticipation,2.723268640370237,0.24472604489437672,11.127825162808454,9.184914262644597e-29
+54,participant,percent_by_author_UniqueFemaleParticipation,only_female,only_comments,beta,,success,"
+Call:
+betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logit"", 
+    type = ""ML"")
+
+Randomized quantile residuals:
+    Min      1Q  Median      3Q     Max 
+-4.6749 -0.7712 -0.0396  0.5284  2.7973 
+
+Coefficients (mu model with logit link):
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)               -2.90798    0.05249  -55.40   <2e-16 ***
+UniqueFemaleParticipation  5.48000    0.16577   33.06   <2e-16 ***
+
+Phi coefficients (phi model with identity link):
+      Estimate Std. Error z value Pr(>|z|)    
+(phi)   8.6562     0.4915   17.61   <2e-16 ***
+
+Exceedence parameter (extended-support xbetax model):
+        Estimate Std. Error z value Pr(>|z|)    
+Log(nu)  -5.8681     0.3143  -18.67   <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Exceedence parameter nu: 0.0028
+Type of estimator: ML (maximum likelihood)
+Log-likelihood: 872.5 on 4 Df
+Number of iterations in BFGS optimization: 19 ",,NA,UniqueFemaleParticipation,5.47999621767286,0.16576705307818979,33.058416108103394,1.177529919157394e-239
+55,participant,percent_by_author_UniqueFemaleParticipation,female_and_male,questions_and_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.32089 -0.02980 -0.01317  0.00661  0.45652 
+
+Coefficients:
+                           Estimate Std. Error t value Pr(>|t|)    
+(Intercept)               -0.058724   0.002618  -22.43   <2e-16 ***
+UniqueFemaleParticipation  0.657661   0.016023   41.05   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.06781 on 3171 degrees of freedom
+Multiple R-squared:  0.347,	Adjusted R-squared:  0.3468 
+F-statistic:  1685 on 1 and 3171 DF,  p-value: < 2.2e-16
+",,NA,UniqueFemaleParticipation,0.6576606305481946,0.016022699917923666,41.04555623690535,9.330528167322436e-296
+56,participant,percent_by_author_UniqueFemaleParticipation,female_and_male,questions_and_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                -4.0980     0.1299  -31.56   <2e-16 ***
+UniqueFemaleParticipation   4.4968     0.3693   12.18   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 267.58  on 3172  degrees of freedom
+Residual deviance: 194.31  on 3171  degrees of freedom
+AIC: Inf
+
+Number of Fisher Scoring iterations: 6
+",non-integer x = 0.005650 | non-integer x = 0.006452 | non-integer x = 0.005155 | non-integer x = 0.005988 | non-integer x = 0.008197 | non-integer x = 0.016393 | non-integer x = 0.006579 | non-integer x = 0.006024 | non-integer x = 0.006289 | non-integer x = 0.012579 | non-integer x = 0.008475 | non-integer x = 0.008333 | non-integer x = 0.006135 | non-integer x = 0.010638 | non-integer x = 0.010101 | non-integer x = 0.017544 | non-integer x = 0.035088 | non-integer x = 0.010870 | non-integer x = 0.021739 | non-integer x = 0.010309 | non-integer x = 0.020619 | non-integer x = 0.009346 | non-integer x = 0.009174 | non-integer x = 0.166667 | non-integer x = 0.111111 | non-integer x = 0.125000 | non-integer x = 0.142857 | non-integer x = 0.090909 | non-integer x = 0.026316 | non-integer x = 0.421053 | non-integer x = 0.034483 | non-integer x = 0.310345 | non-integer x = 0.346154 | non-integer x = 0.076923 | non-integer x = 0.038462 | non-integer x = 0.428571 | non-integer x = 0.571429 | non-integer x = 0.471698 | non-integer x = 0.018868 | non-integer x = 0.333333 | non-integer x = 0.366667 | non-integer x = 0.300000 | non-integer x = 0.500000 | non-integer x = 0.012658 | non-integer x = 0.493671 | non-integer x = 0.222222 | non-integer x = 0.296296 | non-integer x = 0.259259 | non-integer x = 0.083333 | non-integer x = 0.513514 | non-integer x = 0.486486 | non-integer x = 0.058824 | non-integer x = 0.117647 | non-integer x = 0.391304 | non-integer x = 0.043478 | non-integer x = 0.434783 | non-integer x = 0.411765 | non-integer x = 0.480000 | non-integer x = 0.520000 | non-integer x = 0.470588 | non-integer x = 0.029412 | non-integer x = 0.153846 | non-integer x = 0.062500 | non-integer x = 0.071429 | non-integer x = 0.193548 | non-integer x = 0.032258 | non-integer x = 0.387097 | non-integer x = 0.100000 | non-integer x = 0.250000 | non-integer x = 0.033898 | non-integer x = 0.389831 | non-integer x = 0.016949 | non-integer x = 0.254237 | non-integer x = 0.050847 | non-integer x = 0.084746 | non-integer x = 0.152542 | non-integer x = 0.010000 | non-integer x = 0.090000 | non-integer x = 0.350000 | non-integer x = 0.240000 | non-integer x = 0.060000 | non-integer x = 0.150000 | non-integer x = 0.102564 | non-integer x = 0.205128 | non-integer x = 0.461538 | non-integer x = 0.051282 | non-integer x = 0.431579 | non-integer x = 0.094737 | non-integer x = 0.105263 | non-integer x = 0.221053 | non-integer x = 0.042105 | non-integer x = 0.052632 | non-integer x = 0.200000 | non-integer x = 0.400000 | non-integer x = 0.285714 | non-integer x = 0.031250 | non-integer x = 0.015625 | non-integer x = 0.046875 | non-integer x = 0.312500 | non-integer x = 0.421875 | non-integer x = 0.140625 | non-integer x = 0.026667 | non-integer x = 0.186667 | non-integer x = 0.013333 | non-integer x = 0.066667 | non-integer x = 0.080000 | non-integer x = 0.093333 | non-integer x = 0.173333 | non-integer x = 0.023622 | non-integer x = 0.082677 | non-integer x = 0.003937 | non-integer x = 0.181102 | non-integer x = 0.011811 | non-integer x = 0.090551 | non-integer x = 0.149606 | non-integer x = 0.007874 | non-integer x = 0.027559 | non-integer x = 0.385827 | non-integer x = 0.035433 | non-integer x = 0.034247 | non-integer x = 0.020548 | non-integer x = 0.027397 | non-integer x = 0.013699 | non-integer x = 0.006849 | non-integer x = 0.041096 | non-integer x = 0.031034 | non-integer x = 0.048276 | non-integer x = 0.013793 | non-integer x = 0.106897 | non-integer x = 0.003448 | non-integer x = 0.144828 | non-integer x = 0.110345 | non-integer x = 0.037931 | non-integer x = 0.406897 | non-integer x = 0.065517 | non-integer x = 0.526316 | non-integer x = 0.473684 | non-integer x = 0.414286 | non-integer x = 0.171429 | non-integer x = 0.085714 | non-integer x = 0.028571 | non-integer x = 0.055556 | non-integer x = 0.538462 | non-integer x = 0.148148 | non-integer x = 0.456790 | non-integer x = 0.123457 | non-integer x = 0.271605 | non-integer x = 0.025641 | non-integer x = 0.015873 | non-integer x = 0.458333 | non-integer x = 0.020833 | non-integer x = 0.437500 | non-integer x = 0.533333 | non-integer x = 0.466667 | non-integer x = 0.137255 | non-integer x = 0.019608 | non-integer x = 0.176471 | non-integer x = 0.027778 | non-integer x = 0.028986 | non-integer x = 0.086957 | non-integer x = 0.101449 | non-integer x = 0.449275 | non-integer x = 0.115942 | non-integer x = 0.093750 | non-integer x = 0.343750 | non-integer x = 0.122807 | non-integer x = 0.140351 | non-integer x = 0.157895 | non-integer x = 0.214286 | non-integer x = 0.272727 | non-integer x = 0.545455 | non-integer x = 0.040000 | non-integer x = 0.022222 | non-integer x = 0.044444 | non-integer x = 0.511111 | non-integer x = 0.192308 | non-integer x = 0.115385 | non-integer x = 0.130435 | non-integer x = 0.347826 | non-integer x = 0.173913 | non-integer x = 0.518519 | non-integer x = 0.074074 | non-integer x = 0.081081 | non-integer x = 0.108108 | non-integer x = 0.054054 | non-integer x = 0.189189 | non-integer x = 0.405405 | non-integer x = 0.027027 | non-integer x = 0.280000 | non-integer x = 0.033333 | non-integer x = 0.120000,NA,UniqueFemaleParticipation,4.496825264158936,0.36929797857736246,12.176685292137112,4.137584251993898e-34
+57,participant,percent_by_author_UniqueFemaleParticipation,female_and_male,questions_and_comments,beta,,success,"
+Call:
+betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logit"", 
+    type = ""ML"")
+
+Randomized quantile residuals:
+    Min      1Q  Median      3Q     Max 
+-4.4631 -0.6561 -0.3832  0.0042  6.2909 
+
+Coefficients (mu model with logit link):
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)               -4.12297    0.03591 -114.83   <2e-16 ***
+UniqueFemaleParticipation  5.83673    0.15582   37.46   <2e-16 ***
+
+Phi coefficients (phi model with identity link):
+      Estimate Std. Error z value Pr(>|z|)    
+(phi)  17.1654     0.5111   33.59   <2e-16 ***
+
+Exceedence parameter (extended-support xbetax model):
+        Estimate Std. Error z value Pr(>|z|)    
+Log(nu) -10.4628     0.4477  -23.37   <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Exceedence parameter nu: 0
+Type of estimator: ML (maximum likelihood)
+Log-likelihood:  7664 on 4 Df
+Number of iterations in BFGS optimization: 28 ",,NA,UniqueFemaleParticipation,5.8367318303656335,0.15582298265214223,37.457451596825734,4.542942843602752e-307
+58,participant,percent_by_author_UniqueFemaleParticipation,female_and_male,only_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.36527 -0.05947 -0.02262  0.03577  0.39594 
+
+Coefficients:
+                          Estimate Std. Error t value Pr(>|t|)    
+(Intercept)               0.005588   0.006252   0.894    0.372    
+UniqueFemaleParticipation 0.627757   0.028326  22.162   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.1059 on 833 degrees of freedom
+Multiple R-squared:  0.3709,	Adjusted R-squared:  0.3702 
+F-statistic: 491.1 on 1 and 833 DF,  p-value: < 2.2e-16
+",,NA,UniqueFemaleParticipation,0.6277571802354165,0.02832610073046974,22.16179297703875,6.583422513278217e-86
+59,participant,percent_by_author_UniqueFemaleParticipation,female_and_male,only_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                -2.7228     0.1511 -18.024  < 2e-16 ***
+UniqueFemaleParticipation   2.7273     0.4199   6.495 8.29e-11 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 92.395  on 834  degrees of freedom
+Residual deviance: 63.595  on 833  degrees of freedom
+AIC: Inf
+
+Number of Fisher Scoring iterations: 5
+",non-integer x = 0.166667 | non-integer x = 0.111111 | non-integer x = 0.125000 | non-integer x = 0.142857 | non-integer x = 0.090909 | non-integer x = 0.026316 | non-integer x = 0.421053 | non-integer x = 0.034483 | non-integer x = 0.310345 | non-integer x = 0.346154 | non-integer x = 0.076923 | non-integer x = 0.038462 | non-integer x = 0.428571 | non-integer x = 0.571429 | non-integer x = 0.471698 | non-integer x = 0.018868 | non-integer x = 0.333333 | non-integer x = 0.366667 | non-integer x = 0.300000 | non-integer x = 0.500000 | non-integer x = 0.012658 | non-integer x = 0.493671 | non-integer x = 0.222222 | non-integer x = 0.296296 | non-integer x = 0.259259 | non-integer x = 0.083333 | non-integer x = 0.513514 | non-integer x = 0.486486 | non-integer x = 0.058824 | non-integer x = 0.117647 | non-integer x = 0.391304 | non-integer x = 0.043478 | non-integer x = 0.434783 | non-integer x = 0.411765 | non-integer x = 0.480000 | non-integer x = 0.520000 | non-integer x = 0.470588 | non-integer x = 0.029412 | non-integer x = 0.153846 | non-integer x = 0.062500 | non-integer x = 0.071429 | non-integer x = 0.193548 | non-integer x = 0.032258 | non-integer x = 0.387097 | non-integer x = 0.100000 | non-integer x = 0.250000 | non-integer x = 0.033898 | non-integer x = 0.389831 | non-integer x = 0.016949 | non-integer x = 0.254237 | non-integer x = 0.050847 | non-integer x = 0.084746 | non-integer x = 0.152542 | non-integer x = 0.010000 | non-integer x = 0.090000 | non-integer x = 0.350000 | non-integer x = 0.240000 | non-integer x = 0.060000 | non-integer x = 0.150000 | non-integer x = 0.102564 | non-integer x = 0.205128 | non-integer x = 0.461538 | non-integer x = 0.051282 | non-integer x = 0.431579 | non-integer x = 0.094737 | non-integer x = 0.105263 | non-integer x = 0.221053 | non-integer x = 0.042105 | non-integer x = 0.052632 | non-integer x = 0.200000 | non-integer x = 0.400000 | non-integer x = 0.285714 | non-integer x = 0.031250 | non-integer x = 0.015625 | non-integer x = 0.046875 | non-integer x = 0.312500 | non-integer x = 0.421875 | non-integer x = 0.140625 | non-integer x = 0.026667 | non-integer x = 0.186667 | non-integer x = 0.013333 | non-integer x = 0.066667 | non-integer x = 0.080000 | non-integer x = 0.093333 | non-integer x = 0.173333 | non-integer x = 0.023622 | non-integer x = 0.082677 | non-integer x = 0.003937 | non-integer x = 0.181102 | non-integer x = 0.011811 | non-integer x = 0.090551 | non-integer x = 0.149606 | non-integer x = 0.007874 | non-integer x = 0.027559 | non-integer x = 0.385827 | non-integer x = 0.035433 | non-integer x = 0.034247 | non-integer x = 0.020548 | non-integer x = 0.027397 | non-integer x = 0.013699 | non-integer x = 0.006849 | non-integer x = 0.041096 | non-integer x = 0.031034 | non-integer x = 0.048276 | non-integer x = 0.013793 | non-integer x = 0.106897 | non-integer x = 0.003448 | non-integer x = 0.144828 | non-integer x = 0.110345 | non-integer x = 0.037931 | non-integer x = 0.406897 | non-integer x = 0.065517 | non-integer x = 0.526316 | non-integer x = 0.473684 | non-integer x = 0.414286 | non-integer x = 0.171429 | non-integer x = 0.085714 | non-integer x = 0.028571 | non-integer x = 0.055556 | non-integer x = 0.538462 | non-integer x = 0.148148 | non-integer x = 0.456790 | non-integer x = 0.123457 | non-integer x = 0.271605 | non-integer x = 0.025641 | non-integer x = 0.015873 | non-integer x = 0.458333 | non-integer x = 0.020833 | non-integer x = 0.437500 | non-integer x = 0.533333 | non-integer x = 0.466667 | non-integer x = 0.137255 | non-integer x = 0.019608 | non-integer x = 0.176471 | non-integer x = 0.027778 | non-integer x = 0.028986 | non-integer x = 0.086957 | non-integer x = 0.101449 | non-integer x = 0.449275 | non-integer x = 0.115942 | non-integer x = 0.093750 | non-integer x = 0.343750 | non-integer x = 0.017544 | non-integer x = 0.035088 | non-integer x = 0.122807 | non-integer x = 0.140351 | non-integer x = 0.157895 | non-integer x = 0.214286 | non-integer x = 0.272727 | non-integer x = 0.545455 | non-integer x = 0.040000 | non-integer x = 0.022222 | non-integer x = 0.044444 | non-integer x = 0.511111 | non-integer x = 0.192308 | non-integer x = 0.115385 | non-integer x = 0.130435 | non-integer x = 0.347826 | non-integer x = 0.173913 | non-integer x = 0.518519 | non-integer x = 0.074074 | non-integer x = 0.081081 | non-integer x = 0.108108 | non-integer x = 0.054054 | non-integer x = 0.189189 | non-integer x = 0.405405 | non-integer x = 0.027027 | non-integer x = 0.280000 | non-integer x = 0.033333 | non-integer x = 0.120000,NA,UniqueFemaleParticipation,2.7273130947713096,0.41989970092841045,6.495153696802215,8.294868310335373e-11
+60,participant,percent_by_author_UniqueFemaleParticipation,female_and_male,only_comments,beta,,success,"
+Call:
+betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logit"", 
+    type = ""ML"")
+
+Randomized quantile residuals:
+    Min      1Q  Median      3Q     Max 
+-3.4120 -0.9113 -0.0928  0.5419  4.7041 
+
+Coefficients (mu model with logit link):
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)               -2.66867    0.05102  -52.30   <2e-16 ***
+UniqueFemaleParticipation  3.65359    0.18607   19.64   <2e-16 ***
+
+Phi coefficients (phi model with identity link):
+      Estimate Std. Error z value Pr(>|z|)    
+(phi)  10.3802     0.5455   19.03   <2e-16 ***
+
+Exceedence parameter (extended-support xbetax model):
+        Estimate Std. Error z value Pr(>|z|)    
+Log(nu)  -6.8718     0.4566  -15.05   <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Exceedence parameter nu: 0.001
+Type of estimator: ML (maximum likelihood)
+Log-likelihood: 998.2 on 4 Df
+Number of iterations in BFGS optimization: 17 ",,NA,UniqueFemaleParticipation,3.6535944466728223,0.18606931182563816,19.63566377940137,7.667235298450329e-86
+61,participant,percent_by_author_FemaleContributions,only_female,questions_and_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.10465 -0.04904 -0.02721  0.01580  0.89190 
+
+Coefficients:
+                       Estimate Std. Error t value Pr(>|t|)    
+(Intercept)           0.1126321  0.0035180   32.02   <2e-16 ***
+Female_Contributions -0.0045345  0.0001942  -23.35   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.1112 on 3197 degrees of freedom
+Multiple R-squared:  0.1457,	Adjusted R-squared:  0.1454 
+F-statistic: 545.1 on 1 and 3197 DF,  p-value: < 2.2e-16
+",,NA,Female_Contributions,-0.004534503078069419,1.9421836320743425e-4,-23.347447703626038,1.873271113889778e-111
+62,participant,percent_by_author_FemaleContributions,only_female,questions_and_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                     Estimate Std. Error z value Pr(>|z|)    
+(Intercept)          -1.72145    0.10827  -15.90   <2e-16 ***
+Female_Contributions -0.15795    0.01495  -10.57   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 384.36  on 3198  degrees of freedom
+Residual deviance: 194.70  on 3197  degrees of freedom
+AIC: Inf
+
+Number of Fisher Scoring iterations: 7
+",non-integer x = 0.005650 | non-integer x = 0.006452 | non-integer x = 0.005155 | non-integer x = 0.005988 | non-integer x = 0.008197 | non-integer x = 0.016393 | non-integer x = 0.006579 | non-integer x = 0.006024 | non-integer x = 0.006289 | non-integer x = 0.012579 | non-integer x = 0.008475 | non-integer x = 0.008333 | non-integer x = 0.006135 | non-integer x = 0.010638 | non-integer x = 0.010101 | non-integer x = 0.017544 | non-integer x = 0.035088 | non-integer x = 0.010870 | non-integer x = 0.021739 | non-integer x = 0.010309 | non-integer x = 0.020619 | non-integer x = 0.009346 | non-integer x = 0.009174 | non-integer x = 0.166667 | non-integer x = 0.111111 | non-integer x = 0.125000 | non-integer x = 0.142857 | non-integer x = 0.090909 | non-integer x = 0.026316 | non-integer x = 0.421053 | non-integer x = 0.034483 | non-integer x = 0.310345 | non-integer x = 0.346154 | non-integer x = 0.076923 | non-integer x = 0.038462 | non-integer x = 0.428571 | non-integer x = 0.571429 | non-integer x = 0.471698 | non-integer x = 0.018868 | non-integer x = 0.333333 | non-integer x = 0.366667 | non-integer x = 0.300000 | non-integer x = 0.500000 | non-integer x = 0.012658 | non-integer x = 0.493671 | non-integer x = 0.222222 | non-integer x = 0.296296 | non-integer x = 0.259259 | non-integer x = 0.083333 | non-integer x = 0.513514 | non-integer x = 0.486486 | non-integer x = 0.058824 | non-integer x = 0.117647 | non-integer x = 0.391304 | non-integer x = 0.043478 | non-integer x = 0.434783 | non-integer x = 0.411765 | non-integer x = 0.480000 | non-integer x = 0.520000 | non-integer x = 0.470588 | non-integer x = 0.029412 | non-integer x = 0.153846 | non-integer x = 0.062500 | non-integer x = 0.071429 | non-integer x = 0.193548 | non-integer x = 0.032258 | non-integer x = 0.387097 | non-integer x = 0.100000 | non-integer x = 0.250000 | non-integer x = 0.033898 | non-integer x = 0.389831 | non-integer x = 0.016949 | non-integer x = 0.254237 | non-integer x = 0.050847 | non-integer x = 0.084746 | non-integer x = 0.152542 | non-integer x = 0.010000 | non-integer x = 0.090000 | non-integer x = 0.350000 | non-integer x = 0.240000 | non-integer x = 0.060000 | non-integer x = 0.150000 | non-integer x = 0.102564 | non-integer x = 0.205128 | non-integer x = 0.461538 | non-integer x = 0.051282 | non-integer x = 0.431579 | non-integer x = 0.094737 | non-integer x = 0.105263 | non-integer x = 0.221053 | non-integer x = 0.042105 | non-integer x = 0.052632 | non-integer x = 0.200000 | non-integer x = 0.400000 | non-integer x = 0.285714 | non-integer x = 0.031250 | non-integer x = 0.015625 | non-integer x = 0.046875 | non-integer x = 0.312500 | non-integer x = 0.421875 | non-integer x = 0.140625 | non-integer x = 0.026667 | non-integer x = 0.186667 | non-integer x = 0.013333 | non-integer x = 0.066667 | non-integer x = 0.080000 | non-integer x = 0.093333 | non-integer x = 0.173333 | non-integer x = 0.023622 | non-integer x = 0.082677 | non-integer x = 0.003937 | non-integer x = 0.181102 | non-integer x = 0.011811 | non-integer x = 0.090551 | non-integer x = 0.149606 | non-integer x = 0.007874 | non-integer x = 0.027559 | non-integer x = 0.385827 | non-integer x = 0.035433 | non-integer x = 0.034247 | non-integer x = 0.020548 | non-integer x = 0.027397 | non-integer x = 0.013699 | non-integer x = 0.006849 | non-integer x = 0.041096 | non-integer x = 0.031034 | non-integer x = 0.048276 | non-integer x = 0.013793 | non-integer x = 0.106897 | non-integer x = 0.003448 | non-integer x = 0.144828 | non-integer x = 0.110345 | non-integer x = 0.037931 | non-integer x = 0.406897 | non-integer x = 0.065517 | non-integer x = 0.526316 | non-integer x = 0.473684 | non-integer x = 0.414286 | non-integer x = 0.171429 | non-integer x = 0.085714 | non-integer x = 0.028571 | non-integer x = 0.055556 | non-integer x = 0.538462 | non-integer x = 0.148148 | non-integer x = 0.456790 | non-integer x = 0.123457 | non-integer x = 0.271605 | non-integer x = 0.025641 | non-integer x = 0.015873 | non-integer x = 0.458333 | non-integer x = 0.020833 | non-integer x = 0.437500 | non-integer x = 0.533333 | non-integer x = 0.466667 | non-integer x = 0.137255 | non-integer x = 0.019608 | non-integer x = 0.176471 | non-integer x = 0.027778 | non-integer x = 0.028986 | non-integer x = 0.086957 | non-integer x = 0.101449 | non-integer x = 0.449275 | non-integer x = 0.115942 | non-integer x = 0.093750 | non-integer x = 0.343750 | non-integer x = 0.122807 | non-integer x = 0.140351 | non-integer x = 0.157895 | non-integer x = 0.214286 | non-integer x = 0.272727 | non-integer x = 0.545455 | non-integer x = 0.040000 | non-integer x = 0.022222 | non-integer x = 0.044444 | non-integer x = 0.511111 | non-integer x = 0.192308 | non-integer x = 0.115385 | non-integer x = 0.130435 | non-integer x = 0.347826 | non-integer x = 0.173913 | non-integer x = 0.518519 | non-integer x = 0.074074 | non-integer x = 0.081081 | non-integer x = 0.108108 | non-integer x = 0.054054 | non-integer x = 0.189189 | non-integer x = 0.405405 | non-integer x = 0.027027 | non-integer x = 0.280000 | non-integer x = 0.033333 | non-integer x = 0.120000,NA,Female_Contributions,-0.1579526594148548,0.014947070509904625,-10.567466000122767,4.217360631692006e-26
+63,participant,percent_by_author_FemaleContributions,only_female,questions_and_comments,beta,,success,"
+Call:
+betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logit"", 
+    type = ""ML"")
+
+Randomized quantile residuals:
+    Min      1Q  Median      3Q     Max 
+-2.4492 -0.6080 -0.3135  0.1482     Inf 
+
+Coefficients (mu model with logit link):
+                      Estimate Std. Error z value Pr(>|z|)    
+(Intercept)          -2.420747   0.027441  -88.22   <2e-16 ***
+Female_Contributions -0.062507   0.001964  -31.83   <2e-16 ***
+
+Phi coefficients (phi model with identity link):
+      Estimate Std. Error z value Pr(>|z|)    
+(phi)   21.940      0.667    32.9   <2e-16 ***
+
+Exceedence parameter (extended-support xbetax model):
+        Estimate Std. Error z value Pr(>|z|)
+Log(nu)   -18.76      26.55  -0.707     0.48
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Exceedence parameter nu: 0
+Type of estimator: ML (maximum likelihood)
+Log-likelihood:  6979 on 4 Df
+Number of iterations in BFGS optimization: 32 ",,NA,Female_Contributions,-0.06250700759629522,0.001964033156161933,-31.82584133072628,2.8426810905275606e-222
+64,participant,percent_by_author_FemaleContributions,only_female,only_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.15062 -0.10873 -0.07407 -0.01121  0.84593 
+
+Coefficients:
+                      Estimate Std. Error t value Pr(>|t|)    
+(Intercept)           0.158198   0.008434  18.758  < 2e-16 ***
+Female_Contributions -0.004132   0.001505  -2.746  0.00616 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.1994 on 859 degrees of freedom
+Multiple R-squared:  0.008701,	Adjusted R-squared:  0.007547 
+F-statistic:  7.54 on 1 and 859 DF,  p-value: 0.006161
+",,NA,Female_Contributions,-0.004131609416924514,0.0015046453307850569,-2.745902527586899,0.006160600713683989
+65,participant,percent_by_author_FemaleContributions,only_female,only_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                     Estimate Std. Error z value Pr(>|z|)    
+(Intercept)          -1.82102    0.11486 -15.854   <2e-16 ***
+Female_Contributions -0.03785    0.02625  -1.442    0.149    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 152.88  on 860  degrees of freedom
+Residual deviance: 150.39  on 859  degrees of freedom
+AIC: Inf
+
+Number of Fisher Scoring iterations: 5
+",non-integer x = 0.166667 | non-integer x = 0.111111 | non-integer x = 0.125000 | non-integer x = 0.142857 | non-integer x = 0.090909 | non-integer x = 0.026316 | non-integer x = 0.421053 | non-integer x = 0.034483 | non-integer x = 0.310345 | non-integer x = 0.346154 | non-integer x = 0.076923 | non-integer x = 0.038462 | non-integer x = 0.428571 | non-integer x = 0.571429 | non-integer x = 0.471698 | non-integer x = 0.018868 | non-integer x = 0.333333 | non-integer x = 0.366667 | non-integer x = 0.300000 | non-integer x = 0.500000 | non-integer x = 0.012658 | non-integer x = 0.493671 | non-integer x = 0.222222 | non-integer x = 0.296296 | non-integer x = 0.259259 | non-integer x = 0.083333 | non-integer x = 0.513514 | non-integer x = 0.486486 | non-integer x = 0.058824 | non-integer x = 0.117647 | non-integer x = 0.391304 | non-integer x = 0.043478 | non-integer x = 0.434783 | non-integer x = 0.411765 | non-integer x = 0.480000 | non-integer x = 0.520000 | non-integer x = 0.470588 | non-integer x = 0.029412 | non-integer x = 0.153846 | non-integer x = 0.062500 | non-integer x = 0.071429 | non-integer x = 0.193548 | non-integer x = 0.032258 | non-integer x = 0.387097 | non-integer x = 0.100000 | non-integer x = 0.250000 | non-integer x = 0.033898 | non-integer x = 0.389831 | non-integer x = 0.016949 | non-integer x = 0.254237 | non-integer x = 0.050847 | non-integer x = 0.084746 | non-integer x = 0.152542 | non-integer x = 0.010000 | non-integer x = 0.090000 | non-integer x = 0.350000 | non-integer x = 0.240000 | non-integer x = 0.060000 | non-integer x = 0.150000 | non-integer x = 0.102564 | non-integer x = 0.205128 | non-integer x = 0.461538 | non-integer x = 0.051282 | non-integer x = 0.431579 | non-integer x = 0.094737 | non-integer x = 0.105263 | non-integer x = 0.221053 | non-integer x = 0.042105 | non-integer x = 0.052632 | non-integer x = 0.200000 | non-integer x = 0.400000 | non-integer x = 0.285714 | non-integer x = 0.031250 | non-integer x = 0.015625 | non-integer x = 0.046875 | non-integer x = 0.312500 | non-integer x = 0.421875 | non-integer x = 0.140625 | non-integer x = 0.026667 | non-integer x = 0.186667 | non-integer x = 0.013333 | non-integer x = 0.066667 | non-integer x = 0.080000 | non-integer x = 0.093333 | non-integer x = 0.173333 | non-integer x = 0.023622 | non-integer x = 0.082677 | non-integer x = 0.003937 | non-integer x = 0.181102 | non-integer x = 0.011811 | non-integer x = 0.090551 | non-integer x = 0.149606 | non-integer x = 0.007874 | non-integer x = 0.027559 | non-integer x = 0.385827 | non-integer x = 0.035433 | non-integer x = 0.034247 | non-integer x = 0.020548 | non-integer x = 0.027397 | non-integer x = 0.013699 | non-integer x = 0.006849 | non-integer x = 0.041096 | non-integer x = 0.031034 | non-integer x = 0.048276 | non-integer x = 0.013793 | non-integer x = 0.106897 | non-integer x = 0.003448 | non-integer x = 0.144828 | non-integer x = 0.110345 | non-integer x = 0.037931 | non-integer x = 0.406897 | non-integer x = 0.065517 | non-integer x = 0.526316 | non-integer x = 0.473684 | non-integer x = 0.414286 | non-integer x = 0.171429 | non-integer x = 0.085714 | non-integer x = 0.028571 | non-integer x = 0.055556 | non-integer x = 0.538462 | non-integer x = 0.148148 | non-integer x = 0.456790 | non-integer x = 0.123457 | non-integer x = 0.271605 | non-integer x = 0.025641 | non-integer x = 0.015873 | non-integer x = 0.458333 | non-integer x = 0.020833 | non-integer x = 0.437500 | non-integer x = 0.533333 | non-integer x = 0.466667 | non-integer x = 0.137255 | non-integer x = 0.019608 | non-integer x = 0.176471 | non-integer x = 0.027778 | non-integer x = 0.028986 | non-integer x = 0.086957 | non-integer x = 0.101449 | non-integer x = 0.449275 | non-integer x = 0.115942 | non-integer x = 0.093750 | non-integer x = 0.343750 | non-integer x = 0.017544 | non-integer x = 0.035088 | non-integer x = 0.122807 | non-integer x = 0.140351 | non-integer x = 0.157895 | non-integer x = 0.214286 | non-integer x = 0.272727 | non-integer x = 0.545455 | non-integer x = 0.040000 | non-integer x = 0.022222 | non-integer x = 0.044444 | non-integer x = 0.511111 | non-integer x = 0.192308 | non-integer x = 0.115385 | non-integer x = 0.130435 | non-integer x = 0.347826 | non-integer x = 0.173913 | non-integer x = 0.518519 | non-integer x = 0.074074 | non-integer x = 0.081081 | non-integer x = 0.108108 | non-integer x = 0.054054 | non-integer x = 0.189189 | non-integer x = 0.405405 | non-integer x = 0.027027 | non-integer x = 0.280000 | non-integer x = 0.033333 | non-integer x = 0.120000,NA,Female_Contributions,-0.03785266955312058,0.02625343440107785,-1.4418178199026987,0.1493537744120884
+66,participant,percent_by_author_FemaleContributions,only_female,only_comments,beta,,success,"
+Call:
+betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logit"", 
+    type = ""ML"")
+
+Randomized quantile residuals:
+    Min      1Q  Median      3Q     Max 
+-1.2769 -0.6576 -0.3711  0.0149  4.8975 
+
+Coefficients (mu model with logit link):
+                     Estimate Std. Error z value Pr(>|z|)    
+(Intercept)          -1.27746    0.05366 -23.806  < 2e-16 ***
+Female_Contributions -0.04123    0.01042  -3.957 7.58e-05 ***
+
+Phi coefficients (phi model with identity link):
+      Estimate Std. Error z value Pr(>|z|)    
+(phi)    3.471      0.260   13.35   <2e-16 ***
+
+Exceedence parameter (extended-support xbetax model):
+        Estimate Std. Error z value Pr(>|z|)    
+Log(nu)  -4.3085     0.1871  -23.03   <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Exceedence parameter nu: 0.0135
+Type of estimator: ML (maximum likelihood)
+Log-likelihood: 417.2 on 4 Df
+Number of iterations in BFGS optimization: 16 ",,NA,Female_Contributions,-0.04122671019607825,0.01041798272556796,-3.9572642115156396,7.58130609125009e-5
+67,participant,percent_by_author_FemaleContributions,female_and_male,questions_and_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.08297 -0.03855 -0.01147  0.01502  0.91006 
+
+Coefficients:
+                       Estimate Std. Error t value Pr(>|t|)    
+(Intercept)           0.0899394  0.0024350   36.94   <2e-16 ***
+Female_Contributions -0.0035181  0.0001339  -26.28   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.07604 on 3171 degrees of freedom
+Multiple R-squared:  0.1788,	Adjusted R-squared:  0.1786 
+F-statistic: 690.5 on 1 and 3171 DF,  p-value: < 2.2e-16
+",,NA,Female_Contributions,-0.003518146867859435,1.3388282924402318e-4,-26.277804911390405,7.33341825680293e-138
+68,participant,percent_by_author_FemaleContributions,female_and_male,questions_and_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                     Estimate Std. Error z value Pr(>|z|)    
+(Intercept)          -1.99456    0.12267  -16.26   <2e-16 ***
+Female_Contributions -0.13811    0.01491   -9.26   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 267.58  on 3172  degrees of freedom
+Residual deviance: 135.66  on 3171  degrees of freedom
+AIC: Inf
+
+Number of Fisher Scoring iterations: 7
+",non-integer x = 0.005650 | non-integer x = 0.006452 | non-integer x = 0.005155 | non-integer x = 0.005988 | non-integer x = 0.008197 | non-integer x = 0.016393 | non-integer x = 0.006579 | non-integer x = 0.006024 | non-integer x = 0.006289 | non-integer x = 0.012579 | non-integer x = 0.008475 | non-integer x = 0.008333 | non-integer x = 0.006135 | non-integer x = 0.010638 | non-integer x = 0.010101 | non-integer x = 0.017544 | non-integer x = 0.035088 | non-integer x = 0.010870 | non-integer x = 0.021739 | non-integer x = 0.010309 | non-integer x = 0.020619 | non-integer x = 0.009346 | non-integer x = 0.009174 | non-integer x = 0.166667 | non-integer x = 0.111111 | non-integer x = 0.125000 | non-integer x = 0.142857 | non-integer x = 0.090909 | non-integer x = 0.026316 | non-integer x = 0.421053 | non-integer x = 0.034483 | non-integer x = 0.310345 | non-integer x = 0.346154 | non-integer x = 0.076923 | non-integer x = 0.038462 | non-integer x = 0.428571 | non-integer x = 0.571429 | non-integer x = 0.471698 | non-integer x = 0.018868 | non-integer x = 0.333333 | non-integer x = 0.366667 | non-integer x = 0.300000 | non-integer x = 0.500000 | non-integer x = 0.012658 | non-integer x = 0.493671 | non-integer x = 0.222222 | non-integer x = 0.296296 | non-integer x = 0.259259 | non-integer x = 0.083333 | non-integer x = 0.513514 | non-integer x = 0.486486 | non-integer x = 0.058824 | non-integer x = 0.117647 | non-integer x = 0.391304 | non-integer x = 0.043478 | non-integer x = 0.434783 | non-integer x = 0.411765 | non-integer x = 0.480000 | non-integer x = 0.520000 | non-integer x = 0.470588 | non-integer x = 0.029412 | non-integer x = 0.153846 | non-integer x = 0.062500 | non-integer x = 0.071429 | non-integer x = 0.193548 | non-integer x = 0.032258 | non-integer x = 0.387097 | non-integer x = 0.100000 | non-integer x = 0.250000 | non-integer x = 0.033898 | non-integer x = 0.389831 | non-integer x = 0.016949 | non-integer x = 0.254237 | non-integer x = 0.050847 | non-integer x = 0.084746 | non-integer x = 0.152542 | non-integer x = 0.010000 | non-integer x = 0.090000 | non-integer x = 0.350000 | non-integer x = 0.240000 | non-integer x = 0.060000 | non-integer x = 0.150000 | non-integer x = 0.102564 | non-integer x = 0.205128 | non-integer x = 0.461538 | non-integer x = 0.051282 | non-integer x = 0.431579 | non-integer x = 0.094737 | non-integer x = 0.105263 | non-integer x = 0.221053 | non-integer x = 0.042105 | non-integer x = 0.052632 | non-integer x = 0.200000 | non-integer x = 0.400000 | non-integer x = 0.285714 | non-integer x = 0.031250 | non-integer x = 0.015625 | non-integer x = 0.046875 | non-integer x = 0.312500 | non-integer x = 0.421875 | non-integer x = 0.140625 | non-integer x = 0.026667 | non-integer x = 0.186667 | non-integer x = 0.013333 | non-integer x = 0.066667 | non-integer x = 0.080000 | non-integer x = 0.093333 | non-integer x = 0.173333 | non-integer x = 0.023622 | non-integer x = 0.082677 | non-integer x = 0.003937 | non-integer x = 0.181102 | non-integer x = 0.011811 | non-integer x = 0.090551 | non-integer x = 0.149606 | non-integer x = 0.007874 | non-integer x = 0.027559 | non-integer x = 0.385827 | non-integer x = 0.035433 | non-integer x = 0.034247 | non-integer x = 0.020548 | non-integer x = 0.027397 | non-integer x = 0.013699 | non-integer x = 0.006849 | non-integer x = 0.041096 | non-integer x = 0.031034 | non-integer x = 0.048276 | non-integer x = 0.013793 | non-integer x = 0.106897 | non-integer x = 0.003448 | non-integer x = 0.144828 | non-integer x = 0.110345 | non-integer x = 0.037931 | non-integer x = 0.406897 | non-integer x = 0.065517 | non-integer x = 0.526316 | non-integer x = 0.473684 | non-integer x = 0.414286 | non-integer x = 0.171429 | non-integer x = 0.085714 | non-integer x = 0.028571 | non-integer x = 0.055556 | non-integer x = 0.538462 | non-integer x = 0.148148 | non-integer x = 0.456790 | non-integer x = 0.123457 | non-integer x = 0.271605 | non-integer x = 0.025641 | non-integer x = 0.015873 | non-integer x = 0.458333 | non-integer x = 0.020833 | non-integer x = 0.437500 | non-integer x = 0.533333 | non-integer x = 0.466667 | non-integer x = 0.137255 | non-integer x = 0.019608 | non-integer x = 0.176471 | non-integer x = 0.027778 | non-integer x = 0.028986 | non-integer x = 0.086957 | non-integer x = 0.101449 | non-integer x = 0.449275 | non-integer x = 0.115942 | non-integer x = 0.093750 | non-integer x = 0.343750 | non-integer x = 0.122807 | non-integer x = 0.140351 | non-integer x = 0.157895 | non-integer x = 0.214286 | non-integer x = 0.272727 | non-integer x = 0.545455 | non-integer x = 0.040000 | non-integer x = 0.022222 | non-integer x = 0.044444 | non-integer x = 0.511111 | non-integer x = 0.192308 | non-integer x = 0.115385 | non-integer x = 0.130435 | non-integer x = 0.347826 | non-integer x = 0.173913 | non-integer x = 0.518519 | non-integer x = 0.074074 | non-integer x = 0.081081 | non-integer x = 0.108108 | non-integer x = 0.054054 | non-integer x = 0.189189 | non-integer x = 0.405405 | non-integer x = 0.027027 | non-integer x = 0.280000 | non-integer x = 0.033333 | non-integer x = 0.120000,NA,Female_Contributions,-0.13810751556988277,0.014914395884331789,-9.260014058965044,2.044052959075976e-20
+69,participant,percent_by_author_FemaleContributions,female_and_male,questions_and_comments,beta,,success,"
+Call:
+betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logit"", 
+    type = ""ML"")
+
+Randomized quantile residuals:
+    Min      1Q  Median      3Q     Max 
+-2.4492 -0.6080 -0.3134  0.1471  8.2095 
+
+Coefficients (mu model with logit link):
+                      Estimate Std. Error z value Pr(>|z|)    
+(Intercept)          -2.420727   0.027441  -88.22   <2e-16 ***
+Female_Contributions -0.062512   0.001964  -31.83   <2e-16 ***
+
+Phi coefficients (phi model with identity link):
+      Estimate Std. Error z value Pr(>|z|)    
+(phi)  21.9398     0.6669    32.9   <2e-16 ***
+
+Exceedence parameter (extended-support xbetax model):
+        Estimate Std. Error z value Pr(>|z|)
+Log(nu)   -19.18      32.72  -0.586    0.558
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Exceedence parameter nu: 0
+Type of estimator: ML (maximum likelihood)
+Log-likelihood:  7916 on 4 Df
+Number of iterations in BFGS optimization: 40 ",,NA,Female_Contributions,-0.06251182635797506,0.00196408440274924,-31.82746437499006,2.6994301367349896e-222
+70,participant,percent_by_author_FemaleContributions,female_and_male,only_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.11707 -0.08161 -0.04797  0.00992  0.87837 
+
+Coefficients:
+                      Estimate Std. Error t value Pr(>|t|)    
+(Intercept)           0.121628   0.005749  21.157   <2e-16 ***
+Female_Contributions -0.001114   0.001011  -1.103     0.27    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.1334 on 833 degrees of freedom
+Multiple R-squared:  0.001458,	Adjusted R-squared:  0.0002588 
+F-statistic: 1.216 on 1 and 833 DF,  p-value: 0.2705
+",,NA,Female_Contributions,-0.0011143144269307019,0.0010105638805005378,-1.1026659951261821,0.27049070496793715
+71,participant,percent_by_author_FemaleContributions,female_and_male,only_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                     Estimate Std. Error z value Pr(>|z|)    
+(Intercept)          -2.10453    0.12663 -16.620   <2e-16 ***
+Female_Contributions -0.01028    0.02400  -0.428    0.668    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 92.395  on 834  degrees of freedom
+Residual deviance: 92.201  on 833  degrees of freedom
+AIC: Inf
+
+Number of Fisher Scoring iterations: 5
+",non-integer x = 0.166667 | non-integer x = 0.111111 | non-integer x = 0.125000 | non-integer x = 0.142857 | non-integer x = 0.090909 | non-integer x = 0.026316 | non-integer x = 0.421053 | non-integer x = 0.034483 | non-integer x = 0.310345 | non-integer x = 0.346154 | non-integer x = 0.076923 | non-integer x = 0.038462 | non-integer x = 0.428571 | non-integer x = 0.571429 | non-integer x = 0.471698 | non-integer x = 0.018868 | non-integer x = 0.333333 | non-integer x = 0.366667 | non-integer x = 0.300000 | non-integer x = 0.500000 | non-integer x = 0.012658 | non-integer x = 0.493671 | non-integer x = 0.222222 | non-integer x = 0.296296 | non-integer x = 0.259259 | non-integer x = 0.083333 | non-integer x = 0.513514 | non-integer x = 0.486486 | non-integer x = 0.058824 | non-integer x = 0.117647 | non-integer x = 0.391304 | non-integer x = 0.043478 | non-integer x = 0.434783 | non-integer x = 0.411765 | non-integer x = 0.480000 | non-integer x = 0.520000 | non-integer x = 0.470588 | non-integer x = 0.029412 | non-integer x = 0.153846 | non-integer x = 0.062500 | non-integer x = 0.071429 | non-integer x = 0.193548 | non-integer x = 0.032258 | non-integer x = 0.387097 | non-integer x = 0.100000 | non-integer x = 0.250000 | non-integer x = 0.033898 | non-integer x = 0.389831 | non-integer x = 0.016949 | non-integer x = 0.254237 | non-integer x = 0.050847 | non-integer x = 0.084746 | non-integer x = 0.152542 | non-integer x = 0.010000 | non-integer x = 0.090000 | non-integer x = 0.350000 | non-integer x = 0.240000 | non-integer x = 0.060000 | non-integer x = 0.150000 | non-integer x = 0.102564 | non-integer x = 0.205128 | non-integer x = 0.461538 | non-integer x = 0.051282 | non-integer x = 0.431579 | non-integer x = 0.094737 | non-integer x = 0.105263 | non-integer x = 0.221053 | non-integer x = 0.042105 | non-integer x = 0.052632 | non-integer x = 0.200000 | non-integer x = 0.400000 | non-integer x = 0.285714 | non-integer x = 0.031250 | non-integer x = 0.015625 | non-integer x = 0.046875 | non-integer x = 0.312500 | non-integer x = 0.421875 | non-integer x = 0.140625 | non-integer x = 0.026667 | non-integer x = 0.186667 | non-integer x = 0.013333 | non-integer x = 0.066667 | non-integer x = 0.080000 | non-integer x = 0.093333 | non-integer x = 0.173333 | non-integer x = 0.023622 | non-integer x = 0.082677 | non-integer x = 0.003937 | non-integer x = 0.181102 | non-integer x = 0.011811 | non-integer x = 0.090551 | non-integer x = 0.149606 | non-integer x = 0.007874 | non-integer x = 0.027559 | non-integer x = 0.385827 | non-integer x = 0.035433 | non-integer x = 0.034247 | non-integer x = 0.020548 | non-integer x = 0.027397 | non-integer x = 0.013699 | non-integer x = 0.006849 | non-integer x = 0.041096 | non-integer x = 0.031034 | non-integer x = 0.048276 | non-integer x = 0.013793 | non-integer x = 0.106897 | non-integer x = 0.003448 | non-integer x = 0.144828 | non-integer x = 0.110345 | non-integer x = 0.037931 | non-integer x = 0.406897 | non-integer x = 0.065517 | non-integer x = 0.526316 | non-integer x = 0.473684 | non-integer x = 0.414286 | non-integer x = 0.171429 | non-integer x = 0.085714 | non-integer x = 0.028571 | non-integer x = 0.055556 | non-integer x = 0.538462 | non-integer x = 0.148148 | non-integer x = 0.456790 | non-integer x = 0.123457 | non-integer x = 0.271605 | non-integer x = 0.025641 | non-integer x = 0.015873 | non-integer x = 0.458333 | non-integer x = 0.020833 | non-integer x = 0.437500 | non-integer x = 0.533333 | non-integer x = 0.466667 | non-integer x = 0.137255 | non-integer x = 0.019608 | non-integer x = 0.176471 | non-integer x = 0.027778 | non-integer x = 0.028986 | non-integer x = 0.086957 | non-integer x = 0.101449 | non-integer x = 0.449275 | non-integer x = 0.115942 | non-integer x = 0.093750 | non-integer x = 0.343750 | non-integer x = 0.017544 | non-integer x = 0.035088 | non-integer x = 0.122807 | non-integer x = 0.140351 | non-integer x = 0.157895 | non-integer x = 0.214286 | non-integer x = 0.272727 | non-integer x = 0.545455 | non-integer x = 0.040000 | non-integer x = 0.022222 | non-integer x = 0.044444 | non-integer x = 0.511111 | non-integer x = 0.192308 | non-integer x = 0.115385 | non-integer x = 0.130435 | non-integer x = 0.347826 | non-integer x = 0.173913 | non-integer x = 0.518519 | non-integer x = 0.074074 | non-integer x = 0.081081 | non-integer x = 0.108108 | non-integer x = 0.054054 | non-integer x = 0.189189 | non-integer x = 0.405405 | non-integer x = 0.027027 | non-integer x = 0.280000 | non-integer x = 0.033333 | non-integer x = 0.120000,NA,Female_Contributions,-0.010282019470677159,0.024000204170948565,-0.4284138333757675,0.6683498550263766
+72,participant,percent_by_author_FemaleContributions,female_and_male,only_comments,beta,,success,"
+Call:
+betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logit"", 
+    type = ""ML"")
+
+Randomized quantile residuals:
+    Min      1Q  Median      3Q     Max 
+-2.1943 -0.7471 -0.2856  0.3508     Inf 
+
+Coefficients (mu model with logit link):
+                     Estimate Std. Error z value Pr(>|z|)    
+(Intercept)          -1.84687    0.04528 -40.789  < 2e-16 ***
+Female_Contributions -0.04800    0.01076  -4.463 8.09e-06 ***
+
+Phi coefficients (phi model with identity link):
+      Estimate Std. Error z value Pr(>|z|)    
+(phi)   8.8214     0.4529   19.48   <2e-16 ***
+
+Exceedence parameter (extended-support xbetax model):
+        Estimate Std. Error z value Pr(>|z|)
+Log(nu)   -18.39     123.39  -0.149    0.882
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Exceedence parameter nu: 0
+Type of estimator: ML (maximum likelihood)
+Log-likelihood: 882.4 on 4 Df
+Number of iterations in BFGS optimization: 28 ",,NA,Female_Contributions,-0.047999330169815314,0.010755440636019383,-4.462795323240238,8.089731893108363e-6
+73,conversation,FemaleParticipation_UniqueFemaleContributors,only_female,questions_and_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-0.3182 -0.2460 -0.1515  0.1600  0.6818 
+
+Coefficients:
+                          Estimate Std. Error t value Pr(>|t|)    
+(Intercept)               0.327542   0.033016   9.921   <2e-16 ***
+UniqueFemaleContributors -0.009346   0.004831  -1.934    0.055 .  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.3511 on 146 degrees of freedom
+Multiple R-squared:  0.02499,	Adjusted R-squared:  0.01831 
+F-statistic: 3.742 on 1 and 146 DF,  p-value: 0.05499
+",,NA,UniqueFemaleContributors,-0.009346410885853541,0.0048314815098848725,-1.9344813525067703,0.054987772661705445
+74,conversation,FemaleParticipation_UniqueFemaleContributors,only_female,questions_and_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                         Estimate Std. Error z value Pr(>|z|)    
+(Intercept)              -1.08680    0.17434  -6.234 4.55e-10 ***
+UniqueFemaleContributors -0.04822    0.03978  -1.212    0.225    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 55.986  on 147  degrees of freedom
+Residual deviance: 53.962  on 146  degrees of freedom
+AIC: Inf
+
+Number of Fisher Scoring iterations: 5
+",non-integer x = 0.203390 | non-integer x = 0.180645 | non-integer x = 0.149485 | non-integer x = 0.143713 | non-integer x = 0.172131 | non-integer x = 0.111842 | non-integer x = 0.126506 | non-integer x = 0.132075 | non-integer x = 0.093220 | non-integer x = 0.141667 | non-integer x = 0.104294 | non-integer x = 0.138298 | non-integer x = 0.080808 | non-integer x = 0.070175 | non-integer x = 0.119565 | non-integer x = 0.134021 | non-integer x = 0.093458 | non-integer x = 0.110092 | non-integer x = 0.166667 | non-integer x = 0.111111 | non-integer x = 0.125000 | non-integer x = 0.142857 | non-integer x = 0.090909 | non-integer x = 0.052632 | non-integer x = 0.068966 | non-integer x = 0.076923 | non-integer x = 0.018868 | non-integer x = 0.500000 | non-integer x = 0.493671 | non-integer x = 0.153846 | non-integer x = 0.083333 | non-integer x = 0.058824 | non-integer x = 0.529412 | non-integer x = 0.062500 | non-integer x = 0.454545 | non-integer x = 0.100000 | non-integer x = 0.250000 | non-integer x = 0.051282 | non-integer x = 0.200000 | non-integer x = 0.040000 | non-integer x = 0.035433 | non-integer x = 0.047945 | non-integer x = 0.003448 | non-integer x = 0.473684 | non-integer x = 0.066667 | non-integer x = 0.133333 | non-integer x = 0.088235 | non-integer x = 0.020833 | non-integer x = 0.466667 | non-integer x = 0.470588 | non-integer x = 0.138889 | non-integer x = 0.130435 | non-integer x = 0.343750 | non-integer x = 0.456140 | non-integer x = 0.214286 | non-integer x = 0.750000 | non-integer x = 0.080000 | non-integer x = 0.192308 | non-integer x = 0.043478 | non-integer x = 0.074074 | non-integer x = 0.432432 | non-integer x = 0.333333,NA,UniqueFemaleContributors,-0.048219911710289616,0.03978045284576213,-1.2121508997710306,0.2254546226816801
+75,conversation,FemaleParticipation_UniqueFemaleContributors,only_female,questions_and_comments,beta,,success,"
+Call:
+betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logit"", 
+    type = ""ML"")
+
+Randomized quantile residuals:
+    Min      1Q  Median      3Q     Max 
+-2.2645 -0.4341 -0.2496  0.3506  2.6337 
+
+Coefficients (mu model with logit link):
+                         Estimate Std. Error z value Pr(>|z|)    
+(Intercept)              -0.46770    0.12705  -3.681 0.000232 ***
+UniqueFemaleContributors -0.01334    0.01643  -0.812 0.416731    
+
+Phi coefficients (phi model with identity link):
+      Estimate Std. Error z value Pr(>|z|)  
+(phi)    1.772      0.690   2.568   0.0102 *
+
+Exceedence parameter (extended-support xbetax model):
+        Estimate Std. Error z value Pr(>|z|)  
+Log(nu)  -1.4725     0.5806  -2.536   0.0112 *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Exceedence parameter nu: 0.2294
+Type of estimator: ML (maximum likelihood)
+Log-likelihood: -115.3 on 4 Df
+Number of iterations in BFGS optimization: 18 ","no valid starting value for precision parameter found, using 1 instead",NA,UniqueFemaleContributors,-0.013344424706903106,0.01643187422449129,-0.8121060643839144,0.416730773699743
+76,conversation,FemaleParticipation_UniqueFemaleContributors,only_female,only_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-0.3378 -0.2630 -0.1711  0.1622  0.6622 
+
+Coefficients:
+                         Estimate Std. Error t value Pr(>|t|)    
+(Intercept)               0.38444    0.05759   6.676 6.75e-10 ***
+UniqueFemaleContributors -0.04664    0.03432  -1.359    0.177    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.3709 on 128 degrees of freedom
+Multiple R-squared:  0.01422,	Adjusted R-squared:  0.006523 
+F-statistic: 1.847 on 1 and 128 DF,  p-value: 0.1765
+",,NA,UniqueFemaleContributors,-0.046644804111631244,0.03432213878378972,-1.3590296457183924,0.17652699006501826
+77,conversation,FemaleParticipation_UniqueFemaleContributors,only_female,only_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                         Estimate Std. Error z value Pr(>|z|)   
+(Intercept)               -0.8787     0.3225  -2.725  0.00643 **
+UniqueFemaleContributors  -0.1990     0.2255  -0.882  0.37751   
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 53.399  on 129  degrees of freedom
+Residual deviance: 52.431  on 128  degrees of freedom
+AIC: Inf
+
+Number of Fisher Scoring iterations: 5
+",non-integer x = 0.166667 | non-integer x = 0.111111 | non-integer x = 0.125000 | non-integer x = 0.142857 | non-integer x = 0.090909 | non-integer x = 0.052632 | non-integer x = 0.068966 | non-integer x = 0.076923 | non-integer x = 0.018868 | non-integer x = 0.500000 | non-integer x = 0.493671 | non-integer x = 0.153846 | non-integer x = 0.083333 | non-integer x = 0.058824 | non-integer x = 0.529412 | non-integer x = 0.062500 | non-integer x = 0.454545 | non-integer x = 0.100000 | non-integer x = 0.250000 | non-integer x = 0.051282 | non-integer x = 0.200000 | non-integer x = 0.040000 | non-integer x = 0.035433 | non-integer x = 0.047945 | non-integer x = 0.003448 | non-integer x = 0.473684 | non-integer x = 0.066667 | non-integer x = 0.133333 | non-integer x = 0.088235 | non-integer x = 0.020833 | non-integer x = 0.466667 | non-integer x = 0.470588 | non-integer x = 0.138889 | non-integer x = 0.130435 | non-integer x = 0.343750 | non-integer x = 0.456140 | non-integer x = 0.214286 | non-integer x = 0.750000 | non-integer x = 0.080000 | non-integer x = 0.192308 | non-integer x = 0.043478 | non-integer x = 0.074074 | non-integer x = 0.432432 | non-integer x = 0.333333,NA,UniqueFemaleContributors,-0.19902227082263943,0.22552120776470436,-0.8824991352045597,0.3775069472158577
+78,conversation,FemaleParticipation_UniqueFemaleContributors,only_female,only_comments,beta,,success,"
+Call:
+betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logit"", 
+    type = ""ML"")
+
+Randomized quantile residuals:
+    Min      1Q  Median      3Q     Max 
+-2.0630 -0.4398 -0.2395  0.3017  3.5377 
+
+Coefficients (mu model with logit link):
+                         Estimate Std. Error z value Pr(>|z|)
+(Intercept)              -0.33059    0.21065  -1.569    0.117
+UniqueFemaleContributors -0.05798    0.11525  -0.503    0.615
+
+Phi coefficients (phi model with identity link):
+      Estimate Std. Error z value Pr(>|z|)  
+(phi)   1.3568     0.5714   2.374   0.0176 *
+
+Exceedence parameter (extended-support xbetax model):
+        Estimate Std. Error z value Pr(>|z|)  
+Log(nu)  -1.5275     0.6784  -2.252   0.0243 *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Exceedence parameter nu: 0.2171
+Type of estimator: ML (maximum likelihood)
+Log-likelihood: -112.2 on 4 Df
+Number of iterations in BFGS optimization: 19 ","no valid starting value for precision parameter found, using 1 instead",NA,UniqueFemaleContributors,-0.057976633193502825,0.11525249664670613,-0.503040149934659,0.6149360441452842
+79,conversation,FemaleParticipation_UniqueFemaleContributors,female_and_male,questions_and_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.14549 -0.10099 -0.03498  0.02118  0.60371 
+
+Coefficients:
+                          Estimate Std. Error t value Pr(>|t|)    
+(Intercept)              0.1450842  0.0162025   8.954 5.25e-15 ***
+UniqueFemaleContributors 0.0004017  0.0021568   0.186    0.853    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.1542 on 120 degrees of freedom
+Multiple R-squared:  0.000289,	Adjusted R-squared:  -0.008042 
+F-statistic: 0.03469 on 1 and 120 DF,  p-value: 0.8526
+",,NA,UniqueFemaleContributors,4.016999959295867e-4,0.0021568062424031777,0.18624760445889688,0.8525650776462123
+80,conversation,FemaleParticipation_UniqueFemaleContributors,female_and_male,questions_and_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)              -1.930281   0.274731  -7.026 2.12e-12 ***
+UniqueFemaleContributors  0.002672   0.035631   0.075     0.94    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 17.972  on 121  degrees of freedom
+Residual deviance: 17.967  on 120  degrees of freedom
+AIC: Inf
+
+Number of Fisher Scoring iterations: 5
+",non-integer x = 0.203390 | non-integer x = 0.180645 | non-integer x = 0.149485 | non-integer x = 0.143713 | non-integer x = 0.172131 | non-integer x = 0.111842 | non-integer x = 0.126506 | non-integer x = 0.132075 | non-integer x = 0.093220 | non-integer x = 0.141667 | non-integer x = 0.104294 | non-integer x = 0.138298 | non-integer x = 0.080808 | non-integer x = 0.070175 | non-integer x = 0.119565 | non-integer x = 0.134021 | non-integer x = 0.093458 | non-integer x = 0.110092 | non-integer x = 0.166667 | non-integer x = 0.111111 | non-integer x = 0.125000 | non-integer x = 0.142857 | non-integer x = 0.090909 | non-integer x = 0.052632 | non-integer x = 0.068966 | non-integer x = 0.076923 | non-integer x = 0.018868 | non-integer x = 0.500000 | non-integer x = 0.493671 | non-integer x = 0.153846 | non-integer x = 0.083333 | non-integer x = 0.058824 | non-integer x = 0.529412 | non-integer x = 0.062500 | non-integer x = 0.454545 | non-integer x = 0.100000 | non-integer x = 0.250000 | non-integer x = 0.051282 | non-integer x = 0.200000 | non-integer x = 0.040000 | non-integer x = 0.035433 | non-integer x = 0.047945 | non-integer x = 0.003448 | non-integer x = 0.473684 | non-integer x = 0.066667 | non-integer x = 0.133333 | non-integer x = 0.088235 | non-integer x = 0.020833 | non-integer x = 0.466667 | non-integer x = 0.470588 | non-integer x = 0.138889 | non-integer x = 0.130435 | non-integer x = 0.343750 | non-integer x = 0.456140 | non-integer x = 0.214286 | non-integer x = 0.750000 | non-integer x = 0.080000 | non-integer x = 0.192308 | non-integer x = 0.043478 | non-integer x = 0.074074 | non-integer x = 0.432432 | non-integer x = 0.333333,NA,UniqueFemaleContributors,0.002672464157905889,0.03563059798141793,0.075004751795062,0.9402109311592542
+81,conversation,FemaleParticipation_UniqueFemaleContributors,female_and_male,questions_and_comments,beta,,success,"
+Call:
+betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logit"", 
+    type = ""ML"")
+
+Randomized quantile residuals:
+    Min      1Q  Median      3Q     Max 
+-2.3875 -0.4417 -0.0741  0.3454  3.1015 
+
+Coefficients (mu model with logit link):
+                         Estimate Std. Error z value Pr(>|z|)    
+(Intercept)              -1.51375    0.12977 -11.665   <2e-16 ***
+UniqueFemaleContributors  0.01343    0.01143   1.174     0.24    
+
+Phi coefficients (phi model with identity link):
+      Estimate Std. Error z value Pr(>|z|)    
+(phi)    7.777      1.572   4.946 7.58e-07 ***
+
+Exceedence parameter (extended-support xbetax model):
+        Estimate Std. Error z value Pr(>|z|)    
+Log(nu)  -2.4258     0.3652  -6.642  3.1e-11 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Exceedence parameter nu: 0.0884
+Type of estimator: ML (maximum likelihood)
+Log-likelihood: 12.37 on 4 Df
+Number of iterations in BFGS optimization: 16 ",,NA,UniqueFemaleContributors,0.013426138888275901,0.011433423051877894,1.1742886471843366,0.24027942905080288
+82,conversation,FemaleParticipation_UniqueFemaleContributors,female_and_male,only_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.18932 -0.12973 -0.05337  0.02996  0.55872 
+
+Coefficients:
+                         Estimate Std. Error t value Pr(>|t|)    
+(Intercept)               0.10942    0.02802   3.904  0.00017 ***
+UniqueFemaleContributors  0.02729    0.01550   1.760  0.08132 .  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.164 on 102 degrees of freedom
+Multiple R-squared:  0.02949,	Adjusted R-squared:  0.01997 
+F-statistic: 3.099 on 1 and 102 DF,  p-value: 0.08132
+",,NA,UniqueFemaleContributors,0.0272869014498885,0.015499611660002879,1.7604893624724165,0.08132224923661065
+83,conversation,FemaleParticipation_UniqueFemaleContributors,female_and_male,only_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                         Estimate Std. Error z value Pr(>|z|)    
+(Intercept)               -2.1219     0.4103  -5.172 2.32e-07 ***
+UniqueFemaleContributors   0.1423     0.1925   0.739     0.46    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 17.760  on 103  degrees of freedom
+Residual deviance: 17.291  on 102  degrees of freedom
+AIC: Inf
+
+Number of Fisher Scoring iterations: 5
+",non-integer x = 0.166667 | non-integer x = 0.111111 | non-integer x = 0.125000 | non-integer x = 0.142857 | non-integer x = 0.090909 | non-integer x = 0.052632 | non-integer x = 0.068966 | non-integer x = 0.076923 | non-integer x = 0.018868 | non-integer x = 0.500000 | non-integer x = 0.493671 | non-integer x = 0.153846 | non-integer x = 0.083333 | non-integer x = 0.058824 | non-integer x = 0.529412 | non-integer x = 0.062500 | non-integer x = 0.454545 | non-integer x = 0.100000 | non-integer x = 0.250000 | non-integer x = 0.051282 | non-integer x = 0.200000 | non-integer x = 0.040000 | non-integer x = 0.035433 | non-integer x = 0.047945 | non-integer x = 0.003448 | non-integer x = 0.473684 | non-integer x = 0.066667 | non-integer x = 0.133333 | non-integer x = 0.088235 | non-integer x = 0.020833 | non-integer x = 0.466667 | non-integer x = 0.470588 | non-integer x = 0.138889 | non-integer x = 0.130435 | non-integer x = 0.343750 | non-integer x = 0.456140 | non-integer x = 0.214286 | non-integer x = 0.750000 | non-integer x = 0.080000 | non-integer x = 0.192308 | non-integer x = 0.043478 | non-integer x = 0.074074 | non-integer x = 0.432432 | non-integer x = 0.333333,NA,UniqueFemaleContributors,0.1423069612007606,0.1924579919398393,0.7394182998918774,0.45965303344682085
+84,conversation,FemaleParticipation_UniqueFemaleContributors,female_and_male,only_comments,beta,,success,"
+Call:
+betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logit"", 
+    type = ""ML"")
+
+Randomized quantile residuals:
+    Min      1Q  Median      3Q     Max 
+-2.5344 -0.5811 -0.0373  0.4317  2.5777 
+
+Coefficients (mu model with logit link):
+                         Estimate Std. Error z value Pr(>|z|)    
+(Intercept)              -1.70932    0.19921  -8.580   <2e-16 ***
+UniqueFemaleContributors  0.16888    0.07878   2.144   0.0321 *  
+
+Phi coefficients (phi model with identity link):
+      Estimate Std. Error z value Pr(>|z|)    
+(phi)    6.467      1.497   4.319 1.56e-05 ***
+
+Exceedence parameter (extended-support xbetax model):
+        Estimate Std. Error z value Pr(>|z|)    
+Log(nu)  -2.3734     0.4345  -5.463 4.69e-08 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Exceedence parameter nu: 0.0932
+Type of estimator: ML (maximum likelihood)
+Log-likelihood: -1.023 on 4 Df
+Number of iterations in BFGS optimization: 18 ",,NA,UniqueFemaleContributors,0.16887565146738331,0.07877529568837034,2.143764107664461,0.03205179258985672
+85,conversation,FemaleParticipation_UniqueFemaleParticipation,only_female,questions_and_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.84791 -0.05930  0.05376  0.07837  0.36423 
+
+Coefficients:
+                          Estimate Std. Error t value Pr(>|t|)    
+(Intercept)               -0.04195    0.02306  -1.819    0.071 .  
+UniqueFemaleParticipation  0.88987    0.04532  19.633   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.1864 on 146 degrees of freedom
+Multiple R-squared:  0.7253,	Adjusted R-squared:  0.7234 
+F-statistic: 385.5 on 1 and 146 DF,  p-value: < 2.2e-16
+",,NA,UniqueFemaleParticipation,0.8898654067607209,0.045324889558820136,19.6330408175822,8.438956321179166e-43
+86,conversation,FemaleParticipation_UniqueFemaleParticipation,only_female,questions_and_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                -2.5523     0.3352  -7.614 2.65e-14 ***
+UniqueFemaleParticipation   2.4413     0.4138   5.900 3.63e-09 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 55.986  on 147  degrees of freedom
+Residual deviance: 18.326  on 146  degrees of freedom
+AIC: Inf
+
+Number of Fisher Scoring iterations: 5
+",non-integer x = 0.203390 | non-integer x = 0.180645 | non-integer x = 0.149485 | non-integer x = 0.143713 | non-integer x = 0.172131 | non-integer x = 0.111842 | non-integer x = 0.126506 | non-integer x = 0.132075 | non-integer x = 0.093220 | non-integer x = 0.141667 | non-integer x = 0.104294 | non-integer x = 0.138298 | non-integer x = 0.080808 | non-integer x = 0.070175 | non-integer x = 0.119565 | non-integer x = 0.134021 | non-integer x = 0.093458 | non-integer x = 0.110092 | non-integer x = 0.166667 | non-integer x = 0.111111 | non-integer x = 0.125000 | non-integer x = 0.142857 | non-integer x = 0.090909 | non-integer x = 0.052632 | non-integer x = 0.068966 | non-integer x = 0.076923 | non-integer x = 0.018868 | non-integer x = 0.500000 | non-integer x = 0.493671 | non-integer x = 0.153846 | non-integer x = 0.083333 | non-integer x = 0.058824 | non-integer x = 0.529412 | non-integer x = 0.062500 | non-integer x = 0.454545 | non-integer x = 0.100000 | non-integer x = 0.250000 | non-integer x = 0.051282 | non-integer x = 0.200000 | non-integer x = 0.040000 | non-integer x = 0.035433 | non-integer x = 0.047945 | non-integer x = 0.003448 | non-integer x = 0.473684 | non-integer x = 0.066667 | non-integer x = 0.133333 | non-integer x = 0.088235 | non-integer x = 0.020833 | non-integer x = 0.466667 | non-integer x = 0.470588 | non-integer x = 0.138889 | non-integer x = 0.130435 | non-integer x = 0.343750 | non-integer x = 0.456140 | non-integer x = 0.214286 | non-integer x = 0.750000 | non-integer x = 0.080000 | non-integer x = 0.192308 | non-integer x = 0.043478 | non-integer x = 0.074074 | non-integer x = 0.432432 | non-integer x = 0.333333,NA,UniqueFemaleParticipation,2.4413429660856,0.41378351107156786,5.900048940479279,3.633937648350804e-9
+87,conversation,FemaleParticipation_UniqueFemaleParticipation,only_female,questions_and_comments,beta,,success,"
+Call:
+betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logit"", 
+    type = ""ML"")
+
+Randomized quantile residuals:
+    Min      1Q  Median      3Q     Max 
+-3.7918 -0.0299  0.4525  0.5393  2.1723 
+
+Coefficients (mu model with logit link):
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                -1.7551     0.1405 -12.489   <2e-16 ***
+UniqueFemaleParticipation   3.0172     0.3076   9.808   <2e-16 ***
+
+Phi coefficients (phi model with identity link):
+      Estimate Std. Error z value Pr(>|z|)    
+(phi)    12.95       3.08   4.203 2.63e-05 ***
+
+Exceedence parameter (extended-support xbetax model):
+        Estimate Std. Error z value Pr(>|z|)    
+Log(nu)  -0.8828     0.2357  -3.745  0.00018 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Exceedence parameter nu: 0.4136
+Type of estimator: ML (maximum likelihood)
+Log-likelihood: -37.63 on 4 Df
+Number of iterations in BFGS optimization: 27 ",,NA,UniqueFemaleParticipation,3.0171561894624355,0.3076072453769905,9.80846919182523,1.0352711534175125e-22
+88,conversation,FemaleParticipation_UniqueFemaleParticipation,only_female,only_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.85099 -0.05605  0.06537  0.14329  0.37669 
+
+Coefficients:
+                          Estimate Std. Error t value Pr(>|t|)    
+(Intercept)               -0.05752    0.02708  -2.124   0.0356 *  
+UniqueFemaleParticipation  0.90850    0.05008  18.143   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.1977 on 128 degrees of freedom
+Multiple R-squared:   0.72,	Adjusted R-squared:  0.7178 
+F-statistic: 329.2 on 1 and 128 DF,  p-value: < 2.2e-16
+",,NA,UniqueFemaleParticipation,0.9085031960254131,0.0500757013616632,18.142595536783478,3.4275136573859363e-37
+89,conversation,FemaleParticipation_UniqueFemaleParticipation,only_female,only_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                -2.5949     0.3713  -6.989 2.78e-12 ***
+UniqueFemaleParticipation   2.4857     0.4464   5.569 2.57e-08 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 53.399  on 129  degrees of freedom
+Residual deviance: 18.164  on 128  degrees of freedom
+AIC: Inf
+
+Number of Fisher Scoring iterations: 5
+",non-integer x = 0.166667 | non-integer x = 0.111111 | non-integer x = 0.125000 | non-integer x = 0.142857 | non-integer x = 0.090909 | non-integer x = 0.052632 | non-integer x = 0.068966 | non-integer x = 0.076923 | non-integer x = 0.018868 | non-integer x = 0.500000 | non-integer x = 0.493671 | non-integer x = 0.153846 | non-integer x = 0.083333 | non-integer x = 0.058824 | non-integer x = 0.529412 | non-integer x = 0.062500 | non-integer x = 0.454545 | non-integer x = 0.100000 | non-integer x = 0.250000 | non-integer x = 0.051282 | non-integer x = 0.200000 | non-integer x = 0.040000 | non-integer x = 0.035433 | non-integer x = 0.047945 | non-integer x = 0.003448 | non-integer x = 0.473684 | non-integer x = 0.066667 | non-integer x = 0.133333 | non-integer x = 0.088235 | non-integer x = 0.020833 | non-integer x = 0.466667 | non-integer x = 0.470588 | non-integer x = 0.138889 | non-integer x = 0.130435 | non-integer x = 0.343750 | non-integer x = 0.456140 | non-integer x = 0.214286 | non-integer x = 0.750000 | non-integer x = 0.080000 | non-integer x = 0.192308 | non-integer x = 0.043478 | non-integer x = 0.074074 | non-integer x = 0.432432 | non-integer x = 0.333333,NA,UniqueFemaleParticipation,2.485697883846813,0.4463742662021958,5.568640649908921,2.567343450607611e-8
+90,conversation,FemaleParticipation_UniqueFemaleParticipation,only_female,only_comments,beta,,success,"
+Call:
+betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logit"", 
+    type = ""ML"")
+
+Randomized quantile residuals:
+    Min      1Q  Median      3Q     Max 
+-3.9328 -0.0819  0.4378  0.5916  3.0678 
+
+Coefficients (mu model with logit link):
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                -1.7489     0.1730  -10.11   <2e-16 ***
+UniqueFemaleParticipation   3.0052     0.3634    8.27   <2e-16 ***
+
+Phi coefficients (phi model with identity link):
+      Estimate Std. Error z value Pr(>|z|)    
+(phi)   11.263      3.122   3.608 0.000308 ***
+
+Exceedence parameter (extended-support xbetax model):
+        Estimate Std. Error z value Pr(>|z|)  
+Log(nu)  -0.6885     0.2784  -2.473   0.0134 *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Exceedence parameter nu: 0.5023
+Type of estimator: ML (maximum likelihood)
+Log-likelihood: -46.67 on 4 Df
+Number of iterations in BFGS optimization: 28 ",,NA,UniqueFemaleParticipation,3.005208305572424,0.36340476428304624,8.269589727315044,1.344207778738959e-16
+91,conversation,FemaleParticipation_UniqueFemaleParticipation,female_and_male,questions_and_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.35019 -0.08251 -0.00154  0.03991  0.46752 
+
+Coefficients:
+                          Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                0.07936    0.02095   3.789 0.000238 ***
+UniqueFemaleParticipation  0.27083    0.06591   4.109 7.29e-05 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.1444 on 120 degrees of freedom
+Multiple R-squared:  0.1234,	Adjusted R-squared:  0.1161 
+F-statistic: 16.89 on 1 and 120 DF,  p-value: 7.289e-05
+",,NA,UniqueFemaleParticipation,0.27082543395914055,0.06590519824350695,4.109318250716628,7.289148729893187e-5
+92,conversation,FemaleParticipation_UniqueFemaleParticipation,female_and_male,questions_and_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                -2.3057     0.3733  -6.177 6.55e-10 ***
+UniqueFemaleParticipation   1.3716     0.8998   1.524    0.127    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 17.972  on 121  degrees of freedom
+Residual deviance: 16.022  on 120  degrees of freedom
+AIC: Inf
+
+Number of Fisher Scoring iterations: 5
+",non-integer x = 0.203390 | non-integer x = 0.180645 | non-integer x = 0.149485 | non-integer x = 0.143713 | non-integer x = 0.172131 | non-integer x = 0.111842 | non-integer x = 0.126506 | non-integer x = 0.132075 | non-integer x = 0.093220 | non-integer x = 0.141667 | non-integer x = 0.104294 | non-integer x = 0.138298 | non-integer x = 0.080808 | non-integer x = 0.070175 | non-integer x = 0.119565 | non-integer x = 0.134021 | non-integer x = 0.093458 | non-integer x = 0.110092 | non-integer x = 0.166667 | non-integer x = 0.111111 | non-integer x = 0.125000 | non-integer x = 0.142857 | non-integer x = 0.090909 | non-integer x = 0.052632 | non-integer x = 0.068966 | non-integer x = 0.076923 | non-integer x = 0.018868 | non-integer x = 0.500000 | non-integer x = 0.493671 | non-integer x = 0.153846 | non-integer x = 0.083333 | non-integer x = 0.058824 | non-integer x = 0.529412 | non-integer x = 0.062500 | non-integer x = 0.454545 | non-integer x = 0.100000 | non-integer x = 0.250000 | non-integer x = 0.051282 | non-integer x = 0.200000 | non-integer x = 0.040000 | non-integer x = 0.035433 | non-integer x = 0.047945 | non-integer x = 0.003448 | non-integer x = 0.473684 | non-integer x = 0.066667 | non-integer x = 0.133333 | non-integer x = 0.088235 | non-integer x = 0.020833 | non-integer x = 0.466667 | non-integer x = 0.470588 | non-integer x = 0.138889 | non-integer x = 0.130435 | non-integer x = 0.343750 | non-integer x = 0.456140 | non-integer x = 0.214286 | non-integer x = 0.750000 | non-integer x = 0.080000 | non-integer x = 0.192308 | non-integer x = 0.043478 | non-integer x = 0.074074 | non-integer x = 0.432432 | non-integer x = 0.333333,NA,UniqueFemaleParticipation,1.3715629150816537,0.8998258939323719,1.5242536632144708,0.12744535739667473
+93,conversation,FemaleParticipation_UniqueFemaleParticipation,female_and_male,questions_and_comments,beta,,success,"
+Call:
+betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logit"", 
+    type = ""ML"")
+
+Randomized quantile residuals:
+    Min      1Q  Median      3Q     Max 
+-2.9673 -0.4284  0.1302  0.4055  2.6157 
+
+Coefficients (mu model with logit link):
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                -1.6008     0.1189 -13.464  < 2e-16 ***
+UniqueFemaleParticipation   1.1712     0.3330   3.518 0.000436 ***
+
+Phi coefficients (phi model with identity link):
+      Estimate Std. Error z value Pr(>|z|)    
+(phi)   12.677      3.005   4.219 2.45e-05 ***
+
+Exceedence parameter (extended-support xbetax model):
+        Estimate Std. Error z value Pr(>|z|)    
+Log(nu)  -1.8275     0.2955  -6.183 6.27e-10 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Exceedence parameter nu: 0.1608
+Type of estimator: ML (maximum likelihood)
+Log-likelihood: 15.39 on 4 Df
+Number of iterations in BFGS optimization: 25 ",,NA,UniqueFemaleParticipation,1.1711891470428317,0.33295744402384597,3.5175340514656064,4.3557646120361666e-4
+94,conversation,FemaleParticipation_UniqueFemaleParticipation,female_and_male,only_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.35119 -0.10045 -0.00802  0.04770  0.46770 
+
+Coefficients:
+                          Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                0.07564    0.02509   3.014 0.003248 ** 
+UniqueFemaleParticipation  0.27555    0.07383   3.732 0.000313 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.1562 on 102 degrees of freedom
+Multiple R-squared:  0.1201,	Adjusted R-squared:  0.1115 
+F-statistic: 13.93 on 1 and 102 DF,  p-value: 0.0003128
+",,NA,UniqueFemaleParticipation,0.27554759512298077,0.07383431980272136,3.7319717423986445,3.1280033275282406e-4
+95,conversation,FemaleParticipation_UniqueFemaleParticipation,female_and_male,only_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                -2.3222     0.4133  -5.619 1.92e-08 ***
+UniqueFemaleParticipation   1.3885     0.9375   1.481    0.139    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 17.760  on 103  degrees of freedom
+Residual deviance: 15.898  on 102  degrees of freedom
+AIC: Inf
+
+Number of Fisher Scoring iterations: 5
+",non-integer x = 0.166667 | non-integer x = 0.111111 | non-integer x = 0.125000 | non-integer x = 0.142857 | non-integer x = 0.090909 | non-integer x = 0.052632 | non-integer x = 0.068966 | non-integer x = 0.076923 | non-integer x = 0.018868 | non-integer x = 0.500000 | non-integer x = 0.493671 | non-integer x = 0.153846 | non-integer x = 0.083333 | non-integer x = 0.058824 | non-integer x = 0.529412 | non-integer x = 0.062500 | non-integer x = 0.454545 | non-integer x = 0.100000 | non-integer x = 0.250000 | non-integer x = 0.051282 | non-integer x = 0.200000 | non-integer x = 0.040000 | non-integer x = 0.035433 | non-integer x = 0.047945 | non-integer x = 0.003448 | non-integer x = 0.473684 | non-integer x = 0.066667 | non-integer x = 0.133333 | non-integer x = 0.088235 | non-integer x = 0.020833 | non-integer x = 0.466667 | non-integer x = 0.470588 | non-integer x = 0.138889 | non-integer x = 0.130435 | non-integer x = 0.343750 | non-integer x = 0.456140 | non-integer x = 0.214286 | non-integer x = 0.750000 | non-integer x = 0.080000 | non-integer x = 0.192308 | non-integer x = 0.043478 | non-integer x = 0.074074 | non-integer x = 0.432432 | non-integer x = 0.333333,NA,UniqueFemaleParticipation,1.3884716727756388,0.9374795440726824,1.4810687673714096,0.13858824958298235
+96,conversation,FemaleParticipation_UniqueFemaleParticipation,female_and_male,only_comments,beta,,success,"
+Call:
+betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logit"", 
+    type = ""ML"")
+
+Randomized quantile residuals:
+    Min      1Q  Median      3Q     Max 
+-2.3729 -0.4799  0.0986  0.4461  2.3876 
+
+Coefficients (mu model with logit link):
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                -1.5747     0.1439 -10.946  < 2e-16 ***
+UniqueFemaleParticipation   1.1100     0.3751   2.959  0.00309 ** 
+
+Phi coefficients (phi model with identity link):
+      Estimate Std. Error z value Pr(>|z|)    
+(phi)   10.462      2.895   3.614 0.000301 ***
+
+Exceedence parameter (extended-support xbetax model):
+        Estimate Std. Error z value Pr(>|z|)    
+Log(nu)  -1.6989     0.3534  -4.807 1.53e-06 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Exceedence parameter nu: 0.1829
+Type of estimator: ML (maximum likelihood)
+Log-likelihood: -0.5832 on 4 Df
+Number of iterations in BFGS optimization: 27 ",,NA,UniqueFemaleParticipation,1.1099508492579424,0.3751419290361162,2.958749111595797,0.0030889046932311972
+97,conversation,FemaleParticipation_FemaleContributions,only_female,questions_and_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-0.3073 -0.2347 -0.1597  0.1932  0.6951 
+
+Coefficients:
+                      Estimate Std. Error t value Pr(>|t|)    
+(Intercept)           0.307258   0.034258   8.969 1.33e-15 ***
+Female_Contributions -0.002365   0.003953  -0.598    0.551    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.3552 on 146 degrees of freedom
+Multiple R-squared:  0.002446,	Adjusted R-squared:  -0.004387 
+F-statistic: 0.358 on 1 and 146 DF,  p-value: 0.5506
+",,NA,Female_Contributions,-0.0023652100145579676,0.003953061347097376,-0.5983236299367517,0.5505510865584381
+98,conversation,FemaleParticipation_FemaleContributions,only_female,questions_and_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                      Estimate Std. Error z value Pr(>|z|)    
+(Intercept)          -1.178489   0.175992  -6.696 2.14e-11 ***
+Female_Contributions -0.008607   0.022077  -0.390    0.697    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 55.986  on 147  degrees of freedom
+Residual deviance: 55.825  on 146  degrees of freedom
+AIC: Inf
+
+Number of Fisher Scoring iterations: 5
+",non-integer x = 0.203390 | non-integer x = 0.180645 | non-integer x = 0.149485 | non-integer x = 0.143713 | non-integer x = 0.172131 | non-integer x = 0.111842 | non-integer x = 0.126506 | non-integer x = 0.132075 | non-integer x = 0.093220 | non-integer x = 0.141667 | non-integer x = 0.104294 | non-integer x = 0.138298 | non-integer x = 0.080808 | non-integer x = 0.070175 | non-integer x = 0.119565 | non-integer x = 0.134021 | non-integer x = 0.093458 | non-integer x = 0.110092 | non-integer x = 0.166667 | non-integer x = 0.111111 | non-integer x = 0.125000 | non-integer x = 0.142857 | non-integer x = 0.090909 | non-integer x = 0.052632 | non-integer x = 0.068966 | non-integer x = 0.076923 | non-integer x = 0.018868 | non-integer x = 0.500000 | non-integer x = 0.493671 | non-integer x = 0.153846 | non-integer x = 0.083333 | non-integer x = 0.058824 | non-integer x = 0.529412 | non-integer x = 0.062500 | non-integer x = 0.454545 | non-integer x = 0.100000 | non-integer x = 0.250000 | non-integer x = 0.051282 | non-integer x = 0.200000 | non-integer x = 0.040000 | non-integer x = 0.035433 | non-integer x = 0.047945 | non-integer x = 0.003448 | non-integer x = 0.473684 | non-integer x = 0.066667 | non-integer x = 0.133333 | non-integer x = 0.088235 | non-integer x = 0.020833 | non-integer x = 0.466667 | non-integer x = 0.470588 | non-integer x = 0.138889 | non-integer x = 0.130435 | non-integer x = 0.343750 | non-integer x = 0.456140 | non-integer x = 0.214286 | non-integer x = 0.750000 | non-integer x = 0.080000 | non-integer x = 0.192308 | non-integer x = 0.043478 | non-integer x = 0.074074 | non-integer x = 0.432432 | non-integer x = 0.333333,NA,Female_Contributions,-0.008607320162898663,0.022076500677139278,-0.389886073376282,0.6966207924529035
+99,conversation,FemaleParticipation_FemaleContributions,only_female,questions_and_comments,beta,,success,"
+Call:
+betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logit"", 
+    type = ""ML"")
+
+Randomized quantile residuals:
+    Min      1Q  Median      3Q     Max 
+-2.2142 -0.4038 -0.2622  0.3162  4.4563 
+
+Coefficients (mu model with logit link):
+                      Estimate Std. Error z value Pr(>|z|)    
+(Intercept)          -0.531320   0.134595  -3.948  7.9e-05 ***
+Female_Contributions  0.003829   0.013266   0.289    0.773    
+
+Phi coefficients (phi model with identity link):
+      Estimate Std. Error z value Pr(>|z|)   
+(phi)   1.6682     0.6135   2.719  0.00654 **
+
+Exceedence parameter (extended-support xbetax model):
+        Estimate Std. Error z value Pr(>|z|)   
+Log(nu)  -1.5542     0.5684  -2.734  0.00625 **
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Exceedence parameter nu: 0.2114
+Type of estimator: ML (maximum likelihood)
+Log-likelihood: -115.6 on 4 Df
+Number of iterations in BFGS optimization: 18 ","no valid starting value for precision parameter found, using 1 instead",NA,Female_Contributions,0.003829389691473113,0.013265878096041732,0.28866462240563817,0.77283803791112
+100,conversation,FemaleParticipation_FemaleContributions,only_female,only_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-0.3215 -0.2638 -0.1777  0.1242  0.6906 
+
+Coefficients:
+                     Estimate Std. Error t value Pr(>|t|)    
+(Intercept)          0.303502   0.036917   8.221 1.94e-13 ***
+Female_Contributions 0.005940   0.006258   0.949    0.344    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.3722 on 128 degrees of freedom
+Multiple R-squared:  0.006989,	Adjusted R-squared:  -0.0007692 
+F-statistic: 0.9008 on 1 and 128 DF,  p-value: 0.3443
+",,NA,Female_Contributions,0.005939724628976292,0.006258065292159313,0.9491311374488425,0.3443424959191602
+101,conversation,FemaleParticipation_FemaleContributions,only_female,only_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                     Estimate Std. Error z value Pr(>|z|)    
+(Intercept)          -1.18640    0.17514  -6.774 1.25e-11 ***
+Female_Contributions  0.01555    0.02497   0.623    0.534    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 53.399  on 129  degrees of freedom
+Residual deviance: 53.053  on 128  degrees of freedom
+AIC: Inf
+
+Number of Fisher Scoring iterations: 5
+",non-integer x = 0.166667 | non-integer x = 0.111111 | non-integer x = 0.125000 | non-integer x = 0.142857 | non-integer x = 0.090909 | non-integer x = 0.052632 | non-integer x = 0.068966 | non-integer x = 0.076923 | non-integer x = 0.018868 | non-integer x = 0.500000 | non-integer x = 0.493671 | non-integer x = 0.153846 | non-integer x = 0.083333 | non-integer x = 0.058824 | non-integer x = 0.529412 | non-integer x = 0.062500 | non-integer x = 0.454545 | non-integer x = 0.100000 | non-integer x = 0.250000 | non-integer x = 0.051282 | non-integer x = 0.200000 | non-integer x = 0.040000 | non-integer x = 0.035433 | non-integer x = 0.047945 | non-integer x = 0.003448 | non-integer x = 0.473684 | non-integer x = 0.066667 | non-integer x = 0.133333 | non-integer x = 0.088235 | non-integer x = 0.020833 | non-integer x = 0.466667 | non-integer x = 0.470588 | non-integer x = 0.138889 | non-integer x = 0.130435 | non-integer x = 0.343750 | non-integer x = 0.456140 | non-integer x = 0.214286 | non-integer x = 0.750000 | non-integer x = 0.080000 | non-integer x = 0.192308 | non-integer x = 0.043478 | non-integer x = 0.074074 | non-integer x = 0.432432 | non-integer x = 0.333333,NA,Female_Contributions,0.015549972947083377,0.0249749084598048,0.6226238215090905,0.5335317533157273
+102,conversation,FemaleParticipation_FemaleContributions,only_female,only_comments,beta,,success,"
+Call:
+betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logit"", 
+    type = ""ML"")
+
+Randomized quantile residuals:
+    Min      1Q  Median      3Q     Max 
+-2.7889 -0.4269 -0.2408  0.2186  2.7607 
+
+Coefficients (mu model with logit link):
+                     Estimate Std. Error z value Pr(>|z|)    
+(Intercept)          -0.49425    0.14728  -3.356 0.000791 ***
+Female_Contributions  0.02300    0.02094   1.099 0.271860    
+
+Phi coefficients (phi model with identity link):
+      Estimate Std. Error z value Pr(>|z|)  
+(phi)   1.3925     0.5856   2.378   0.0174 *
+
+Exceedence parameter (extended-support xbetax model):
+        Estimate Std. Error z value Pr(>|z|)  
+Log(nu)  -1.5021     0.6698  -2.243   0.0249 *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Exceedence parameter nu: 0.2227
+Type of estimator: ML (maximum likelihood)
+Log-likelihood: -111.7 on 4 Df
+Number of iterations in BFGS optimization: 17 ","no valid starting value for precision parameter found, using 1 instead",NA,Female_Contributions,0.023004193712649994,0.020935936415131924,1.0987898155834668,0.27185975549928704
+103,conversation,FemaleParticipation_FemaleContributions,female_and_male,questions_and_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.18046 -0.10578 -0.04123  0.04325  0.62105 
+
+Coefficients:
+                     Estimate Std. Error t value Pr(>|t|)    
+(Intercept)          0.105778   0.015375    6.88 2.91e-10 ***
+Female_Contributions 0.007724   0.001613    4.79 4.83e-06 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.1413 on 120 degrees of freedom
+Multiple R-squared:  0.1605,	Adjusted R-squared:  0.1535 
+F-statistic: 22.94 on 1 and 120 DF,  p-value: 4.825e-06
+",,NA,Female_Contributions,0.007724179925344922,0.001612727223146987,4.789514193399913,4.825036334510743e-6
+104,conversation,FemaleParticipation_FemaleContributions,female_and_male,questions_and_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                     Estimate Std. Error z value Pr(>|z|)    
+(Intercept)          -2.17784    0.30294  -7.189 6.53e-13 ***
+Female_Contributions  0.03805    0.02201   1.728   0.0839 .  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 17.972  on 121  degrees of freedom
+Residual deviance: 15.489  on 120  degrees of freedom
+AIC: Inf
+
+Number of Fisher Scoring iterations: 5
+",non-integer x = 0.203390 | non-integer x = 0.180645 | non-integer x = 0.149485 | non-integer x = 0.143713 | non-integer x = 0.172131 | non-integer x = 0.111842 | non-integer x = 0.126506 | non-integer x = 0.132075 | non-integer x = 0.093220 | non-integer x = 0.141667 | non-integer x = 0.104294 | non-integer x = 0.138298 | non-integer x = 0.080808 | non-integer x = 0.070175 | non-integer x = 0.119565 | non-integer x = 0.134021 | non-integer x = 0.093458 | non-integer x = 0.110092 | non-integer x = 0.166667 | non-integer x = 0.111111 | non-integer x = 0.125000 | non-integer x = 0.142857 | non-integer x = 0.090909 | non-integer x = 0.052632 | non-integer x = 0.068966 | non-integer x = 0.076923 | non-integer x = 0.018868 | non-integer x = 0.500000 | non-integer x = 0.493671 | non-integer x = 0.153846 | non-integer x = 0.083333 | non-integer x = 0.058824 | non-integer x = 0.529412 | non-integer x = 0.062500 | non-integer x = 0.454545 | non-integer x = 0.100000 | non-integer x = 0.250000 | non-integer x = 0.051282 | non-integer x = 0.200000 | non-integer x = 0.040000 | non-integer x = 0.035433 | non-integer x = 0.047945 | non-integer x = 0.003448 | non-integer x = 0.473684 | non-integer x = 0.066667 | non-integer x = 0.133333 | non-integer x = 0.088235 | non-integer x = 0.020833 | non-integer x = 0.466667 | non-integer x = 0.470588 | non-integer x = 0.138889 | non-integer x = 0.130435 | non-integer x = 0.343750 | non-integer x = 0.456140 | non-integer x = 0.214286 | non-integer x = 0.750000 | non-integer x = 0.080000 | non-integer x = 0.192308 | non-integer x = 0.043478 | non-integer x = 0.074074 | non-integer x = 0.432432 | non-integer x = 0.333333,NA,Female_Contributions,0.038047789047082184,0.022014743920521437,1.7282866966085968,0.0839368369532074
+105,conversation,FemaleParticipation_FemaleContributions,female_and_male,questions_and_comments,beta,,success,"
+Call:
+betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logit"", 
+    type = ""ML"")
+
+Randomized quantile residuals:
+    Min      1Q  Median      3Q     Max 
+-2.3248 -0.7147 -0.0520  0.4319  3.4444 
+
+Coefficients (mu model with logit link):
+                     Estimate Std. Error z value Pr(>|z|)    
+(Intercept)          -1.74363    0.13549 -12.869  < 2e-16 ***
+Female_Contributions  0.04141    0.00877   4.722 2.33e-06 ***
+
+Phi coefficients (phi model with identity link):
+      Estimate Std. Error z value Pr(>|z|)    
+(phi)    8.712      1.725    5.05 4.41e-07 ***
+
+Exceedence parameter (extended-support xbetax model):
+        Estimate Std. Error z value Pr(>|z|)    
+Log(nu)  -2.5669     0.3747  -6.851 7.33e-12 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Exceedence parameter nu: 0.0768
+Type of estimator: ML (maximum likelihood)
+Log-likelihood: 22.61 on 4 Df
+Number of iterations in BFGS optimization: 16 ",,NA,Female_Contributions,0.04141233819207266,0.00876996512983251,4.722064179160945,2.3346298135181653e-6
+106,conversation,FemaleParticipation_FemaleContributions,female_and_male,only_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.27879 -0.09432 -0.03158  0.03711  0.60352 
+
+Coefficients:
+                     Estimate Std. Error t value Pr(>|t|)    
+(Intercept)          0.094315   0.014847   6.352 5.98e-09 ***
+Female_Contributions 0.017388   0.002258   7.702 8.97e-12 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.1324 on 102 degrees of freedom
+Multiple R-squared:  0.3677,	Adjusted R-squared:  0.3615 
+F-statistic: 59.32 on 1 and 102 DF,  p-value: 8.974e-12
+",,NA,Female_Contributions,0.017388258718109194,0.0022575861341822953,7.702146312307714,8.974113912115797e-12
+107,conversation,FemaleParticipation_FemaleContributions,female_and_male,only_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                     Estimate Std. Error z value Pr(>|z|)    
+(Intercept)          -2.16902    0.30171  -7.189 6.52e-13 ***
+Female_Contributions  0.05747    0.02331   2.465   0.0137 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 17.760  on 103  degrees of freedom
+Residual deviance: 13.608  on 102  degrees of freedom
+AIC: Inf
+
+Number of Fisher Scoring iterations: 5
+",non-integer x = 0.166667 | non-integer x = 0.111111 | non-integer x = 0.125000 | non-integer x = 0.142857 | non-integer x = 0.090909 | non-integer x = 0.052632 | non-integer x = 0.068966 | non-integer x = 0.076923 | non-integer x = 0.018868 | non-integer x = 0.500000 | non-integer x = 0.493671 | non-integer x = 0.153846 | non-integer x = 0.083333 | non-integer x = 0.058824 | non-integer x = 0.529412 | non-integer x = 0.062500 | non-integer x = 0.454545 | non-integer x = 0.100000 | non-integer x = 0.250000 | non-integer x = 0.051282 | non-integer x = 0.200000 | non-integer x = 0.040000 | non-integer x = 0.035433 | non-integer x = 0.047945 | non-integer x = 0.003448 | non-integer x = 0.473684 | non-integer x = 0.066667 | non-integer x = 0.133333 | non-integer x = 0.088235 | non-integer x = 0.020833 | non-integer x = 0.466667 | non-integer x = 0.470588 | non-integer x = 0.138889 | non-integer x = 0.130435 | non-integer x = 0.343750 | non-integer x = 0.456140 | non-integer x = 0.214286 | non-integer x = 0.750000 | non-integer x = 0.080000 | non-integer x = 0.192308 | non-integer x = 0.043478 | non-integer x = 0.074074 | non-integer x = 0.432432 | non-integer x = 0.333333,NA,Female_Contributions,0.05747382529567666,0.023311302301772124,2.465491826739663,0.013682529672917458
+108,conversation,FemaleParticipation_FemaleContributions,female_and_male,only_comments,beta,,success,"
+Call:
+betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logit"", 
+    type = ""ML"")
+
+Randomized quantile residuals:
+    Min      1Q  Median      3Q     Max 
+-2.1168 -0.6886  0.0106  0.4320  3.4148 
+
+Coefficients (mu model with logit link):
+                     Estimate Std. Error z value Pr(>|z|)    
+(Intercept)          -1.72134    0.15199 -11.326  < 2e-16 ***
+Female_Contributions  0.08049    0.01592   5.057 4.27e-07 ***
+
+Phi coefficients (phi model with identity link):
+      Estimate Std. Error z value Pr(>|z|)    
+(phi)    9.829      2.341   4.198 2.69e-05 ***
+
+Exceedence parameter (extended-support xbetax model):
+        Estimate Std. Error z value Pr(>|z|)    
+Log(nu)  -2.2660     0.3974  -5.703 1.18e-08 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Exceedence parameter nu: 0.1037
+Type of estimator: ML (maximum likelihood)
+Log-likelihood: 14.26 on 4 Df
+Number of iterations in BFGS optimization: 20 ",,NA,Female_Contributions,0.08049414154702883,0.01591880072030581,5.056545587906731,4.269188522270767e-7
+109,conversation,FemaleContributions_UniqueFemaleContributors,only_female,questions_and_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-2.349 -1.349 -1.349 -0.761 36.651 
+
+Coefficients:
+                         Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                1.4066     0.4524   3.109  0.00225 ** 
+UniqueFemaleContributors   0.9426     0.0662  14.239  < 2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 4.811 on 146 degrees of freedom
+Multiple R-squared:  0.5814,	Adjusted R-squared:  0.5785 
+F-statistic: 202.7 on 1 and 146 DF,  p-value: < 2.2e-16
+",,NA,UniqueFemaleContributors,0.9426054721028636,0.066200182722461,14.238714053927344,2.1367470826762834e-29
+110,conversation,FemaleContributions_UniqueFemaleContributors,only_female,questions_and_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                         Estimate Std. Error z value Pr(>|z|)    
+(Intercept)               0.97844    0.05111   19.14   <2e-16 ***
+UniqueFemaleContributors  0.08654    0.00312   27.74   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 1219.02  on 147  degrees of freedom
+Residual deviance:  687.36  on 146  degrees of freedom
+AIC: 1045.3
+
+Number of Fisher Scoring iterations: 6
+",,NA,UniqueFemaleContributors,0.08654437117237429,0.0031198065319946303,27.740300651605676,2.2813507012578613e-169
+111,conversation,FemaleContributions_UniqueFemaleContributors,only_female,questions_and_comments,beta,,error,NA,,"invalid dependent variable, all observations must be in [0, 1]",NA,NA,NA,NA,NA
+112,conversation,FemaleContributions_UniqueFemaleContributors,only_female,only_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-2.597 -1.504 -1.285 -1.285 36.715 
+
+Coefficients:
+                         Estimate Std. Error t value Pr(>|t|)  
+(Intercept)                1.0664     0.7961   1.340   0.1828  
+UniqueFemaleContributors   1.2187     0.4745   2.569   0.0114 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 5.127 on 128 degrees of freedom
+Multiple R-squared:  0.04902,	Adjusted R-squared:  0.04159 
+F-statistic: 6.598 on 1 and 128 DF,  p-value: 0.01136
+",,NA,UniqueFemaleContributors,1.218708827404481,0.47446417595858914,2.5686003056864064,0.011358683601579943
+113,conversation,FemaleContributions_UniqueFemaleContributors,only_female,only_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                         Estimate Std. Error z value Pr(>|z|)    
+(Intercept)               0.59784    0.08169   7.319 2.51e-13 ***
+UniqueFemaleContributors  0.26738    0.03495   7.650 2.01e-14 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 668.22  on 129  degrees of freedom
+Residual deviance: 624.31  on 128  degrees of freedom
+AIC: 899.69
+
+Number of Fisher Scoring iterations: 6
+",,NA,UniqueFemaleContributors,0.2673771209409858,0.03495088829551367,7.650080841444782,2.0085300234559482e-14
+114,conversation,FemaleContributions_UniqueFemaleContributors,only_female,only_comments,beta,,error,NA,,"invalid dependent variable, all observations must be in [0, 1]",NA,NA,NA,NA,NA
+115,conversation,FemaleContributions_UniqueFemaleContributors,female_and_male,questions_and_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-2.691 -1.691 -1.691 -0.464 36.309 
+
+Coefficients:
+                         Estimate Std. Error t value Pr(>|t|)    
+(Intercept)               1.76769    0.55265   3.199  0.00177 ** 
+UniqueFemaleContributors  0.92331    0.07357  12.551  < 2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 5.26 on 120 degrees of freedom
+Multiple R-squared:  0.5676,	Adjusted R-squared:  0.564 
+F-statistic: 157.5 on 1 and 120 DF,  p-value: < 2.2e-16
+",,NA,UniqueFemaleContributors,0.9233148161508319,0.07356620959449227,12.550800445480045,1.3637196807303156e-23
+116,conversation,FemaleContributions_UniqueFemaleContributors,female_and_male,questions_and_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                         Estimate Std. Error z value Pr(>|z|)    
+(Intercept)              1.120737   0.053117   21.10   <2e-16 ***
+UniqueFemaleContributors 0.081125   0.003203   25.33   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 1099.38  on 121  degrees of freedom
+Residual deviance:  636.99  on 120  degrees of freedom
+AIC: 942.96
+
+Number of Fisher Scoring iterations: 6
+",,NA,UniqueFemaleContributors,0.08112455744267999,0.0032031832201554547,25.32623077325652,1.6426823841835122e-141
+117,conversation,FemaleContributions_UniqueFemaleContributors,female_and_male,questions_and_comments,beta,,error,NA,,"invalid dependent variable, all observations must be in [0, 1]",NA,NA,NA,NA,NA
+118,conversation,FemaleContributions_UniqueFemaleContributors,female_and_male,only_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-2.675 -1.995 -1.675 -1.675 36.325 
+
+Coefficients:
+                         Estimate Std. Error t value Pr(>|t|)  
+(Intercept)                1.6001     0.9732   1.644   0.1032  
+UniqueFemaleContributors   1.0752     0.5383   1.998   0.0484 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 5.695 on 102 degrees of freedom
+Multiple R-squared:  0.03765,	Adjusted R-squared:  0.02821 
+F-statistic:  3.99 on 1 and 102 DF,  p-value: 0.04842
+",,NA,UniqueFemaleContributors,1.0752318790793551,0.5382635848678476,1.997593575540396,0.048423575990830726
+119,conversation,FemaleContributions_UniqueFemaleContributors,female_and_male,only_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                         Estimate Std. Error z value Pr(>|z|)    
+(Intercept)               0.79070    0.08657   9.134  < 2e-16 ***
+UniqueFemaleContributors  0.22571    0.03632   6.214 5.15e-10 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 622.80  on 103  degrees of freedom
+Residual deviance: 592.24  on 102  degrees of freedom
+AIC: 815.62
+
+Number of Fisher Scoring iterations: 6
+",,NA,UniqueFemaleContributors,0.22570895576542394,0.03631994633577745,6.214462810014846,5.150052931974239e-10
+120,conversation,FemaleContributions_UniqueFemaleContributors,female_and_male,only_comments,beta,,error,NA,,"invalid dependent variable, all observations must be in [0, 1]",NA,NA,NA,NA,NA
+121,conversation,FemaleContributions_UniqueFemaleParticipation,only_female,questions_and_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-5.732 -4.565 -2.830  0.266 34.245 
+
+Coefficients:
+                          Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                 6.3189     0.8987   7.031  7.3e-11 ***
+UniqueFemaleParticipation  -4.6930     1.7660  -2.657  0.00875 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 7.262 on 146 degrees of freedom
+Multiple R-squared:  0.04614,	Adjusted R-squared:  0.0396 
+F-statistic: 7.062 on 1 and 146 DF,  p-value: 0.008752
+",,NA,UniqueFemaleParticipation,-4.692965050545928,1.766020034578075,-2.657367956568589,0.008752425727639117
+122,conversation,FemaleContributions_UniqueFemaleParticipation,only_female,questions_and_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                1.94035    0.05611  34.579   <2e-16 ***
+UniqueFemaleParticipation -1.36029    0.15537  -8.755   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 1219.0  on 147  degrees of freedom
+Residual deviance: 1122.1  on 146  degrees of freedom
+AIC: 1480
+
+Number of Fisher Scoring iterations: 6
+",,NA,UniqueFemaleParticipation,-1.3602925869546159,0.15537005793163097,-8.75517847559276,2.0378075630830186e-18
+123,conversation,FemaleContributions_UniqueFemaleParticipation,only_female,questions_and_comments,beta,,error,NA,,"invalid dependent variable, all observations must be in [0, 1]",NA,NA,NA,NA,NA
+124,conversation,FemaleContributions_UniqueFemaleParticipation,only_female,only_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-3.072 -2.107 -1.115 -1.041 36.156 
+
+Coefficients:
+                          Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                 3.2094     0.7183   4.468 1.72e-05 ***
+UniqueFemaleParticipation  -1.0966     1.3284  -0.825    0.411    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 5.244 on 128 degrees of freedom
+Multiple R-squared:  0.005296,	Adjusted R-squared:  -0.002476 
+F-statistic: 0.6814 on 1 and 128 DF,  p-value: 0.4106
+",,NA,UniqueFemaleParticipation,-1.0966005150109766,1.328410334981878,-0.82549833145188245,0.41062462055013726
+125,conversation,FemaleContributions_UniqueFemaleParticipation,only_female,only_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                1.17975    0.08021  14.708  < 2e-16 ***
+UniqueFemaleParticipation -0.42655    0.16412  -2.599  0.00935 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 668.22  on 129  degrees of freedom
+Residual deviance: 661.11  on 128  degrees of freedom
+AIC: 936.49
+
+Number of Fisher Scoring iterations: 6
+",,NA,UniqueFemaleParticipation,-0.42654745665701393,0.1641165833597313,-2.5990515274258037,0.009348173987316752
+126,conversation,FemaleContributions_UniqueFemaleParticipation,only_female,only_comments,beta,,error,NA,,"invalid dependent variable, all observations must be in [0, 1]",NA,NA,NA,NA,NA
+127,conversation,FemaleContributions_UniqueFemaleParticipation,female_and_male,questions_and_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-5.551 -4.620 -3.926  1.508 33.895 
+
+Coefficients:
+                          Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                  5.820      1.159   5.023 1.79e-06 ***
+UniqueFemaleParticipation   -2.145      3.645  -0.588    0.557    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 7.988 on 120 degrees of freedom
+Multiple R-squared:  0.002878,	Adjusted R-squared:  -0.005432 
+F-statistic: 0.3463 on 1 and 120 DF,  p-value: 0.5573
+",,NA,UniqueFemaleParticipation,-2.145249275532549,3.645412050370784,-0.5884792297524639,0.55731668511449
+128,conversation,FemaleContributions_UniqueFemaleParticipation,female_and_male,questions_and_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                1.77191    0.06408  27.652   <2e-16 ***
+UniqueFemaleParticipation -0.44431    0.21757  -2.042   0.0411 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 1099.4  on 121  degrees of freedom
+Residual deviance: 1094.9  on 120  degrees of freedom
+AIC: 1400.9
+
+Number of Fisher Scoring iterations: 6
+",,NA,UniqueFemaleParticipation,-0.44430845903847965,0.21756933071313966,-2.042146554305903,0.041136996133550985
+129,conversation,FemaleContributions_UniqueFemaleParticipation,female_and_male,questions_and_comments,beta,,error,NA,,"invalid dependent variable, all observations must be in [0, 1]",NA,NA,NA,NA,NA
+130,conversation,FemaleContributions_UniqueFemaleParticipation,female_and_male,only_comments,lm,,success,"
+Call:
+lm(formula = reform, data = data_filtered_ungrouped)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-5.845 -2.425 -1.618 -0.593 35.575 
+
+Coefficients:
+                          Estimate Std. Error t value Pr(>|t|)  
+(Intercept)                 2.2150     0.9249   2.395   0.0184 *
+UniqueFemaleParticipation   3.6300     2.7215   1.334   0.1852  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 5.756 on 102 degrees of freedom
+Multiple R-squared:  0.01714,	Adjusted R-squared:  0.007507 
+F-statistic: 1.779 on 1 and 102 DF,  p-value: 0.1852
+",,NA,UniqueFemaleParticipation,3.629988625241466,2.7214741189692893,1.3338317641676714,0.18522969994386718
+131,conversation,FemaleContributions_UniqueFemaleParticipation,female_and_male,only_comments,poisson,,success,"
+Call:
+glm(formula = reform, family = poisson(link = ""log""), data = data_filtered_ungrouped)
+
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                0.88590    0.08904   9.949  < 2e-16 ***
+UniqueFemaleParticipation  0.94063    0.22041   4.268 1.98e-05 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 622.80  on 103  degrees of freedom
+Residual deviance: 606.59  on 102  degrees of freedom
+AIC: 829.98
+
+Number of Fisher Scoring iterations: 6
+",,NA,UniqueFemaleParticipation,0.9406323851949213,0.22041346256850244,4.267581363831538,1.9760370905962113e-5
+132,conversation,FemaleContributions_UniqueFemaleParticipation,female_and_male,only_comments,beta,,error,NA,,"invalid dependent variable, all observations must be in [0, 1]",NA,NA,NA,NA,NA
