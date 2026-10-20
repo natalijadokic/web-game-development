@@ -80,7 +80,7 @@ data_st1 = raw_data %>%
 
 ```{multiverse default-m-2, inside = game}
 data_variables = data_st1 %>%  
-  select(branch(dv_iv,
+  dplyr::select(branch(dv_iv,
     "ContributionsbyAuthor_UniqueFemaleContributors" %when% (level == "participant") ~
       c(ThreadId, Id, Type, ContributionsbyAuthor, UniqueFemaleContributors, UniqueMaleContributors),
     "ContributionsbyAuthor_UniqueFemaleParticipation" %when% (level == "participant") ~
@@ -194,7 +194,7 @@ get_dv_iv <- function(data) {
 parts <- get_dv_iv(data_variables)
 plot_df <- data_filtered2 %>%
   ungroup() %>%
-  select(all_of(c(parts$dv, parts$iv)))
+  dplyr::select(all_of(c(parts$dv, parts$iv)))
 
 dp_dv <- dot_params(plot_df[[parts$dv]])
 dp_iv <- dot_params(plot_df[[parts$iv]])
@@ -209,15 +209,15 @@ iv_plot <- plot_dist(plot_df, parts$iv, dp_iv$bw, dp_iv$ds)
 multiverse::execute_multiverse(game)
 
 plots_tbl <- multiverse::expand(game) %>%
-  transmute(
+  dplyr::transmute(
     .universe,
-    dv_iv_plots = map(.results, ~ .x$dv_iv_plot),
-    dv_plots = map(.results, ~ .x$dv_plot),
-    iv_plots = map(.results, ~ .x$iv_plot)
+    dv_iv_plots = purrr::map(.results, ~ .x$dv_iv_plot),
+    dv_plots = purrr::map(.results, ~ .x$dv_plot),
+    iv_plots = purrr::map(.results, ~ .x$iv_plot)
   )
 
 results_n5 <- results_n4 %>%
-  select(-any_of(c("dv_iv_plots", "dv_plots", "iv_plots"))) %>%
+  dplyr::select(-any_of(c("dv_iv_plots", "dv_plots", "iv_plots"))) %>%
   left_join(plots_tbl, by = ".universe") %>%
   mutate(across(c(dv_iv_plots, dv_plots, iv_plots),
                 ~ map2(.x, .universe, ~ .x + labs(subtitle = paste("Universe", .y)))))
@@ -279,7 +279,6 @@ betareg_sum
 #' Helper functions
 
 ```{r}
-
 # capture model warnings and errors
 capture_fit <- function(expr) {
   warnings <- character()
@@ -395,8 +394,8 @@ execute_multiverse(game, progress = TRUE)
 
 results_final <- extract_variables(game, model_out) %>%
   dplyr::select(.universe, level, dv_iv, n_female_male, questions, model, model_out) %>%
-  mutate(fit = map(model_out, "model"),
-         rec = map(model_out, ~ dplyr::select(.x$record, -model))) %>%
+  mutate(fit = purrr::map(model_out, "model"),
+         rec = purrr::map(model_out, ~ dplyr::select(.x$record, -model))) %>%
   unnest(rec) %>%
   dplyr::select(-model_out)
 ```
@@ -404,7 +403,7 @@ results_final <- extract_variables(game, model_out) %>%
 
 ```{r}
 results_final_unpacked <- results_final %>%
-  mutate(est = map(fit, function(m) {
+  mutate(est = purrr::map(fit, function(m) {
     blank <- tibble(term = NA_character_, estimate = NA_real_, std.error = NA_real_,
                     statistic = NA_real_, p.value = NA_real_)
     if (is.null(m)) return(blank)
@@ -421,6 +420,5 @@ results_final_unpacked <- results_final %>%
   })) %>%
   unnest(est)
 
-write_csv(results_final_unpacked, "multiverse_results.csv" )
-
+write_csv(results_final_unpacked, "multiverse_results.csv")
 ```
