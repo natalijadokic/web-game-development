@@ -1,0 +1,162 @@
+---
+title: "multiverse_schweinsberg_h2"
+output: html_document
+date: "2026-11-11"
+---
+
+Loading the data, packages 
+
+```{r}
+library(multiverse)
+library(dplyr)
+library(tidyverse)
+library(lmerTest)
+library(ggplot2)
+library(tidyr)
+library(broom)
+library(lme4)
+library(knitr)
+library(purrr)
+library(readr)
+library(stringr)
+library(scales)
+library(betareg)
+library(flexmix)
+library(modeltools)
+library(statmod)
+library(stats)
+
+raw_data = read_csv("data/edge1.1.csv")
+game = multiverse()
+
+
+particip_data_duplicates = raw_data |> 
+  dplyr::select(!Order:Number.Characters)|> 
+  group_by(ThreadId, Id) |> 
+  summarize(across(Type:ContributionsbyAuthor,  ~ paste(unique(.x), collapse = "; "))) 
+        
+ particip_data_filt = particip_data_duplicates |> 
+  filter(if_any(Type:ContributionsbyAuthor, ~ grepl(";", .x)))
+
+
+ 
+ #Slight issue --> there are within participant-changes in the variables indicating status --> correction: 
+status_rec = raw_data |>
+  group_by(Id) |>
+  arrange(Year, .by_group = TRUE) |>
+  summarise(across(c(AcademicHierarchyStrict, PhD_Institution_SR_Bin, Workplace_SR_Bin,
+                     PhD_Institution_US_IR_Bin, Workplace_US_IR_Bin, Discipline, Years_from_PhD), last),
+            .groups = "drop")
+
+raw_data = raw_data |>
+  select(!c(AcademicHierarchyStrict, PhD_Institution_SR_Bin, Workplace_SR_Bin,
+            PhD_Institution_US_IR_Bin, Workplace_US_IR_Bin, Discipline, Years_from_PhD)) |>   # remove the varying versions
+  left_join(status_rec, by = "Id")
+# This will be joined to the df in the multiverse accordingly
+ 
+raw_data = anti_join(raw_data, particip_data_filt,  by = c("ThreadId", "Id"))
+
+mw_df = raw_data |> 
+  group_by(Id, ThreadId) |> 
+  summarise(words_in_conv = sum(WC), .groups = "drop") |> 
+  group_by(Id) |> 
+  summarise(mean_words = mean(words_in_conv))
+
+
+ 
+raw_data = raw_data %>%  
+  mutate(percent_by_author = ContributionsbyAuthor/ DebateSize, .after = ContributionsbyAuthor) |>
+  mutate(AcademicHierarchyStrict = factor(AcademicHierarchyStrict, levels = 1:6, ordered = TRUE),          PhD_Institution_SR_Bin = factor(PhD_Institution_SR_Bin, 1:7, ordered = TRUE), 
+         Workplace_SR_Bin = factor(Workplace_SR_Bin, 1:6, ordered = TRUE),
+         PhD_Institution_US_IR_Bin = factor(PhD_Institution_US_IR_Bin, levels = 1:7, ordered  = TRUE), 
+        Workplace_US_IR_Bin = factor(Workplace_US_IR_Bin, levels = 1:10, ordered= TRUE)) |> 
+  dplyr::select(!c(Order:Number.Characters), WC) |> 
+  dplyr::select(!c(dummy_Natural.Sciences:dummy_Divinity))
+
+raw_data = left_join(raw_data, mw_df, by = "Id")
+raw_data <- raw_data |> mutate(.row = row_number()) #required, so as not to break the summarise down the line --> the group_by(null) could still work but that would break the summarise later --> with this approach, the reference for grouping is basically one row - which keeps the original structure and the summarise block does not have to be modified 
+
+ 
+```
+
+#' ===================================================================
+#' NODE 1: collapsing 
+#' @params: (parameters(game)): 
+#' $level[[1]]: participant, $level[[2]]: conversation
+
+```{multiverse default-m-1, inside = game}
+data_st1 = raw_data |>
+  group_by(across(branch(level,
+    "participant"              ~ Id,
+    "conversation_participant" ~ c(Id, ThreadId),
+    "post"                     ~ .row))) |>
+  select(branch(level,
+    "participant"              ~ !c(
+        Year:UniqueFemaleParticipation, percent_by_author, WC,
+        Role, TwoAuthors, Academic, Limited_Information,
+        Job_Title_S, Job_Title_S_num, Department, Department_S, Department_S_num, Discipline,
+        PhD_Year, PreviousContributions, ContributionsThisYear, ThreadsThisYear, PreviousThreads,
+        Years_from_PhD, PhD_Institution_SR, Workplace_SR, SR_Ranking_Dif,
+        Workplace_US_IR, USA_I_Ranking_Dif, PhD_Institution_US, PhD_Institution_US_Bin,
+        Workplace_US, Workplace_US_Bin, USA_Ranking_Dif,
+        Citations_Year, Citations_Cumulative, PreviousCitations, ContributionsbyAuthor),
+    "conversation_participant" ~ everything(),
+    "post"                     ~ everything())) |>
+  summarise(branch(level,
+    "participant"              ~ across(Id_num:mean_words, first),
+    "conversation_participant" ~ across(everything(), first),
+    "post"                     ~ across(everything(), first)),
+    .groups = "drop")
+```
+
+```{r}
+multiverse::parameters(game)
+```
+
+
+#' ===================================================================
+#' NODE 2: Selecting relevant variables (for analysis)
+
+```{multiverse default-m-2, inside = game}
+
+data_st2 = data_st1 |>
+  dplyr::select(
+    any_of(c("Id", "ThreadId", ".row")),   # ID keys present at this level
+    all_of(c(
+      branch(dependent_variable,
+        "mean_words"            %when% (level == "participant")              ~ "mean_words",
+        "ContributionsbyAuthor" %when% (level == "conversation_participant") ~ "ContributionsbyAuthor",
+        "percent_by_author"     %when% (level == "conversation_participant") ~ "percent_by_author",
+        "WC"                    %when% (level == "post")                     ~ "WC"),
+
+      # ---- Primary predictor -
+      "AcademicHierarchyStrict",
+
+      # ---- Secondary predictors --> instead of typing out 128 fckn universes --> much more flexible approach --> this can be refined on the website
+      branch(include_H_Index,
+        "yes" ~ "H_Index",
+        "no"  ~ NULL),
+
+      branch(include_Total_Citations,
+        "yes" ~ "Total_Citations",
+        "no"  ~ NULL),
+
+      branch(include_Workplace_US_IR_Bin,
+        "yes" ~ "Workplace_US_IR_Bin",
+        "no"  ~ NULL),
+
+      branch(include_PhD_Institution_SR_Bin,
+        "yes" ~ "PhD_Institution_SR_Bin",
+        "no"  ~ NULL),
+
+      branch(include_Workplace_SR_Bin,
+        "yes" ~ "Workplace_SR_Bin",
+        "no"  ~ NULL)
+      
+      #Other potential mediators - Bogi
+    )))
+```
+
+```{r}
+multiverse::execute_multiverse(game)
+```

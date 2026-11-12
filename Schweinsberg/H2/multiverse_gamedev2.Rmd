@@ -1,0 +1,428 @@
+---
+title: "multiverse_schweinsberg_h2"
+output: html_document
+date: "2026-11-11"
+---
+
+Loading the data, packages 
+
+```{r}
+library(multiverse)
+library(dplyr)
+library(tidyverse)
+library(lmerTest)
+library(ggplot2)
+library(tidyr)
+library(broom)
+library(lme4)
+library(knitr)
+library(purrr)
+library(readr)
+library(stringr)
+library(scales)
+library(betareg)
+library(flexmix)
+library(modeltools)
+library(statmod)
+library(stats)
+
+raw_data = read_csv("data/edge1.1.csv")
+game = multiverse()
+
+
+particip_data_duplicates = raw_data %>%  
+  dplyr::select(!Order:Number.Characters)|> 
+  group_by(ThreadId, Id) %>%
+  summarize(across(Type:ContributionsbyAuthor,  ~ paste(unique(.x), collapse = "; "))) 
+        
+ particip_data_filt = particip_data_duplicates %>% 
+  filter(if_any(Type:ContributionsbyAuthor, ~ grepl(";", .x)))
+ 
+ raw_data = anti_join(raw_data, particip_data_filt,  by = c("ThreadId", "Id"))
+ 
+ raw_data = raw_data %>%  
+  mutate(percent_by_author = ContributionsbyAuthor/ DebateSize, .after = ContributionsbyAuthor) |>
+  mutate(AcademicHierarchyStrict = factor(AcademicHierarchyStrict, levels = 1:6, ordered = TRUE),          PhD_Institution_SR_Bin = factor(PhD_Institution_SR_Bin, 1:7, ordered = TRUE), 
+         Workplace_SR_Bin = factor(Workplace_SR_Bin, 1:6, ordered = TRUE),
+         PhD_Institution_US_IR_Bin = factor(PhD_Institution_US_IR_Bin, levels = 1:7, ordered  = TRUE), 
+        Workplace_US_IR_Bin = factor(Workplace_US_IR_Bin, levels = 1:10, ordered= TRUE))
+ 
+ unique(raw_data$Workplace_US_IR_Bin)
+ 
+raw_test = raw_data |> 
+  dplyr::select(!c(Order:Number.Characters)) |> 
+  group_by(across(c(ThreadId, Id)))
+
+raw_test2 = raw_data |> 
+  dplyr::select(c(Order:Number.Characters))
+ 
+```
+
+#' ===================================================================
+#' NODE 1: data_filtering 
+#' @params: (parameters(game)): 
+#' $level[[1]]: participant, $level[[2]]: conversation
+
+```{multiverse default-m-1, inside = game}
+data_st1 = raw_data %>%  
+  dplyr::select(branch(level, 
+                       "participant" ~ !c(Order:Number.Characters), 
+                       "conversation" ~ !Live )) |> 
+  group_by(across(branch(level,
+                         "participant" ~ c(ThreadId, Id),
+                         "conversation" ~ ThreadId))) |> 
+  summarise(branch(level,
+                   "participant" ~ across(Type:percent_by_author, unique),
+                   "conversation" ~ across(Type:UniqueFemaleParticipation, unique)))
+```
+
+
+#' ===================================================================
+#' NODE 2: Selecting relevant variables (for analysis)
+#' 11 branching points => n(universes) = 11
+
+```{multiverse default-m-2, inside = game}
+
+data_variables = data_st1 %>%  
+  dplyr::select(branch(dv_iv,
+    "ContributionsbyAuthor_UniqueFemaleContributors" %when% (level == "participant") ~
+      c(ThreadId, Id, Type, ContributionsbyAuthor, UniqueFemaleContributors, UniqueMaleContributors),
+    "ContributionsbyAuthor_UniqueFemaleParticipation" %when% (level == "participant") ~
+      c(ThreadId, Id, Type, ContributionsbyAuthor, UniqueFemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors),
+    "ContributionsbyAuthor_FemaleContributions" %when% (level == "participant") ~
+      c(ThreadId, Id, Type, ContributionsbyAuthor, Female_Contributions, UniqueFemaleContributors, UniqueMaleContributors),
+
+    "percent_by_author_UniqueFemaleContributors" %when% (level == "participant") ~
+      c(ThreadId, Id, Type, percent_by_author, UniqueFemaleContributors, UniqueMaleContributors),
+    "percent_by_author_UniqueFemaleParticipation" %when% (level == "participant") ~
+      c(ThreadId, Id, Type, percent_by_author, UniqueFemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors),
+    "percent_by_author_FemaleContributions" %when% (level == "participant") ~
+      c(ThreadId, Id, Type, percent_by_author, Female_Contributions, UniqueFemaleContributors, UniqueMaleContributors),
+
+    "FemaleParticipation_UniqueFemaleContributors" %when% (level == "conversation") ~
+      c(ThreadId, Type, FemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors),
+    "FemaleParticipation_UniqueFemaleParticipation" %when% (level == "conversation") ~
+      c(ThreadId, Type, FemaleParticipation, UniqueFemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors),
+    "FemaleParticipation_FemaleContributions" %when% (level == "conversation") ~
+      c(ThreadId, Type, FemaleParticipation, Female_Contributions, UniqueFemaleContributors, UniqueMaleContributors),
+
+    "FemaleContributions_UniqueFemaleContributors" %when% (level == "conversation") ~
+      c(ThreadId, Type, Female_Contributions, UniqueFemaleContributors, UniqueMaleContributors),
+    "FemaleContributions_UniqueFemaleParticipation" %when% (level == "conversation") ~
+      c(ThreadId, Type, Female_Contributions, UniqueFemaleParticipation, UniqueFemaleContributors, UniqueMaleContributors)))
+```
+
+#' ===================================================================
+#' NODE 3: Filtering => numbers of females in noth levels
+#' n(universes = 22)
+
+```{multiverse default-m-3, inside = game}
+data_filtered = data_variables %>%  
+  filter(branch(n_female_male, 
+                "only_female" ~ UniqueFemaleContributors >= 1, 
+                "female_and_male" ~ UniqueFemaleContributors >= 1 & UniqueMaleContributors >= 1))
+```
+
+#' ===================================================================
+#' NODE 4: Filtering: including only comments, or questions and comments. 
+#' n(universes) = 44
+
+```{multiverse default-m-4, inside = game}
+data_filtered2 <- data_filtered %>%  
+  filter(branch(questions, 
+                "questions_and_comments" ~ Type == Type, 
+                "only_comments" ~ Type == 2))
+```
+
+#' Execute multiverse, storing results
+
+```{r}
+execute_multiverse(game, progress = TRUE)
+
+results_n4 = extract_variables(game, data_filtered2)
+
+eighteen <- results_n4$data_filtered2[[18]]     # df from the 9th universe
+```
+
+#' ===================================================================
+#' NODE 5: PLOTS
+#' 1. Helper functions
+
+```{r}
+# Scatterplot function <- DV-IV relationship
+plot_scatter <- function(df, dv, iv) {
+  ggplot(df, aes(x = .data[[iv]], y = .data[[dv]])) +
+    geom_point(alpha = 0.4) +
+    theme_bw() +
+    labs(x = iv, y = dv,
+         title = "Relationship between the dependent and independent variable")
+}
+
+# distribution of the DV and the IV
+plot_dist <- function(df, var, bw, ds) {
+  ggplot(df, aes(x = .data[[var]])) +
+    geom_dotplot(binwidth = bw, dotsize = ds, method = "histodot", stackratio = 1) +
+    theme_bw() +
+    labs(x = var, y = NULL, title = paste("Distribution of", var))
+}
+
+# Parameter function, used when scaling the x and y axes dynamically
+dot_params <- function(x, n_bins = 60, aspect = 2) { # aspect: panel width/height
+  bw <- diff(range(x, na.rm = TRUE)) / n_bins # x axis is cut into 60 bins (so that the binwidth is dynamic, however, the number of bins is 60 either way, regardless of the scale)
+  max_stack <- max(table(floor((x - min(x, na.rm = TRUE)) / bw))) # the size of the tallest pile: 
+  list(bw = bw, ds = min(1, 0.8 * n_bins / (max_stack * aspect))) # d of dot: bw * ds. the tallest pile: max_stack * ds * bw. height of panel: n_bins * bw / 2 (bc. of the assumed proportion of panel width / height). 
+}
+
+# dv-iv separation
+split_dv_iv <- function(x) {
+  if (str_starts(x, "percent")) {
+    dv <- "percent_by_author"
+    iv <- str_remove(x, "^percent_by_author_")
+  } else {
+    dv <- str_extract(x, "^[^_]+")
+    iv <- str_remove(x, "^[^_]+_")
+  }
+  fix <- function(v) if_else(v == "FemaleContributions", "Female_Contributions", v)
+  list(dv = fix(dv), iv = fix(iv))
+}
+
+# variable selection 
+get_dv_iv <- function(data) {
+  cols <- setdiff(names(data), c("ThreadId", "Id", "Type"))
+  list(dv = cols[1], iv = cols[2]) # output = list, function removes all cols but dv and iv, and then selects them. alternative option, used in the multiverse chunk
+}
+```
+
+#' 2. `multiverse` node - only the plotting code
+```{multiverse default-m-5, inside = game}
+parts <- get_dv_iv(data_variables)
+plot_df <- data_filtered2 %>%
+  ungroup() %>%
+  dplyr::select(all_of(c(parts$dv, parts$iv)))
+
+dp_dv <- dot_params(plot_df[[parts$dv]])
+dp_iv <- dot_params(plot_df[[parts$iv]])
+
+dv_iv_plot <- plot_scatter(plot_df, parts$dv, parts$iv)
+dv_plot <- plot_dist(plot_df, parts$dv, dp_dv$bw, dp_dv$ds)
+iv_plot <- plot_dist(plot_df, parts$iv, dp_iv$bw, dp_iv$ds)
+```
+
+# just to check if it worked
+```{r}
+multiverse::execute_multiverse(game)
+
+plots_tbl <- multiverse::expand(game) %>%
+  dplyr::transmute(
+    .universe,
+    dv_iv_plots = purrr::map(.results, ~ .x$dv_iv_plot),
+    dv_plots = purrr::map(.results, ~ .x$dv_plot),
+    iv_plots = purrr::map(.results, ~ .x$iv_plot)
+  )
+
+results_n5 <- results_n4 %>%
+  dplyr::select(-any_of(c("dv_iv_plots", "dv_plots", "iv_plots"))) %>%
+  left_join(plots_tbl, by = ".universe") %>%
+  mutate(across(c(dv_iv_plots, dv_plots, iv_plots),
+                ~ map2(.x, .universe, ~ .x + labs(subtitle = paste("Universe", .y)))))
+
+```
+
+
+#' ===================================================================
+#' NODE 6: STATISTICAL MODELS
+##' TEST 1: Linear regression
+
+```{r}
+one <- results_n5$data_filtered2[[1]]
+
+x <- results_n4$dv_iv[[1]]
+
+  if (str_starts(x, "percent")) {
+  dv <- "percent_by_author"
+  iv <- str_remove(x, "^percent_by_author_")
+    } else {
+      dv <- str_extract(x, "^[^_]+")    
+      iv <- str_remove(x, "^[^_]+_")
+    }
+  iv <- if_else(iv == "FemaleContributions", "Female_Contributions", iv)
+  dv <- if_else(dv == "FemaleContributions", "Female_Contributions", dv)
+  
+  iv
+  dv
+
+model_data1 <- one %>% 
+  ungroup() 
+
+model1 <- glm(ContributionsbyAuthor ~ UniqueFemaleContributors, family = "poisson", data = model_data1)
+
+summary(model1)
+```
+
+
+
+
+##' Test 2 - Beta regression: for proportion variables (`percent_by_author`)
+
+```{r}
+eighteen <- results_n5$data_filtered2[[18]]
+
+model_data18 <- eighteen %>% 
+  ungroup() 
+
+model_betareg <- betareg::betareg(percent_by_author ~ UniqueFemaleParticipation, data = model_data18, link = "logit", type = "ML")
+betareg_sum <- summary(model_betareg)
+
+betareg_sum
+```
+
+#' NODE 6: STATISTICAL MODELS
+#' Includes: Poisson regression, Linear regression, Beta regression
+
+
+#' Helper functions
+
+```{r}
+# capture model warnings and errors
+capture_fit <- function(expr) {
+  warnings <- character()
+
+  fit <- tryCatch(
+    withCallingHandlers(
+      expr,
+      warning = function(w) {
+        warnings <<- c(warnings, conditionMessage(w))
+        invokeRestart("muffleWarning")
+      }
+    ),
+    error = function(e) e
+  )
+
+  list(
+    fit = fit,
+    warnings = paste(unique(warnings), collapse = " | "),
+    error = if (inherits(fit, "error")) conditionMessage(fit) else NA_character_
+  )
+}
+
+# model summary should be converted into a csv cell
+summary_to_text <- function(model) {
+  if (is.null(model)) return(NA_character_)
+  paste(capture.output(print(summary(model))), collapse = "\n")
+}
+```
+
+
+```{r}
+# make record <- what do we want to store? 
+make_record <- function(model, status, model_summary = NA_character_,
+                        warnings = NA_character_, note = NA_character_) {
+  data.frame(model = model, status = status, summary = model_summary,
+             warnings = warnings, note = note, stringsAsFactors = FALSE)
+}
+
+# run one fit, check for errors, then return
+run_fit <- function(name, expr) {
+  res <- capture_fit(expr)
+  if (!is.na(res$error)) {
+    list(model = NULL, summary = NULL,
+         record = make_record(name, "error", warnings = res$warnings, note = res$error))
+  } else {
+    list(model = res$fit, summary = summary(res$fit),
+         record = make_record(name, "success",
+                              model_summary = summary_to_text(res$fit),
+                              warnings = res$warnings))
+  }
+}
+
+# na function <- records note, then output is note
+not_applicable <- function(name, note) {
+  list(model = NULL, summary = NULL,
+       record = make_record(name, "not_applicable", note = note))
+}
+
+# model fitter function
+fit_models <- function(data, dv, iv) {
+  df <- ungroup(data)
+  f  <- reformulate(iv, response = dv)
+  y  <- df[[dv]]
+  y_obs <- y[!is.na(y)]
+
+  # Linear regression
+  lm_out <- run_fit("lm", lm(f, data = df))
+
+  # Poisson regression: non-negative integer counts only
+  is_count <- is.numeric(y) && length(y_obs) > 0 && all(is.finite(y_obs)) &&
+    all(y_obs >= 0) && all(abs(y_obs - round(y_obs)) < 1e-8)
+  poisson_out <- if (!is_count) {
+    not_applicable("poisson",
+      paste0("Poisson regression not applicable: '", dv, "' is not a non-negative integer count."))
+  } else {
+    run_fit("poisson", glm(f, family = poisson(link = "log"), data = df))
+  }
+
+  # Beta regression: only for proportional values (between 0 and 1)
+  is_prop <- is.numeric(y) && length(y_obs) > 0 && all(is.finite(y_obs)) &&
+    all(y_obs >= 0 & y_obs <= 1)
+  beta_out <- if (!is_prop) {
+    not_applicable("beta",
+      paste0("Beta regression not applicable: '", dv, "' is not a proportional value. Variable must contain numeric values between 0 and 1."))
+  } else {
+    run_fit("beta", betareg::betareg(f, link = "logit", data = df, type = "ML"))
+  }
+
+  # output
+  list(
+    lm = lm_out, poisson = poisson_out, beta = beta_out,
+    records = bind_rows(lm_out$record, poisson_out$record, beta_out$record)
+  )
+}
+```
+
+
+```{multiverse default-m-6, inside = game}
+dv_iv_names <- get_dv_iv(data_variables)
+reform <- reformulate(dv_iv_names$iv, response = dv_iv_names$dv)
+data_filtered_ungrouped <- ungroup(data_filtered2)
+
+model_out <- branch(model,
+  "lm"      ~ run_fit("lm", lm(reform, data = data_filtered_ungrouped)),
+  "poisson" ~ run_fit("poisson", glm(reform, family = poisson(link = "log"), data = data_filtered_ungrouped)),
+  "beta"    ~ run_fit("beta", betareg::betareg(reform, link = "logit", data = data_filtered_ungrouped, type = "ML"))
+)
+```
+
+
+```{r}
+execute_multiverse(game, progress = TRUE)
+
+results_final <- extract_variables(game, model_out) %>%
+  dplyr::select(.universe, level, dv_iv, n_female_male, questions, model, model_out) %>%
+  mutate(fit = purrr::map(model_out, "model"),
+         rec = purrr::map(model_out, ~ dplyr::select(.x$record, -model))) %>%
+  unnest(rec) %>%
+  dplyr::select(-model_out)
+```
+
+
+```{r}
+results_final_unpacked <- results_final %>%
+  mutate(est = purrr::map(fit, function(m) {
+    blank <- tibble(term = NA_character_, estimate = NA_real_, std.error = NA_real_,
+                    statistic = NA_real_, p.value = NA_real_)
+    if (is.null(m)) return(blank)
+    td <- tryCatch(broom::tidy(m), error = function(e) NULL)
+    if (is.null(td) || !"term" %in% names(td)) return(blank)
+    td <- td[as.character(td$term) != "(Intercept)", , drop = FALSE]
+    if (nrow(td) == 0) return(blank)
+    pick <- function(col) if (col %in% names(td)) as.numeric(td[[col]][1]) else NA_real_
+    tibble(term      = as.character(td$term[1]),
+           estimate  = pick("estimate"),
+           std.error = pick("std.error"),
+           statistic = pick("statistic"),
+           p.value   = pick("p.value"))
+  })) %>%
+  unnest(est)
+
+write_csv(results_final_unpacked, "multiverse_results.csv")
+```
