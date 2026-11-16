@@ -97,9 +97,8 @@ data_st1 = raw_data |>
     "participant"              ~ !c(
         Year:UniqueFemaleParticipation, percent_by_author, WC,
         Role, TwoAuthors, Academic, Limited_Information,
-        Job_Title_S, Job_Title_S_num, Department, Department_S, Department_S_num, Discipline,
-        PhD_Year, PreviousContributions, ContributionsThisYear, ThreadsThisYear, PreviousThreads,
-        Years_from_PhD, PhD_Institution_SR, Workplace_SR, SR_Ranking_Dif,
+        Job_Title_S_num, Department, Department_S, Department_S_num, 
+        PhD_Year, PreviousContributions, ContributionsThisYear, ThreadsThisYear, PreviousThreads, Workplace_SR, SR_Ranking_Dif,
         Workplace_US_IR, USA_I_Ranking_Dif, PhD_Institution_US, PhD_Institution_US_Bin,
         Workplace_US, Workplace_US_Bin, USA_Ranking_Dif,
         Citations_Year, Citations_Cumulative, PreviousCitations, ContributionsbyAuthor),
@@ -119,6 +118,12 @@ multiverse::parameters(game)
 
 #' ===================================================================
 #' NODE 2: Selecting relevant variables (for analysis)
+
+```{r}
+data_st1 <- data_st1 %>% 
+  mutate() # gender variable - female male is not usable in this sense 
+```
+
 
 ```{multiverse default-m-2, inside = game}
 
@@ -154,7 +159,7 @@ data_st2 = data_st1 |>
 
       branch(include_Workplace_SR_Bin,
         "yes" ~ "Workplace_SR_Bin",
-        "no"  ~ NULL)
+        "no"  ~ NULL), 
       
       # -----------------------------------------------------------
       # Other potential mediators - Bogi <- "Jöttömre öt nap múltán számítsatok. Pirkadatkor, kelet felől."
@@ -164,9 +169,16 @@ data_st2 = data_st1 |>
       #                           -> include PhD_Institution_SR_Bin? 
       # include Job_title? 
       # include male/female? 
+      
+      branch(include_Job_Title, 
+             "yes" ~ "Job_Title_S", 
+             "no" ~ NULL),
+      
+      branch(include_)
     
       
     )))
+
 ```
 
 ```{r}
