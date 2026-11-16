@@ -25,7 +25,9 @@ library(flexmix)
 library(modeltools)
 library(statmod)
 library(stats)
+```
 
+```{r}
 raw_data = read_csv("data/edge1.1.csv")
 game = multiverse()
 
@@ -66,15 +68,16 @@ mw_df = raw_data |>
  
 raw_data = raw_data %>%  
   mutate(percent_by_author = ContributionsbyAuthor/ DebateSize, .after = ContributionsbyAuthor) |>
-  mutate(AcademicHierarchyStrict = factor(AcademicHierarchyStrict, levels = 1:6, ordered = TRUE),          PhD_Institution_SR_Bin = factor(PhD_Institution_SR_Bin, 1:7, ordered = TRUE), 
+  mutate(AcademicHierarchyStrict = factor(AcademicHierarchyStrict, levels = 1:6, ordered = TRUE), 
+         PhD_Institution_SR_Bin = factor(PhD_Institution_SR_Bin, 1:7, ordered = TRUE), 
          Workplace_SR_Bin = factor(Workplace_SR_Bin, 1:6, ordered = TRUE),
-         PhD_Institution_US_IR_Bin = factor(PhD_Institution_US_IR_Bin, levels = 1:7, ordered  = TRUE), 
-        Workplace_US_IR_Bin = factor(Workplace_US_IR_Bin, levels = 1:10, ordered= TRUE)) |> 
+         PhD_Institution_US_IR_Bin = factor(PhD_Institution_US_IR_Bin, levels = 1:7, ordered  = TRUE),
+         Workplace_US_IR_Bin = factor(Workplace_US_IR_Bin, levels = 1:10, ordered = TRUE)) |> 
   dplyr::select(!c(Order:Number.Characters), WC) |> 
   dplyr::select(!c(dummy_Natural.Sciences:dummy_Divinity))
 
 raw_data = left_join(raw_data, mw_df, by = "Id")
-raw_data <- raw_data |> mutate(.row = row_number()) #required, so as not to break the summarise down the line --> the group_by(null) could still work but that would break the summarise later --> with this approach, the reference for grouping is basically one row - which keeps the original structure and the summarise block does not have to be modified 
+raw_data <- raw_data |> mutate(.row = row_number()) # required, so as not to break the summarise down the line --> the group_by(null) could still work but that would break the summarise later --> with this approach, the reference for grouping is basically one row - which keeps the original structure and the summarise block does not have to be modified 
 
  
 ```
@@ -153,10 +156,36 @@ data_st2 = data_st1 |>
         "yes" ~ "Workplace_SR_Bin",
         "no"  ~ NULL)
       
-      #Other potential mediators - Bogi
+      # -----------------------------------------------------------
+      # Other potential mediators - Bogi <- "Jöttömre öt nap múltán számítsatok. Pirkadatkor, kelet felől."
+      # should be a for loop: all decisions can be mixed. only phd variables should be conditional. 
+      # if: include havephd, then -> include yearsfromphd? 
+      #                           -> include phdinstitution? 
+      #                           -> include PhD_Institution_SR_Bin? 
+      # include Job_title? 
+      # include male/female? 
+    
+      
     )))
 ```
 
 ```{r}
 multiverse::execute_multiverse(game)
 ```
+
+#' ===================================================================
+#' NODE 3.1: DATA FILTERING: NA filtering
+#' @param: AcademicHierarchyStrict
+
+```{multiverse default-m-3, inside = game}
+
+```
+
+#' ===================================================================
+#' NODE 3.2: DATA FILTERING: Number of participants
+#' @nodes: no filter // mean(UniqueContributors) → filtering out convos that have mean-1sd UniqueContributors
+
+```{multiverse default-m-3, inside = game}
+
+```
+

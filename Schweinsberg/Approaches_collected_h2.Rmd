@@ -13,15 +13,15 @@ sit at the top of that analyst's Hypothesis 1 block.
 
 -Analyst 1
 ```{r}
-my_data <- read_csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+data <- read_csv("data/edge1.1.csv")
 
 # OK I do the second hypothesis now.
 # "Higher status participants are more verbose than are lower status participants."
 # I operationalize Verbose as number of characters in a text. At least for now.
 # --------------------------------
-my_data <- mutate(my_data, log_num_char=log(my_data$Number.Characters))
+data <- mutate(data, log_num_char=log(data$Number.Characters))
 # --------------------------------
-d <- dplyr::select(my_data, log_num_char, Academic, Female, PhD_Institution_US_Bin:PreviousCitations)
+d <- dplyr::select(data, log_num_char, Academic, Female, PhD_Institution_US_Bin:PreviousCitations)
 d <- d %>% mutate(factor_academic=as.factor(Academic), factor_female=as.factor(Female), factor_aca_hier=as.factor(AcademicHierarchyStrict))
 # --------------------------------
 reg2 <- lm(log_num_char~AcademicHierarchyStrict+Female+Academic, data=d)
@@ -36,12 +36,15 @@ apa.reg.table(reg2) ##Reviewer 2 COMMENT: cannot find the model of reported effe
 #'##Data preparation
 #'####Required R libraries
 #rm(list = ls())
+install.packages("piecewiseSEM")
+install.packages("influence.ME")
+
 require(lme4)
 require(piecewiseSEM)
 require(influence.ME)
 
 #'####Reading in the my_data
-my_data <- read.csv("C:/ELTE_ST/Additional_research_activity/gamedev/Schweinsberg/data/edge1.1.csv")
+my_data <- read.csv("data/edge1.1.csv")
 
 #'####Examining the my_data
 #View(my_data[,1:ncol(my_data)])
