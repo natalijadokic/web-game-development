@@ -576,7 +576,7 @@ betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logi
 
 Randomized quantile residuals:
     Min      1Q  Median      3Q     Max 
--1.4826 -0.5973 -0.3326  0.0137  5.4774 
+-1.4826 -0.5973 -0.3326  0.0137  5.4414 
 
 Coefficients (mu model with logit link):
                          Estimate Std. Error z value Pr(>|z|)    
@@ -836,7 +836,7 @@ betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logi
 
 Randomized quantile residuals:
     Min      1Q  Median      3Q     Max 
--4.6749 -0.7712 -0.0396  0.5284  2.7468 
+-4.6749 -0.7712 -0.0396  0.5284  2.8137 
 
 Coefficients (mu model with logit link):
                           Estimate Std. Error z value Pr(>|z|)    
@@ -901,7 +901,7 @@ betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logi
 
 Randomized quantile residuals:
     Min      1Q  Median      3Q     Max 
--4.4631 -0.6561 -0.3832  0.0042  6.5336 
+-4.4631 -0.6561 -0.3832  0.0042  6.4336 
 
 Coefficients (mu model with logit link):
                           Estimate Std. Error z value Pr(>|z|)    
@@ -966,7 +966,7 @@ betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logi
 
 Randomized quantile residuals:
     Min      1Q  Median      3Q     Max 
--3.4120 -0.9113 -0.0928  0.5419  4.9129 
+-3.4120 -0.9113 -0.0928  0.5419  5.1460 
 
 Coefficients (mu model with logit link):
                           Estimate Std. Error z value Pr(>|z|)    
@@ -1096,7 +1096,7 @@ betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logi
 
 Randomized quantile residuals:
     Min      1Q  Median      3Q     Max 
--1.2769 -0.6576 -0.3711  0.0149  4.7324 
+-1.2769 -0.6576 -0.3711  0.0149  5.1436 
 
 Coefficients (mu model with logit link):
                      Estimate Std. Error z value Pr(>|z|)    
@@ -1226,7 +1226,7 @@ betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logi
 
 Randomized quantile residuals:
     Min      1Q  Median      3Q     Max 
--2.1943 -0.7471 -0.2856  0.3508  8.2095 
+-2.1943 -0.7471 -0.2856  0.3508     Inf 
 
 Coefficients (mu model with logit link):
                      Estimate Std. Error z value Pr(>|z|)    
@@ -1291,7 +1291,7 @@ betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logi
 
 Randomized quantile residuals:
     Min      1Q  Median      3Q     Max 
--2.2371 -0.4341 -0.2496  0.3506  2.8095 
+-2.3310 -0.4341 -0.2496  0.3506  3.0098 
 
 Coefficients (mu model with logit link):
                          Estimate Std. Error z value Pr(>|z|)    
@@ -1356,7 +1356,7 @@ betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logi
 
 Randomized quantile residuals:
     Min      1Q  Median      3Q     Max 
--3.1625 -0.4398 -0.2395  0.3017  3.4466 
+-3.1812 -0.4398 -0.2395  0.3017  3.5226 
 
 Coefficients (mu model with logit link):
                          Estimate Std. Error z value Pr(>|z|)
@@ -1421,7 +1421,7 @@ betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logi
 
 Randomized quantile residuals:
     Min      1Q  Median      3Q     Max 
--3.4727 -0.4417 -0.0741  0.3454  3.1015 
+-2.5245 -0.4417 -0.0741  0.3454  3.1015 
 
 Coefficients (mu model with logit link):
                          Estimate Std. Error z value Pr(>|z|)    
@@ -1486,7 +1486,7 @@ betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logi
 
 Randomized quantile residuals:
     Min      1Q  Median      3Q     Max 
--2.7893 -0.5811 -0.0373  0.4317  2.5777 
+-3.2439 -0.5811 -0.0373  0.4317  2.5777 
 
 Coefficients (mu model with logit link):
                          Estimate Std. Error z value Pr(>|z|)    
@@ -1551,7 +1551,7 @@ betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logi
 
 Randomized quantile residuals:
     Min      1Q  Median      3Q     Max 
--4.5219 -0.0299  0.4565  0.5568  2.3435 
+-4.5557 -0.0299  0.4549  0.5538  2.5826 
 
 Coefficients (mu model with logit link):
                           Estimate Std. Error z value Pr(>|z|)    
@@ -1616,7 +1616,7 @@ betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logi
 
 Randomized quantile residuals:
     Min      1Q  Median      3Q     Max 
--4.0994 -0.0819  0.4408  0.5916  2.1574 
+-3.5912 -0.0644  0.4278  0.5916  2.4890 
 
 Coefficients (mu model with logit link):
                           Estimate Std. Error z value Pr(>|z|)    
@@ -1681,7 +1681,7 @@ betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logi
 
 Randomized quantile residuals:
     Min      1Q  Median      3Q     Max 
--2.3641 -0.4284  0.1302  0.4055  2.6157 
+-2.7903 -0.4284  0.1302  0.4055  2.6157 
 
 Coefficients (mu model with logit link):
                           Estimate Std. Error z value Pr(>|z|)    
@@ -1746,7 +1746,7 @@ betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logi
 
 Randomized quantile residuals:
     Min      1Q  Median      3Q     Max 
--2.5279 -0.4799  0.0986  0.4461  2.3876 
+-4.3569 -0.4799  0.0986  0.4461  2.3876 
 
 Coefficients (mu model with logit link):
                           Estimate Std. Error z value Pr(>|z|)    
@@ -1811,7 +1811,7 @@ betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logi
 
 Randomized quantile residuals:
     Min      1Q  Median      3Q     Max 
--2.3796 -0.4038 -0.2622  0.3162  2.5709 
+-2.5735 -0.4038 -0.2622  0.3162  3.1576 
 
 Coefficients (mu model with logit link):
                       Estimate Std. Error z value Pr(>|z|)    
@@ -1876,7 +1876,7 @@ betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logi
 
 Randomized quantile residuals:
     Min      1Q  Median      3Q     Max 
--3.7101 -0.4269 -0.2408  0.2186  3.3889 
+-2.7344 -0.4269 -0.2408  0.2186  3.3347 
 
 Coefficients (mu model with logit link):
                      Estimate Std. Error z value Pr(>|z|)    
@@ -1941,7 +1941,7 @@ betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logi
 
 Randomized quantile residuals:
     Min      1Q  Median      3Q     Max 
--3.6573 -0.7147 -0.0520  0.4319  3.4444 
+-2.6678 -0.7147 -0.0520  0.4319  3.4444 
 
 Coefficients (mu model with logit link):
                      Estimate Std. Error z value Pr(>|z|)    
@@ -2006,7 +2006,7 @@ betareg::betareg(formula = reform, data = data_filtered_ungrouped, link = ""logi
 
 Randomized quantile residuals:
     Min      1Q  Median      3Q     Max 
--2.5064 -0.7232  0.0106  0.4320  3.4148 
+-2.6491 -0.6720  0.0106  0.4320  3.4148 
 
 Coefficients (mu model with logit link):
                      Estimate Std. Error z value Pr(>|z|)    

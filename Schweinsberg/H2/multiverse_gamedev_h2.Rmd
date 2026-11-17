@@ -1,10 +1,11 @@
 ---
 title: "multiverse_schweinsberg_h2"
+author: Boglarka 
 output: html_document
 date: "2026-11-11"
 ---
 
-Loading the data, packages 
+#' LIBRARIES 
 
 ```{r}
 library(multiverse)
@@ -32,52 +33,53 @@ raw_data = read_csv("data/edge1.1.csv")
 game = multiverse()
 
 
-particip_data_duplicates = raw_data |> 
-  dplyr::select(!Order:Number.Characters)|> 
-  group_by(ThreadId, Id) |> 
+particip_data_duplicates = raw_data %>%  
+  dplyr::select(!Order:Number.Characters) %>% 
+  group_by(ThreadId, Id) %>%  
   summarize(across(Type:ContributionsbyAuthor,  ~ paste(unique(.x), collapse = "; "))) 
         
- particip_data_filt = particip_data_duplicates |> 
+ particip_data_filt = particip_data_duplicates %>% 
   filter(if_any(Type:ContributionsbyAuthor, ~ grepl(";", .x)))
 
 
  
  #Slight issue --> there are within participant-changes in the variables indicating status --> correction: 
-status_rec = raw_data |>
-  group_by(Id) |>
-  arrange(Year, .by_group = TRUE) |>
+status_rec = raw_data %>% 
+  group_by(Id) %>% 
+  arrange(Year, .by_group = TRUE) %>% 
   summarise(across(c(AcademicHierarchyStrict, PhD_Institution_SR_Bin, Workplace_SR_Bin,
                      PhD_Institution_US_IR_Bin, Workplace_US_IR_Bin, Discipline, Years_from_PhD), last),
             .groups = "drop")
 
-raw_data = raw_data |>
+raw_data = raw_data %>% 
   select(!c(AcademicHierarchyStrict, PhD_Institution_SR_Bin, Workplace_SR_Bin,
-            PhD_Institution_US_IR_Bin, Workplace_US_IR_Bin, Discipline, Years_from_PhD)) |>   # remove the varying versions
+            PhD_Institution_US_IR_Bin, Workplace_US_IR_Bin, Discipline, Years_from_PhD)) %>%    # remove the varying versions
   left_join(status_rec, by = "Id")
 # This will be joined to the df in the multiverse accordingly
  
 raw_data = anti_join(raw_data, particip_data_filt,  by = c("ThreadId", "Id"))
 
-mw_df = raw_data |> 
-  group_by(Id, ThreadId) |> 
-  summarise(words_in_conv = sum(WC), .groups = "drop") |> 
-  group_by(Id) |> 
+mw_df = raw_data %>%  
+  group_by(Id, ThreadId) %>%  
+  summarise(words_in_conv = sum(WC), .groups = "drop") %>% 
+  group_by(Id) %>%  
   summarise(mean_words = mean(words_in_conv))
 
 
  
 raw_data = raw_data %>%  
-  mutate(percent_by_author = ContributionsbyAuthor/ DebateSize, .after = ContributionsbyAuthor) |>
+  mutate(percent_by_author = ContributionsbyAuthor/DebateSize, .after = ContributionsbyAuthor) |>
   mutate(AcademicHierarchyStrict = factor(AcademicHierarchyStrict, levels = 1:6, ordered = TRUE), 
          PhD_Institution_SR_Bin = factor(PhD_Institution_SR_Bin, 1:7, ordered = TRUE), 
          Workplace_SR_Bin = factor(Workplace_SR_Bin, 1:6, ordered = TRUE),
          PhD_Institution_US_IR_Bin = factor(PhD_Institution_US_IR_Bin, levels = 1:7, ordered  = TRUE),
          Workplace_US_IR_Bin = factor(Workplace_US_IR_Bin, levels = 1:10, ordered = TRUE)) |> 
-  dplyr::select(!c(Order:Number.Characters), WC) |> 
+  dplyr::select(!c(Order:Number.Characters), WC) %>%  
   dplyr::select(!c(dummy_Natural.Sciences:dummy_Divinity))
 
 raw_data = left_join(raw_data, mw_df, by = "Id")
-raw_data <- raw_data |> mutate(.row = row_number()) # required, so as not to break the summarise down the line --> the group_by(null) could still work but that would break the summarise later --> with this approach, the reference for grouping is basically one row - which keeps the original structure and the summarise block does not have to be modified 
+raw_data <- raw_data %>%  
+  mutate(.row = row_number()) # required, so as not to break the summarise down the line --> the group_by(null) could still work but that would break the summarise later --> with this approach, the reference for grouping is basically one row - which keeps the original structure and the summarise block does not have to be modified 
 
  
 ```
@@ -88,22 +90,20 @@ raw_data <- raw_data |> mutate(.row = row_number()) # required, so as not to bre
 #' $level[[1]]: participant, $level[[2]]: conversation
 
 ```{multiverse default-m-1, inside = game}
-data_st1 = raw_data |>
+data_st1 = raw_data %>% 
   group_by(across(branch(level,
     "participant"              ~ Id,
     "conversation_participant" ~ c(Id, ThreadId),
-    "post"                     ~ .row))) |>
+    "post"                     ~ .row))) %>% 
   select(branch(level,
-    "participant"              ~ !c(
-        Year:UniqueFemaleParticipation, percent_by_author, WC,
-        Role, TwoAuthors, Academic, Limited_Information,
-        Job_Title_S_num, Department, Department_S, Department_S_num, 
-        PhD_Year, PreviousContributions, ContributionsThisYear, ThreadsThisYear, PreviousThreads, Workplace_SR, SR_Ranking_Dif,
-        Workplace_US_IR, USA_I_Ranking_Dif, PhD_Institution_US, PhD_Institution_US_Bin,
-        Workplace_US, Workplace_US_Bin, USA_Ranking_Dif,
-        Citations_Year, Citations_Cumulative, PreviousCitations, ContributionsbyAuthor),
+    "participant"              ~ c(
+      Id, Id_num, Name, Male, Female, Job_Title, Job_Title_S, UniqueContributors,
+      Workplace, HavePhD, PhD_Field, AuthorAndCommenter, PhD_Institution, PhD_Institution_SR, 
+      PhD_Institution_US_IR, Total_Citations, H_Index, i10_Index, ContributionsbyAuthor, percent_by_author, 
+      AcademicHierarchyStrict, PhD_Institution_SR_Bin, Workplace_SR_Bin, PhD_Institution_US_IR_Bin, 
+      Workplace_US_IR_Bin, Discipline, Years_from_PhD, WC, mean_words),
     "conversation_participant" ~ everything(),
-    "post"                     ~ everything())) |>
+    "post"                     ~ everything())) %>% 
   summarise(branch(level,
     "participant"              ~ across(Id_num:mean_words, first),
     "conversation_participant" ~ across(everything(), first),
@@ -119,15 +119,13 @@ multiverse::parameters(game)
 #' ===================================================================
 #' NODE 2: Selecting relevant variables (for analysis)
 
-```{r}
-data_st1 <- data_st1 %>% 
-  mutate() # gender variable - female male is not usable in this sense 
-```
-
-
 ```{multiverse default-m-2, inside = game}
+data_st1 <- data_st1 %>% 
+  mutate(Gender = case_when(Female == 1 ~ "Female",
+                            Male == 1 ~ "Male", 
+                            Female == NA ~ "Non-binary/Prefer not to say")) # gender variable - female male is not usable in this sense 
 
-data_st2 = data_st1 |>
+data_st2 = data_st1 %>% 
   dplyr::select(
     any_of(c("Id", "ThreadId", ".row")),   # ID keys present at this level
     all_of(c(
@@ -139,6 +137,9 @@ data_st2 = data_st1 |>
 
       # ---- Primary predictor -
       "AcademicHierarchyStrict",
+      
+       # ---- Needed for the filter in the next node
+      "UniqueContributors",
 
       # ---- Secondary predictors --> instead of typing out 128 fckn universes --> much more flexible approach --> this can be refined on the website
       branch(include_H_Index,
@@ -153,10 +154,6 @@ data_st2 = data_st1 |>
         "yes" ~ "Workplace_US_IR_Bin",
         "no"  ~ NULL),
 
-      branch(include_PhD_Institution_SR_Bin,
-        "yes" ~ "PhD_Institution_SR_Bin",
-        "no"  ~ NULL),
-
       branch(include_Workplace_SR_Bin,
         "yes" ~ "Workplace_SR_Bin",
         "no"  ~ NULL), 
@@ -165,7 +162,6 @@ data_st2 = data_st1 |>
       # Other potential mediators - Bogi <- "Jöttömre öt nap múltán számítsatok. Pirkadatkor, kelet felől."
       # should be a for loop: all decisions can be mixed. only phd variables should be conditional. 
       # if: include havephd, then -> include yearsfromphd? 
-      #                           -> include phdinstitution? 
       #                           -> include PhD_Institution_SR_Bin? 
       # include Job_title? 
       # include male/female? 
@@ -174,9 +170,19 @@ data_st2 = data_st1 |>
              "yes" ~ "Job_Title_S", 
              "no" ~ NULL),
       
-      branch(include_)
+      branch(include_Gender, 
+             "yes" ~ "Gender", 
+             "no" ~ NULL), 
     
-      
+      branch(include_havephd, 
+             "yes" ~ c("HavePhD", 
+                       branch(include_PhD_Institution_SR_Bin, 
+                            "yes" ~ "PhD_Institution_SR_Bin",
+                            "no"  ~ NULL), 
+                       branch(include_Years_from_PhD, 
+                              "yes" ~ "Years_from_PhD",
+                              "no"  ~ NULL)),
+             "no" ~ NULL)
     )))
 
 ```
@@ -190,14 +196,27 @@ multiverse::execute_multiverse(game)
 #' @param: AcademicHierarchyStrict
 
 ```{multiverse default-m-3, inside = game}
+data_st3 <- data_st2 %>% 
+  filter(branch(na_filtered, 
+                "yes" ~ !(is.na(AcademicHierarchyStrict)), 
+                "no" ~ AcademicHierarchyStrict == AcademicHierarchyStrict))
+```
 
+```{r}
+multiverse::execute_multiverse(game)
 ```
 
 #' ===================================================================
 #' NODE 3.2: DATA FILTERING: Number of participants
-#' @nodes: no filter // mean(UniqueContributors) → filtering out convos that have mean-1sd UniqueContributors
+#' @nodes: no filter, or: UniqueContributors > mean(UniqueContributors)-sd(UniqueContributors)
 
-```{multiverse default-m-3, inside = game}
-
+```{multiverse default-m-4, inside = game}
+data_st4 <- data_st3 %>% 
+  filter(branch(uniquecontributors_filter, 
+                "no" ~ TRUE, 
+                "yes" ~ UniqueContributors > (mean(UniqueContributors, na.rm = TRUE) - sd(UniqueContributors, na.rm = TRUE))))
 ```
 
+```{r}
+multiverse::execute_multiverse(game)
+```

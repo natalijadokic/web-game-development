@@ -222,7 +222,9 @@ results_n5 <- results_n4 %>%
   mutate(across(c(dv_iv_plots, dv_plots, iv_plots),
                 ~ map2(.x, .universe, ~ .x + labs(subtitle = paste("Universe", .y)))))
 
-```
+results_n5$dv_plots[[3]]   # scatterplot of universe in row 1
+
+  ```
 
 
 #' ===================================================================
