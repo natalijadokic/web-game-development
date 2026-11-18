@@ -123,7 +123,7 @@ multiverse::parameters(game)
 data_st1 <- data_st1 %>% 
   mutate(Gender = case_when(Female == 1 ~ "Female",
                             Male == 1 ~ "Male", 
-                            Female == NA ~ "Non-binary/Prefer not to say")) # gender variable - female male is not usable in this sense 
+                            Female == NA ~ "Non-binary/Prefer not to say")) # gender variable
 
 data_st2 = data_st1 %>% 
   dplyr::select(
@@ -208,7 +208,7 @@ multiverse::execute_multiverse(game)
 
 #' ===================================================================
 #' NODE 3.2: DATA FILTERING: Number of participants
-#' @nodes: no filter, or: UniqueContributors > mean(UniqueContributors)-sd(UniqueContributors)
+#' options: no filter, or: UniqueContributors > mean(UniqueContributors)-sd(UniqueContributors)
 
 ```{multiverse default-m-4, inside = game}
 data_st4 <- data_st3 %>% 
@@ -220,3 +220,12 @@ data_st4 <- data_st3 %>%
 ```{r}
 multiverse::execute_multiverse(game)
 ```
+
+#' ===================================================================
+#' STATISTICAL TESTING 
+
+```{r}
+tab <- multiverse::expand(game) 
+df_u5 <- tab$.results[[5]]$data_st4
+ex```
+
